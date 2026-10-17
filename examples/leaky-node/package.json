@@ -1,0 +1,10 @@
+{
+  "name": "leaky-node",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "load": "node load.js"
+  }
+}
