@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+examples/**/node_modules/
+examples/**/__pycache__/
+*.pcap
+*.heapsnapshot
+.vhs-out/
