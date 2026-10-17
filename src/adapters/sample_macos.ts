@@ -81,7 +81,7 @@ async function profileCpu(ctx: AdapterContext, args: { duration_s?: number }): P
   const folded = sampleToFolded(raw);
   await b.writeArtifact("sample-folded.txt", folded, "folded_stacks", "folded stacks derived from sample call graph");
   b.limitation("`sample` samples every 1 ms across all threads including idle ones; idle frames (kevent, __psynch_cvwait, mach_msg) are expected to dominate for servers");
-  return summarizeProfile(b, folded, duration, "sample");
+  return summarizeProfile(b, folded, duration, "sample", 1000);
 }
 
 export const sampleMacosAdapter: Adapter = {

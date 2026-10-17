@@ -299,11 +299,15 @@ async function profileCpu(ctx: AdapterContext, args: { duration_s?: number }): P
   const { readFile } = await import("node:fs/promises");
   const folded = await readFile(rawPath, "utf8").catch(() => "");
   await b.addArtifact(rawPath, "folded_stacks", { description: `py-spy record ${duration}s, folded stacks` });
-  return summarizeProfile(b, folded, duration, "py-spy");
+  return summarizeProfile(b, folded, duration, "py-spy", 100);
 }
 
-/** Shared by py-spy/perf/sample: folded stacks → evidence + findings + svg. */
-export async function summarizeProfile(b: ResultBuilder, folded: string, duration: number, profiler: string): Promise<ToolResult> {
+/**
+ * Shared by py-spy/perf/sample: folded stacks → evidence + findings + svg.
+ * `sampleHz` is the profiler's rate so we can turn work samples into "% of wall time"
+ * (perf only samples on-CPU time, so its idle share is ~0 by construction).
+ */
+export async function summarizeProfile(b: ResultBuilder, folded: string, duration: number, profiler: string, sampleHz?: number): Promise<ToolResult> {
   const stacks = parseFolded(folded);
   if (!stacks.length) {
     b.limitation(`${profiler} produced no samples in ${duration}s (process idle, or sampling blocked)`);
@@ -313,36 +317,48 @@ export async function summarizeProfile(b: ResultBuilder, folded: string, duratio
     return b.build();
   }
   const { frames, totalSamples } = aggregateFrames(stacks, 15);
-  const hot = hottestStacks(stacks, 5);
+  // Idle/wait leaves vs work leaves. Multi-threaded targets have many permanently idle threads, so we
+  // rank hot frames among WORK samples, not all samples.
+  const workStacks = stacks.filter((s) => !IDLE_FRAME.test(s.frames[s.frames.length - 1]!));
+  const workSamples = workStacks.reduce((n, s) => n + s.count, 0);
+  const idlePct = Math.round((100 * (totalSamples - workSamples)) / totalSamples);
+  const { frames: workFrames } = aggregateFrames(workStacks, 15);
+  const hot = hottestStacks(workStacks.length ? workStacks : stacks, 5);
   const svg = renderFlamegraph(stacks, { title: `${profiler} ${duration}s pid ${b.target.pid}` });
-  const svgPath = await b.writeArtifact("flamegraph.svg", svg, "flamegraph_svg", "flame graph");
-  const foldedArtifact = b.artifactPath("");
+  const svgPath = await b.writeArtifact("flamegraph.svg", svg, "flamegraph_svg", "flame graph (all threads, idle included)");
+  // Busy share of wall time: for a single-threaded runtime this is "how busy was the main thread".
+  const busyWall = sampleHz ? Math.min(100, Math.round((100 * workSamples) / (sampleHz * duration))) : undefined;
   const framesEv = b.evidenceOf(
     "frame_hot",
-    `top self: ${frames
-      .slice(0, 5)
-      .map((f) => `${shortFrame(f.frame)} ${f.self_pct}%`)
-      .join(", ")} (${totalSamples} samples over ${duration}s)`,
-    frames.map((f) => ({ frame: f.frame, self: f.self, total: f.total, self_pct: f.self_pct, total_pct: f.total_pct })),
+    workFrames.length
+      ? `top self among ${workSamples} work samples: ${workFrames
+          .slice(0, 5)
+          .map((f) => `${shortFrame(f.frame)} ${f.self_pct}%`)
+          .join(", ")}`
+      : `no work frames; all ${totalSamples} samples idle`,
+    (workFrames.length ? workFrames : frames).map((f) => ({ frame: f.frame, self: f.self, total: f.total, self_pct: f.self_pct, total_pct: f.total_pct })),
     { artifact: svgPath },
   );
-  const stacksEv = b.evidenceOf("stack", `hottest stack (${hot[0]?.pct}%): ${hot[0]?.stack.slice(-4).map(shortFrame).join(" ← ")}`, hot, { artifact: svgPath });
-  const idle = frames.filter((f) => IDLE_FRAME.test(f.frame)).reduce((s, f) => s + f.self, 0);
-  const idlePct = Math.round((100 * idle) / totalSamples);
-  const metricEv = b.evidenceOf("metric", `${totalSamples} samples, ~${idlePct}% in idle/wait frames`, { name: "samples", value: totalSamples, idle_pct: idlePct, duration_s: duration });
+  const stacksEv = b.evidenceOf("stack", `hottest work stack (${hot[0]?.pct}% of work): ${hot[0]?.stack.slice(-4).map(shortFrame).join(" ← ")}`, hot, { artifact: svgPath });
+  const metricEv = b.evidenceOf(
+    "metric",
+    `${totalSamples} samples over ${duration}s: ${workSamples} work, ${idlePct}% idle/wait${busyWall !== undefined ? `; ≈${busyWall}% of wall time CPU-busy (${sampleHz} Hz)` : ""}`,
+    { name: "samples", value: totalSamples, work_samples: workSamples, idle_pct: idlePct, busy_wall_pct: busyWall, duration_s: duration, sample_hz: sampleHz },
+  );
 
-  const topWork = frames.find((f) => !IDLE_FRAME.test(f.frame));
-  if (idlePct >= 70) {
-    b.finding("info", `~${idlePct}% of samples are in idle/wait frames — the process is mostly waiting, not CPU-bound`, [metricEv, framesEv], "inferred", "Look at trace_syscalls (what is it waiting on?) and inspect_sockets (whom?).");
-  }
+  const topWork = workFrames[0];
   if (topWork && topWork.self_pct >= 20) {
-    b.finding("high", `${shortFrame(topWork.frame)} accounts for ${topWork.self_pct}% of self time (${topWork.total_pct}% inclusive)`, [framesEv, stacksEv], "observed", `Hot path: ${hot[0]?.stack.slice(-6).map(shortFrame).join(" ← ")}. Handoff: attach a step debugger (e.g. mcp-debugger) at ${topWork.frame}.`);
+    b.finding(busyWall === undefined || busyWall >= 25 ? "high" : "warn", `${shortFrame(topWork.frame)} accounts for ${topWork.self_pct}% of CPU work (${topWork.total_pct}% inclusive)${busyWall !== undefined ? `; the process was CPU-busy ≈${busyWall}% of the time` : ""}`, [framesEv, stacksEv, metricEv], "observed", `Hot path: ${hot[0]?.stack.slice(-6).map(shortFrame).join(" ← ")}. Handoff: attach a step debugger (e.g. mcp-debugger) at ${topWork.frame}.`);
   } else if (topWork && topWork.self_pct >= 8) {
-    b.finding("warn", `${shortFrame(topWork.frame)} is the top CPU frame at ${topWork.self_pct}% self`, [framesEv, stacksEv], "observed");
+    b.finding("warn", `${shortFrame(topWork.frame)} is the top CPU frame at ${topWork.self_pct}% of work`, [framesEv, stacksEv], "observed");
   }
-  if (b.findingCount === 0) b.finding("info", `CPU spread thin: top frame ${shortFrame(frames[0]!.frame)} at ${frames[0]!.self_pct}% self`, [framesEv]);
-  void foldedArtifact;
-  b.limitation(`sampled ${duration}s only; ${profiler} sampling`);
+  if (busyWall !== undefined && busyWall < 15) {
+    b.finding("info", `process CPU-busy only ≈${busyWall}% of wall time — mostly waiting, not CPU-bound`, [metricEv], "inferred", "Look at trace_syscalls (what is it waiting on?) and inspect_sockets (whom?).");
+  } else if (busyWall === undefined && idlePct >= 90 && !topWork) {
+    b.finding("info", `~${idlePct}% of samples are in idle/wait frames — the process is mostly waiting, not CPU-bound`, [metricEv], "inferred");
+  }
+  if (b.findingCount === 0) b.finding("info", `CPU spread thin: top work frame ${shortFrame((workFrames[0] ?? frames[0])!.frame)} at ${(workFrames[0] ?? frames[0])!.self_pct}%`, [framesEv]);
+  b.limitation(`sampled ${duration}s only (${profiler}${sampleHz ? ` @ ${sampleHz} Hz` : ""}); idle frames across all threads are excluded from the hot-frame ranking`);
   b.next("trace_syscalls", "dump_stacks", "inspect_sockets");
   return b.build();
 }

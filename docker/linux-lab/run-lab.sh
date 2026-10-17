@@ -63,7 +63,7 @@ ls -t "$A2"/*pyspy-dump.txt | tail -1 | xargs -I{} cp {} "$FX/pyspy/healthy-dump
 cp "$A2"/*pyspy-folded.txt "$FX/pyspy/py-folded.txt" 2>/dev/null && echo pyspy-folded-ok
 cp "$A2"/*strace.log "$FX/strace/python-deadlock.log" 2>/dev/null
 cp "$A3"/*gdb-bt.txt "$FX/gdb/sleep.txt" 2>/dev/null && echo gdb-ok
-cp /tmp/report-node.md docs/showcase-report-leaky-node.lab.md 2>/dev/null
+cp /tmp/report-node.md docs/example-report-leaky-node.md 2>/dev/null
 # fixtures are written as root from the container; make them editable on the host
 chmod -R a+rwX "$FX" "$DEA_HOME" 2>/dev/null
 log done

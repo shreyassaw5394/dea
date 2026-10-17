@@ -84,7 +84,7 @@ async function profileCpu(ctx: AdapterContext, args: { duration_s?: number }): P
   const unknown = (folded.match(/\[unknown\]/g) ?? []).length;
   if (unknown > 0) b.limitation(`${unknown} stack frames have no symbols${target.runtime === "node" ? " — start Node with --perf-basic-prof (or --perf-prof) so JIT frames get names" : target.runtime === "java" ? " — use perf-map-agent or async-profiler for JIT frames" : "; install debug symbols or build with frame pointers"}`);
   b.limitation("perf samples at 99 Hz with frame-pointer unwinding; frames may be missing in code built without frame pointers (use --call-graph dwarf manually for those)");
-  return summarizeProfile(b, folded, duration, "perf");
+  return summarizeProfile(b, folded, duration, "perf", 99);
 }
 
 export const perfAdapter: Adapter = {
