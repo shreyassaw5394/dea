@@ -1,0 +1,63 @@
+(lldb) process attach --pid 47504
+Process 47504 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+    frame #0: 0x000000018f1c3fc4 libsystem_kernel.dylib`kevent + 8
+libsystem_kernel.dylib`kevent:
+->  0x18f1c3fc4 <+8>:  b.lo   0x18f1c3fe4               ; <+40>
+    0x18f1c3fc8 <+12>: pacibsp 
+    0x18f1c3fcc <+16>: stp    x29, x30, [sp, #-0x10]!
+    0x18f1c3fd0 <+20>: mov    x29, sp
+Target 0: (node) stopped.
+Executable binary set to "/usr/local/bin/node".
+Architecture set to: arm64-apple-macosx-.
+(lldb) thread backtrace all
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+  * frame #0: 0x000000018f1c3fc4 libsystem_kernel.dylib`kevent + 8
+    frame #1: 0x0000000103441c24 node`uv__io_poll + 784
+    frame #2: 0x000000010342e0cc node`uv_run + 408
+    frame #3: 0x00000001027464d4 node`node::SpinEventLoopInternal(node::Environment*) + 256
+    frame #4: 0x0000000102891e30 node`node::NodeMainInstance::Run() + 276
+    frame #5: 0x0000000102801fc0 node`node::Start(int, char**) + 600
+    frame #6: 0x000000018ee43e00 dyld`start + 6992
+  thread #2
+    frame #0: 0x000000018f1c3fc4 libsystem_kernel.dylib`kevent + 8
+    frame #1: 0x0000000103441c24 node`uv__io_poll + 784
+    frame #2: 0x000000010342e0cc node`uv_run + 408
+    frame #3: 0x00000001028c6ff4 node`node::WorkerThreadsTaskRunner::DelayedTaskScheduler::Run() + 352
+    frame #4: 0x000000018f201c58 libsystem_pthread.dylib`_pthread_start + 136
+  thread #3
+    frame #0: 0x000000018f1c150c libsystem_kernel.dylib`__psynch_cvwait + 8
+    frame #1: 0x000000018f202128 libsystem_pthread.dylib`_pthread_cond_wait + 980
+    frame #2: 0x000000010343ccf4 node`uv_cond_wait + 40
+    frame #3: 0x00000001028c71b0 node`node::TaskQueue<v8::Task>::Locked::BlockingPop() + 52
+    frame #4: 0x00000001028c47f8 node`node::(anonymous namespace)::PlatformWorkerThread(void*) + 608
+    frame #5: 0x000000018f201c58 libsystem_pthread.dylib`_pthread_start + 136
+  thread #4
+    frame #0: 0x000000018f1c150c libsystem_kernel.dylib`__psynch_cvwait + 8
+    frame #1: 0x000000018f202128 libsystem_pthread.dylib`_pthread_cond_wait + 980
+    frame #2: 0x000000010343ccf4 node`uv_cond_wait + 40
+    frame #3: 0x00000001028c71b0 node`node::TaskQueue<v8::Task>::Locked::BlockingPop() + 52
+    frame #4: 0x00000001028c47f8 node`node::(anonymous namespace)::PlatformWorkerThread(void*) + 608
+    frame #5: 0x000000018f201c58 libsystem_pthread.dylib`_pthread_start + 136
+  thread #5
+    frame #0: 0x000000018f1c150c libsystem_kernel.dylib`__psynch_cvwait + 8
+    frame #1: 0x000000018f202128 libsystem_pthread.dylib`_pthread_cond_wait + 980
+    frame #2: 0x000000010343ccf4 node`uv_cond_wait + 40
+    frame #3: 0x00000001028c71b0 node`node::TaskQueue<v8::Task>::Locked::BlockingPop() + 52
+    frame #4: 0x00000001028c47f8 node`node::(anonymous namespace)::PlatformWorkerThread(void*) + 608
+    frame #5: 0x000000018f201c58 libsystem_pthread.dylib`_pthread_start + 136
+  thread #6
+    frame #0: 0x000000018f1c150c libsystem_kernel.dylib`__psynch_cvwait + 8
+    frame #1: 0x000000018f202128 libsystem_pthread.dylib`_pthread_cond_wait + 980
+    frame #2: 0x000000010343ccf4 node`uv_cond_wait + 40
+    frame #3: 0x00000001028c71b0 node`node::TaskQueue<v8::Task>::Locked::BlockingPop() + 52
+    frame #4: 0x00000001028c47f8 node`node::(anonymous namespace)::PlatformWorkerThread(void*) + 608
+    frame #5: 0x000000018f201c58 libsystem_pthread.dylib`_pthread_start + 136
+  thread #7
+    frame #0: 0x000000018f1bdbb0 libsystem_kernel.dylib`semaphore_wait_trap + 8
+    frame #1: 0x000000010343cb70 node`uv_sem_wait + 24
+    frame #2: 0x000000010298cb70 node`node::inspector::(anonymous namespace)::StartIoThreadMain(void*) + 44
+    frame #3: 0x000000018f201c58 libsystem_pthread.dylib`_pthread_start + 136
+(lldb) detach
+Process 47504 detached
+(lldb) quit

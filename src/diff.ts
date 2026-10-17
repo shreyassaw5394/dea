@@ -9,7 +9,7 @@ import { ResultBuilder, humanBytes } from "./evidence.js";
 type Row = Record<string, unknown>;
 
 const KEY_FIELDS = ["name", "frame", "function", "syscall", "remote", "type", "path", "fd", "state", "constructor", "key", "thread", "metric", "label"];
-const NUM_FIELDS = ["total_ms", "count", "self", "total", "self_pct", "total_pct", "samples", "retained_bytes", "shallow_bytes", "bytes", "packets", "rss_kb", "vsz_kb", "errors", "value", "objects", "fds"];
+const NUM_FIELDS = ["value", "retained_bytes", "self_size", "bytes", "rss_kb", "vsz_kb", "total_ms", "self", "total", "count", "packets", "errors", "objects", "fds", "samples", "self_pct", "total_pct"];
 
 function keyOf(row: Row): string | undefined {
   for (const k of KEY_FIELDS) {

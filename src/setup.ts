@@ -86,7 +86,7 @@ export const TOML_BLOCK = `[mcp_servers.dea]\ncommand = "npx"\nargs = ["-y", "de
 /** Patch a TOML config: replace an existing [mcp_servers.dea] table or append one. Pure, no TOML dependency. */
 export function patchTomlConfig(existing: string | null): { next: string; changed: boolean } {
   const text = existing ?? "";
-  const re = /^\[mcp_servers\.dea\][^\[]*/m;
+  const re = /^\[mcp_servers\.dea\]\n(?:(?!\[)[^\n]*\n?)*/m;
   if (re.test(text)) {
     const current = re.exec(text)![0];
     if (current.trim() === TOML_BLOCK.trim()) return { next: text, changed: false };

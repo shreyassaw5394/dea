@@ -17,5 +17,6 @@ function req(path, data) {
 }
 const t0 = Date.now();
 for (let i = 0; i < N; i++) await req("/work", body);
-for (let i = 0; i < SLOW; i++) await req("/slow");
+// /slow requests go out 5 at a time so the server's sync I/O overlaps the 800 ms timer and shows up in a CPU profile.
+for (let i = 0; i < SLOW; i += 5) await Promise.all(Array.from({ length: Math.min(5, SLOW - i) }, () => req("/slow")));
 console.log(`sent ${N} /work + ${SLOW} /slow in ${Date.now() - t0} ms`);

@@ -2,6 +2,7 @@
  * py-spy adapter: profile_cpu (record → folded stacks → flamegraph), dump_stacks
  * (thread stacks + lock-wait detection), snapshot_memory contribution (dump --locals).
  */
+import { readFileSync } from "node:fs";
 import type { Adapter, AdapterContext } from "./types.js";
 import type { ToolResult } from "../contracts.js";
 import { ResultBuilder } from "../evidence.js";
@@ -73,38 +74,117 @@ export function parsePySpyDump(raw: string): PyDump {
   return out;
 }
 
-const LOCK_FRAME = /\b(acquire|_acquire_restore|wait|_wait_for_tstate_lock|__enter__|lock|Lock|RLock|Condition|Semaphore|Event\.wait|join|get|put|recv|recv_into|readinto|_read_ready|select|poll|epoll)\b/;
-const LOCK_FILE = /threading\.py|queue\.py|socket\.py|selectors\.py|ssl\.py/;
+const STDLIB_FILE = /(^|\/)(threading|queue|socket|selectors|ssl|asyncio\/[a-z_]+|concurrent\/futures\/[a-z_]+|subprocess|time|multiprocessing\/[a-z_]+)\.py$/;
+
+export type WaitKind = "lock" | "join" | "sleep" | "io" | "native" | "idle_loop";
 
 export interface LockWait {
   thread: string;
   state: string;
+  kind: WaitKind;
+  /** Where (top frame) the thread is blocked. */
   waiting_in: string;
+  /** First application frame (outside the stdlib) — where in the app it waits. */
   at: string;
+  /** Source text of the blocking line when readable on this host. */
+  source?: string;
   lock_repr?: string;
 }
 
-/** Threads that are blocked in a lock/wait primitive. Pure. */
-export function findLockWaits(dump: PyDump): LockWait[] {
+/** Read one source line (1-based) if the file is readable locally; capped. Not pure, but safe. */
+export function sourceLine(file: string, line: number, reader: (f: string) => string | undefined = defaultReader): string | undefined {
+  if (!file || !/\.py$/.test(file) || line < 1) return undefined;
+  const text = reader(file);
+  if (!text) return undefined;
+  return text.split("\n")[line - 1]?.trim().slice(0, 160);
+}
+
+const srcCache = new Map<string, string | undefined>();
+function defaultReader(f: string): string | undefined {
+  if (srcCache.has(f)) return srcCache.get(f);
+  let v: string | undefined;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    v = readFileSync(f, "utf8");
+  } catch {
+    v = undefined;
+  }
+  srcCache.set(f, v);
+  return v;
+}
+
+const LOCK_SRC = /\bwith\b[^:]*(lock|mutex|sem|cond|rlock|lk\b)|\.acquire\(|\.__enter__\(|lock\(|Lock\(\)\.acquire/i;
+const JOIN_SRC = /\.join\(|\.result\(|\.wait\(|\.get\(|wait_for|as_completed|\.gather\(/;
+const SLEEP_SRC = /\bsleep\(/;
+const IO_SRC = /\.(recv|recv_into|recvfrom|read|readline|readinto|accept|connect|send|sendall|write)\(|requests\.|urlopen|httpx\.|\.execute\(|\.fetch(one|all|many)\(|\.commit\(|select\.select|\.poll\(/;
+
+/**
+ * Classify what each thread is blocked in. py-spy shows a thread blocked in a
+ * C-level call (lock acquire, sleep, socket read) with the *Python caller* as the
+ * top frame, so we look at the top frame's function, file and — when readable —
+ * its source line. Pure given a reader.
+ */
+export function findLockWaits(dump: PyDump, reader?: (f: string) => string | undefined, cwd?: string): LockWait[] {
   const out: LockWait[] = [];
+  const resolve = (f: string) => (cwd && !f.startsWith("/") ? `${cwd.replace(/\/$/, "")}/${f}` : f);
   for (const t of dump.threads) {
     const top = t.frames[0];
     if (!top) continue;
-    if (LOCK_FRAME.test(top.func) && (LOCK_FILE.test(top.file) || /lock|wait|acquire/i.test(top.func))) {
-      // The first user frame below the stdlib tells where in the app it waits.
-      const user = t.frames.find((f) => !LOCK_FILE.test(f.file) && !/<frozen|importlib/.test(f.file));
-      const lockRepr = Object.entries(top.locals ?? {}).find(([k]) => /self|lock|cond|mutex/i.test(k))?.[1];
-      out.push({ thread: t.name || t.id, state: t.state, waiting_in: `${top.func} (${top.file.split("/").pop()}:${top.line})`, at: user ? `${user.func} (${user.file.split("/").pop()}:${user.line})` : "?", lock_repr: lockRepr });
+    const user = t.frames.find((f) => !STDLIB_FILE.test(f.file) && !/<frozen|importlib|site-packages\/(werkzeug|flask|gunicorn|uvicorn|django)/.test(f.file)) ?? top;
+    const base = {
+      thread: t.name || t.id,
+      state: t.state,
+      waiting_in: `${top.func} (${top.file.split("/").pop()}:${top.line})`,
+      at: `${user.func} (${user.file.split("/").pop()}:${user.line})`,
+      lock_repr: Object.entries(top.locals ?? {}).find(([k]) => /lock|cond|mutex|sem/i.test(k))?.[1],
+    };
+    const inStdlib = STDLIB_FILE.test(top.file);
+    let kind: WaitKind | undefined;
+    if (inStdlib) {
+      if (/_wait_for_tstate_lock|^join$/.test(top.func)) kind = "join";
+      else if (/acquire|__enter__|^wait$|_acquire_restore|^get$|^put$/.test(top.func) && /threading|queue/.test(top.file)) kind = /^(get|put)$/.test(top.func) ? "join" : "lock";
+      else if (/sleep/.test(top.func)) kind = "sleep";
+      else if (/select|poll|recv|read|accept|connect|send|^wait$/.test(top.func)) kind = "io";
+      else if (/asyncio|run_forever|_run_once|serve_forever/.test(top.file + top.func)) kind = "idle_loop";
     }
+    if (!kind && t.state !== "active") {
+      // Blocked in a C call from user code: read the line to see what it does.
+      const src = sourceLine(resolve(top.file), top.line, reader);
+      if (src) {
+        if (LOCK_SRC.test(src)) kind = "lock";
+        else if (SLEEP_SRC.test(src)) kind = "sleep";
+        else if (JOIN_SRC.test(src)) kind = "join";
+        else if (IO_SRC.test(src)) kind = "io";
+        else kind = "native";
+        out.push({ ...base, kind, source: src });
+        continue;
+      }
+      if (!inStdlib) kind = "native";
+    }
+    if (kind) out.push({ ...base, kind });
   }
   return out;
 }
 
-/** Group lock waits by lock repr (when --locals gave us one) to spot threads blocked on the same lock. Pure. */
+/** Working directory of a pid (to resolve relative source paths py-spy reports). */
+export async function targetCwd(pid: number): Promise<string | undefined> {
+  if (platform() === "linux") {
+    try {
+      const { readlink } = await import("node:fs/promises");
+      return await readlink(`/proc/${pid}/cwd`);
+    } catch {
+      return undefined;
+    }
+  }
+  const r = await runCapped("lsof", ["-a", "-p", String(pid), "-d", "cwd", "-Fn"], { timeoutMs: 5000 });
+  return r.stdout.split("\n").find((l) => l.startsWith("n"))?.slice(1);
+}
+
+/** Group lock waits by lock repr (when --locals gave us one). Pure. */
 export function sameLockGroups(waits: LockWait[]): Array<{ lock: string; threads: string[] }> {
   const by = new Map<string, string[]>();
   for (const w of waits) {
-    if (!w.lock_repr) continue;
+    if (!w.lock_repr || w.kind !== "lock") continue;
     const k = w.lock_repr.replace(/\s+/g, " ");
     by.set(k, [...(by.get(k) ?? []), w.thread]);
   }
@@ -158,34 +238,45 @@ async function dumpStacks(ctx: AdapterContext, withLocals: boolean, tool = "dump
       { artifact: art },
     );
   }
-  const waits = findLockWaits(dump);
+  const cwd = target.pid ? await targetCwd(target.pid) : undefined;
+  const waits = findLockWaits(dump, undefined, cwd);
+  const locks = waits.filter((w) => w.kind === "lock");
+  const joins = waits.filter((w) => w.kind === "join");
+  const io = waits.filter((w) => w.kind === "io");
+  const sleeps = waits.filter((w) => w.kind === "sleep");
+  const natives = waits.filter((w) => w.kind === "native");
+  const loops = waits.filter((w) => w.kind === "idle_loop");
+  const fmt = (w: LockWait) => `${w.thread} at ${w.at}${w.source ? ` [${w.source}]` : ""}`;
   if (waits.length) {
-    const waitEv = b.evidenceOf("lock_wait", `${waits.length} thread(s) blocked in lock/wait primitives: ${waits.map((w) => `${w.thread}@${w.at}`).join(", ")}`, waits, { artifact: art });
+    const waitEv = b.evidenceOf(
+      "lock_wait",
+      `${waits.length} blocked thread(s): ${locks.length} on locks, ${joins.length} joining/waiting, ${io.length} in I/O, ${sleeps.length} sleeping, ${natives.length} in other native calls, ${loops.length} idle event loops`,
+      waits.map((w) => ({ thread: w.thread, kind: w.kind, at: w.at, waiting_in: w.waiting_in, source: w.source, lock_repr: w.lock_repr })),
+      { artifact: art },
+    );
     const groups = sameLockGroups(waits);
-    const lockWaits = waits.filter((w) => /acquire|lock|_wait_for_tstate_lock|__enter__/i.test(w.waiting_in));
-    const nonIdle = dump.threads.filter((t) => !/MainThread/.test(t.name) || true);
-    if (groups.length) {
-      b.finding("high", `${groups[0]!.threads.length} threads wait on the same lock ${groups[0]!.lock}: ${groups[0]!.threads.join(", ")}`, [waitEv], "observed");
-    }
-    if (lockWaits.length >= 2 && lockWaits.length >= Math.max(2, Math.floor(nonIdle.length * 0.5))) {
+    if (groups.length) b.finding("high", `${groups[0]!.threads.length} threads wait on the same lock ${groups[0]!.lock}: ${groups[0]!.threads.join(", ")}`, [waitEv], "observed");
+    if (locks.length >= 2 && active.length === 0) {
       b.finding(
         "high",
-        `likely deadlock: ${lockWaits.length} threads are all blocked acquiring locks (${lockWaits.map((w) => `${w.thread} at ${w.at}`).join("; ")}) and no thread is running application code`,
+        `likely deadlock: ${locks.length} thread(s) blocked acquiring locks and no thread is running — ${locks.slice(0, 6).map(fmt).join("; ")}`,
         [waitEv, summaryEv],
         "inferred",
-        "Re-run dump_stacks in a few seconds: if the same threads sit at the same lines, it is a deadlock. Attach a step debugger (e.g. mcp-debugger) at the acquire sites to see lock owners.",
+        `${joins.length ? `${joins.length} thread(s) are joined on them (${joins.slice(0, 3).map((w) => w.thread).join(", ")}). ` : ""}Re-run dump_stacks: identical positions confirm a deadlock. Handoff: attach a step debugger (e.g. mcp-debugger) at ${locks[0]!.at} to inspect lock owners.`,
       );
-    } else if (lockWaits.length) {
-      b.finding("warn", `${lockWaits.length} thread(s) blocked acquiring a lock: ${lockWaits.map((w) => `${w.thread} at ${w.at}`).join("; ")}`, [waitEv], "observed");
+    } else if (locks.length) {
+      b.finding("warn", `${locks.length} thread(s) blocked acquiring a lock: ${locks.slice(0, 6).map(fmt).join("; ")}`, [waitEv], "observed");
     }
-    const io = waits.filter((w) => /recv|read|select|poll|epoll/.test(w.waiting_in));
-    if (io.length) b.finding("info", `${io.length} thread(s) waiting on I/O: ${io.map((w) => `${w.thread} in ${w.waiting_in}`).join("; ")}`, [waitEv]);
+    if (joins.length >= 3 && !locks.length) b.finding("warn", `${joins.length} thread(s) waiting on other threads/queues: ${joins.slice(0, 4).map(fmt).join("; ")}`, [waitEv], "observed");
+    if (io.length) b.finding(io.length >= 3 ? "warn" : "info", `${io.length} thread(s) blocked in I/O: ${io.slice(0, 4).map(fmt).join("; ")}`, [waitEv], "observed", "inspect_sockets shows which remote they talk to.");
+    if (sleeps.length) b.finding("info", `${sleeps.length} thread(s) in sleep(): ${sleeps.slice(0, 3).map(fmt).join("; ")}`, [waitEv], "observed");
+    if (natives.length) b.finding("info", `${natives.length} thread(s) blocked in native calls from user code: ${natives.slice(0, 3).map(fmt).join("; ")}`, [waitEv], "observed");
   }
-  if (!waits.length && active.length === 0) b.finding("info", "all threads idle — the process is not stuck in Python code; if the caller hangs, look at the network path (inspect_sockets)", [summaryEv], "inferred");
+  if (b.findingCount === 0 && active.length === 0) b.finding("info", "all threads idle — the process is not stuck in Python code; if the caller hangs, look at the network path (inspect_sockets)", [summaryEv], "inferred");
   if (active.length) {
     const t = active[0]!;
     const f = t.frames[0];
-    if (f && !waits.some((w) => w.thread === (t.name || t.id))) b.finding("info", `active thread ${t.name || t.id} is executing ${f.func} (${f.file.split("/").pop()}:${f.line})`, [summaryEv]);
+    if (f) b.finding("info", `active thread ${t.name || t.id} is executing ${f.func} (${f.file.split("/").pop()}:${f.line})`, [summaryEv]);
   }
   b.limitation("instant snapshot (nonblocking); take two dumps to distinguish a hang from a slow step");
   b.next("inspect_sockets", "trace_syscalls", "profile_cpu");

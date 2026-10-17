@@ -1,10 +1,11 @@
 // Deliberately broken HTTP server for DEA showcases. No dependencies.
 //   /work  — stores every request body in a module-level array via a closure (leak)
-//   /slow  — sync fs.readFileSync in a loop + a setTimeout(…, 800) (slow)
+//   /slow  — 1500× sync fs.readFileSync of a 256 KB file + a setTimeout(…, 800) (slow)
 //   /      — health
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,7 +19,9 @@ function makeJob(body) {
   return { body, onDone, createdAt: Date.now() };
 }
 
-const bigFile = path.join(__dirname, "server.js");
+// A 256 KB file we re-read synchronously on every /slow request.
+const bigFile = path.join(os.tmpdir(), "leaky-node-payload.bin");
+fs.writeFileSync(bigFile, Buffer.alloc(256 * 1024, 7));
 
 const server = http.createServer((req, res) => {
   if (req.url === "/work") {
@@ -33,7 +36,7 @@ const server = http.createServer((req, res) => {
   }
   if (req.url === "/slow") {
     let total = 0;
-    for (let i = 0; i < 400; i++) total += fs.readFileSync(bigFile).length; // sync I/O in a loop
+    for (let i = 0; i < 1500; i++) total += fs.readFileSync(bigFile).length; // sync I/O in a loop (~400 MB read per request)
     setTimeout(() => res.end(`slow done bytes=${total}\n`), 800);
     return;
   }

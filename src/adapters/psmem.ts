@@ -71,7 +71,7 @@ export async function snapshotMemoryGeneric(ctx: AdapterContext, args: { window_
   const last = samples[samples.length - 1]!;
   const art = await b.writeArtifact("mem-samples.json", JSON.stringify(samples, null, 2), "json", "RSS/VSZ samples");
   const rssEv = b.evidenceOf("metric", `rss=${humanBytes(last.rss_kb * 1024)} vsz=${humanBytes(last.vsz_kb * 1024)} cpu=${last.cpu}% (${pids.length} pid${pids.length > 1 ? "s" : ""})`, { name: "rss", rss_kb: last.rss_kb, vsz_kb: last.vsz_kb, cpu: last.cpu, pids: pids.length }, { artifact: art });
-  const seriesEv = b.evidenceOf("metric_series", `rss ${humanBytes(first.rss_kb * 1024)} → ${humanBytes(last.rss_kb * 1024)} over ${window}s (${samples.length} samples)`, { name: "rss_series", value: last.rss_kb, start_kb: first.rss_kb, end_kb: last.rss_kb, delta_kb: last.rss_kb - first.rss_kb, window_s: window, samples: samples.length }, { artifact: art });
+  const seriesEv = b.evidenceOf("metric_series", `rss ${humanBytes(first.rss_kb * 1024)} → ${humanBytes(last.rss_kb * 1024)} over ${window}s (${samples.length} samples)`, { label: "rss_series", start_kb: first.rss_kb, end_kb: last.rss_kb, delta_kb: last.rss_kb - first.rss_kb, window_s: window, n: samples.length }, { artifact: art });
   if (platform() === "linux" && target.pid) {
     try {
       const st = parseProcStatus(await readFile(`/proc/${target.pid}/status`, "utf8"));

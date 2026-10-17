@@ -1,0 +1,11 @@
+p47504
+cnode
+u501
+f12
+au
+tIPv6
+PTCP
+n*:3000
+TST=LISTEN
+TQR=0
+TQS=0

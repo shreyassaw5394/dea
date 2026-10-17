@@ -8,3 +8,4 @@ examples/**/__pycache__/
 *.pcap
 *.heapsnapshot
 .vhs-out/
+.lab-dea/

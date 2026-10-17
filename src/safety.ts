@@ -81,7 +81,7 @@ export function assertSafeIdentifier(s: string, what = "identifier"): string {
 /** BPF filter fragments the user may add. Refuse shell-ish or capture-widening content. */
 export function assertSafeBpfFragment(s: string): string {
   if (s.length > 200) throw new Error("filter too long");
-  if (!/^[A-Za-z0-9 .:_\-()&|!=<>\[\]]+$/.test(s)) throw new Error(`unsafe filter: ${JSON.stringify(s)}`);
+  if (!/^[A-Za-z0-9 .:_\-()&|!=<>[\]]+$/.test(s)) throw new Error(`unsafe filter: ${JSON.stringify(s)}`);
   return s;
 }
 
@@ -199,7 +199,7 @@ export async function runCapped(file: string, args: readonly string[], opts: Cap
   if (outFile) streams.push(outFile);
   if (errFile) streams.push(errFile);
 
-  const onChunk = (chunk: Buffer, memory: Buffer[], file: WriteStream | null) => {
+  const onChunk = (chunk: Buffer, memory: Buffer[], sink: WriteStream | null) => {
     bytes += chunk.length;
     if (bytes > LIMITS.MAX_RAW_BYTES) {
       if (!outputCapped) {
@@ -212,7 +212,7 @@ export async function runCapped(file: string, args: readonly string[], opts: Cap
       }
       return;
     }
-    if (file) file.write(chunk);
+    if (sink) sink.write(chunk);
     if (captureInMemory) memory.push(chunk);
   };
 

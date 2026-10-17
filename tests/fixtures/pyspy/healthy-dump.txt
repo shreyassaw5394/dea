@@ -1,0 +1,7 @@
+Process 28: python3 app.py
+Python v3.11.2 (/usr/bin/python3.11)
+
+Thread 28 (idle): "MainThread"
+    select (selectors.py:415)
+    serve_forever (socketserver.py:233)
+    <module> (app.py:80)

@@ -67,7 +67,7 @@ export function hottestStacks(stacks: FoldedStack[], limit = 5, maxDepth = 12): 
 }
 
 /** Frames that look like idle/wait rather than CPU work. */
-export const IDLE_FRAME = /\b(epoll_wait|epoll_pwait|kevent|poll|select|futex|nanosleep|clock_nanosleep|pthread_cond_wait|pthread_cond_timedwait|__psynch_cvwait|mach_msg|mach_msg2_trap|__semwait_signal|__select|__workq_kernreturn|uv__io_poll|uv_run|sleep|time\.sleep|wait|_wait_for_tstate_lock|<idle>|swapper)\b/i;
+export const IDLE_FRAME = /\b(semaphore_wait_trap|__psynch_mutexwait|__ulock_wait|__workq_kernreturn|__sigsuspend|__wait4|epoll_wait|epoll_pwait|kevent|poll|select|futex|nanosleep|clock_nanosleep|pthread_cond_wait|pthread_cond_timedwait|__psynch_cvwait|mach_msg|mach_msg2_trap|__semwait_signal|__select|__workq_kernreturn|uv__io_poll|uv_run|sleep|time\.sleep|wait|_wait_for_tstate_lock|<idle>|swapper)\b/i;
 
 // ---------------------------------------------------------------------------
 // Flamegraph SVG

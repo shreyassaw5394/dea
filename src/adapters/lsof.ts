@@ -194,7 +194,7 @@ export function parseProcLimits(text: string): { soft: number | null; hard: numb
 
 async function runLsof(pids: number[], extra: string[] = []): Promise<{ entries: LsofEntry[]; stderr: string; exitCode: number | null; raw: string }> {
   // -n no DNS, -P no port names, -F fields, -w suppress warnings. lsof exits 1 when some pids have nothing; fine.
-  const args = ["-nP", "-w", "-F", "pcufatsinTP", ...extra];
+  const args = ["-nP", "-w", "-a", "-F", "pcufatsinTP", ...extra];
   if (pids.length) args.push("-p", pids.join(","));
   const r = await runCapped("lsof", args, { timeoutMs: 20_000 });
   return { entries: parseLsofFields(r.stdout), stderr: r.stderr, exitCode: r.exitCode, raw: r.stdout };

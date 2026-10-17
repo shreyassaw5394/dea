@@ -148,7 +148,7 @@ async function containerInfo(ctx: AdapterContext): Promise<ToolResult> {
   return containerInfoFor(b, name, ctx);
 }
 
-async function containerInfoFor(b: ResultBuilder, name: string, ctx: AdapterContext): Promise<ToolResult> {
+async function containerInfoFor(b: ResultBuilder, name: string, _ctx: AdapterContext): Promise<ToolResult> {
   const [inspectR, statsR, topR, logsR] = await Promise.all([
     runCapped("docker", ["inspect", name], { timeoutMs: 10_000 }),
     runCapped("docker", ["stats", "--no-stream", "--format", "{{json .}}", name], { timeoutMs: 15_000 }),
