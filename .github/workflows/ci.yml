@@ -1,5 +1,8 @@
 name: CI
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
@@ -23,6 +26,7 @@ jobs:
       - run: npm run lint
       - run: npm run test
       - run: npm run build
+      - run: npm audit --omit=dev --audit-level=high
       - name: Smoke CLI
         run: node dist/cli.js readiness --json | head -c 4000
       - name: Pack dry run

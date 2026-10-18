@@ -3,10 +3,11 @@
  * themselves (typically with sudo, or on another machine) with the same
  * parsers and finding logic the live adapters use.
  */
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { basename } from "node:path";
 import type { ImportTool, Session, ToolResult } from "./contracts.js";
 import { ResultBuilder, humanBytes } from "./evidence.js";
+import { LIMITS } from "./safety.js";
 import { parseStrace, summarizeSyscallRecords, type SyscallRecord } from "./adapters/strace.js";
 import { parseFsUsage } from "./adapters/fs_usage.js";
 import { perfScriptToFolded } from "./adapters/perf.js";
@@ -49,6 +50,9 @@ export async function importArtifact(session: Session, args: { tool: ImportTool;
   const b = new ResultBuilder(toolName, session, session.target);
   let raw: string;
   try {
+    const st = await stat(args.path);
+    if (!st.isFile()) return b.fail(`${args.path} is not a regular file`).build();
+    if (st.size > LIMITS.MAX_RAW_BYTES) return b.fail(`${args.path} is ${Math.round(st.size / 1024 / 1024)} MB; the import cap is ${LIMITS.MAX_RAW_BYTES / 1024 / 1024} MB (trim it first)`).build();
     raw = await readFile(args.path, "utf8");
   } catch (err) {
     return b.fail(`cannot read ${args.path}: ${(err as Error).message}`).build();
