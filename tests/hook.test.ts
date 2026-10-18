@@ -70,3 +70,9 @@ describe("setup installs the Claude Code hook", () => {
     expect(existsSync(join(home2, ".dea", "hooks", "dea-hook.mjs"))).toBe(false);
   });
 });
+
+describe("plugin hook script stays in sync", () => {
+  it("hooks/dea-hook.mjs equals HOOK_SCRIPT", () => {
+    expect(readFileSync(new URL("../hooks/dea-hook.mjs", import.meta.url), "utf8")).toBe(HOOK_SCRIPT);
+  });
+});

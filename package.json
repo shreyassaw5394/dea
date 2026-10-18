@@ -51,7 +51,12 @@
     "DISCLAIMER.md",
     "LICENSE",
     "assets/dea-mark-512.png",
-    "assets/dea-logo.png"
+    "assets/dea-logo.png",
+    ".claude-plugin/plugin.json",
+    "hooks/hooks.json",
+    "hooks/dea-hook.mjs",
+    "gemini-extension.json",
+    "GEMINI.md"
   ],
   "scripts": {
     "build": "tsup",
