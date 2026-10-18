@@ -17,7 +17,7 @@ npx dea-agents setup
 
 ![DEA finding a Node.js leak: two memory snapshots, a diff, and the retainer named with evidence ids](docs/demo.gif)
 
-> Website: <https://shreyassaw5394.github.io/dea> · Questions: [Discussions](https://github.com/shreyassaw5394/dea/discussions) · Only ever download DEA from this repo, the `dea-agents` npm/PyPI packages, or that site.
+> Website: <https://shreyassaw5394.github.io/dea> · Community: [Discord](https://discord.gg/htPuQ5grg) · [Discussions](https://github.com/shreyassaw5394/dea/discussions) · Only ever download DEA from this repo, the `dea-agents` npm/PyPI packages, or that site.
 
 ## Where DEA sits
 
@@ -233,7 +233,8 @@ bpftrace canned scripts · Kubernetes pods via ephemeral debug containers · Win
 
 ## Community
 
-- **Discussions:** <https://github.com/shreyassaw5394/dea/discussions> — questions, show-and-tell, help reading a session. (Discord coming.)
+- **Discord:** <https://discord.gg/htPuQ5grg> — questions, show-and-tell, help reading a session.
+- **Discussions:** <https://github.com/shreyassaw5394/dea/discussions> — longer-form ideas and RFCs.
 - **Issues:** bugs and adapter requests via the templates. **Discussions** for ideas.
 - **Security:** private advisories only, see [SECURITY.md](SECURITY.md).
 
