@@ -17,7 +17,7 @@ npx dea-agents setup
 
 ![DEA finding a Node.js leak: two memory snapshots, a diff, and the retainer named with evidence ids](docs/demo.gif)
 
-> Website: <https://shreyassaw5394.github.io/dea> · Questions: [Discord](https://discord.gg/ubAuT4YQsT) · Only ever download DEA from this repo, the `dea-agents` npm/PyPI packages, or that site.
+> Website: <https://shreyassaw5394.github.io/dea> · Questions: [Discussions](https://github.com/shreyassaw5394/dea/discussions) · Only ever download DEA from this repo, the `dea-agents` npm/PyPI packages, or that site.
 
 DEA is the runtime sibling of [REA — Reverse Engineer Anything](https://github.com/morluto/rea). REA is static analysis of binaries and bundles; DEA is live observation of running software. Same shape: one MCP, many provider adapters, evidence-first results, `npx <pkg> setup` registers with every agent, MIT.
 
@@ -217,7 +217,7 @@ bpftrace canned scripts · Kubernetes pods via ephemeral debug containers · Win
 
 ## Community
 
-- **Discord:** <https://discord.gg/ubAuT4YQsT> — questions, show-and-tell, help reading a session.
+- **Discussions:** <https://github.com/shreyassaw5394/dea/discussions> — questions, show-and-tell, help reading a session. (Discord coming.)
 - **Issues:** bugs and adapter requests via the templates. **Discussions** for ideas.
 - **Security:** private advisories only, see [SECURITY.md](SECURITY.md).
 

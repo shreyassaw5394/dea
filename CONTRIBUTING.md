@@ -66,7 +66,7 @@ installed: adapters are tested against captured fixture output in
 
 Conventional-ish commit messages (`feat:`, `fix:`, `docs:`). Small PRs merge
 faster than big ones. If you are unsure an idea fits, open an issue or ask in
-[Discord](https://discord.gg/ubAuT4YQsT) first.
+[Discussions](https://github.com/shreyassaw5394/dea/discussions) first.
 
 ## Good first contributions
 
