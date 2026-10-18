@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1 — 2026-10-18
+
+- Permission-denied attaches (strace, py-spy, gdb, lldb, perf) now populate `suggested_next` with the `dea import` follow-up and the unprivileged tools that still work, instead of returning empty. (Thanks @Kantorcodes for the question that surfaced it.)
+
 ## 0.3.0 — 2026-10-18
 
 - **`dea import <tool> <file>`** / MCP `import_artifact`: analyze output you captured yourself (strace, fs_usage, perf script, folded stacks, py-spy dump, sample, gdb, lldb, lsof -F, tcpdump text) with the same parsers and findings as a live run. Closes the "needs root" gap without DEA ever escalating.
