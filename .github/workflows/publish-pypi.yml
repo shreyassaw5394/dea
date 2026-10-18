@@ -1,5 +1,8 @@
 name: Publish Python package to PyPI
 
+permissions:
+  contents: read
+
 on:
   push:
     tags: ["py-v*"]
