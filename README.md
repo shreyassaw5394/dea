@@ -58,7 +58,9 @@ npx dea-agents setup
 
 Detects Claude Code, Codex, Cursor and Gemini CLI, shows the exact config entry it will add, backs up the file, writes it, and installs the `debug-anything` skill where the agent supports skills. Then restart your agent.
 
-**One-click installs:** [![Install in Cursor](https://img.shields.io/badge/Cursor-install-000?logo=cursor)](cursor://anysphere.cursor-deeplink/mcp/install?name=dea&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRlYS1hZ2VudHNAbGF0ZXN0Iiwic2VydmUiXX0=) [![Install in VS Code](https://img.shields.io/badge/VS_Code-install-007ACC?logo=visualstudiocode)](vscode:mcp/install?%7B%22name%22%3A%22dea%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22dea-agents%40latest%22%2C%22serve%22%5D%7D) · Claude Code plugin: `/plugin marketplace add shreyassaw5394/dea` then `/plugin install dea@dea` · Gemini CLI: `gemini extensions install https://github.com/shreyassaw5394/dea` · Skill: `npx skills add shreyassaw5394/dea`
+**One-click installs:** [![Install MCP Server in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=dea&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRlYS1hZ2VudHNAbGF0ZXN0Iiwic2VydmUiXX0=) [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_DEA-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=dea&config=%7B%22name%22%3A%22dea%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22dea-agents%40latest%22%2C%22serve%22%5D%7D) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_DEA-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=dea&config=%7B%22name%22%3A%22dea%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22dea-agents%40latest%22%2C%22serve%22%5D%7D)
+
+Claude Code plugin: `/plugin marketplace add shreyassaw5394/dea` then `/plugin install dea@dea` · Gemini CLI: `gemini extensions install https://github.com/shreyassaw5394/dea` · Skill: `npx skills add shreyassaw5394/dea`
 
 
 ### 2. Ask your agent
