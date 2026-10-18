@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.shreyassaw5394/dea",
-  "description": "Debug Anything: observe and diagnose any running process, container or pod with strace, py-spy, perf, lsof, tcpdump, gdb/lldb and heap snapshots. Evidence, not guesses.",
+  "description": "Observe any running process from your agent. strace, py-spy, perf, lsof, tcpdump as evidence.",
   "status": "active",
   "repository": {
     "url": "https://github.com/shreyassaw5394/dea",
