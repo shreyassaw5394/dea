@@ -23,7 +23,7 @@ import shutil
 import subprocess
 from typing import Any, Dict, List, Optional, Sequence
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __all__ = ["DEA", "DEAError", "TOOLS", "ToolResult"]
 
 ToolResult = Dict[str, Any]
@@ -43,6 +43,7 @@ TOOLS: Dict[str, str] = {
     "diff_runs": "Diff two prior runs (e.g. snapshot_memory#1 vs #2): what grew, appeared, disappeared.",
     "container_info": "docker inspect/stats/top/logs, cgroup limits, OOM kills, restarts.",
     "report": "Markdown report of the whole session.",
+    "import_artifact": "Analyze raw tool output you captured yourself (strace, fs_usage, perf script, py-spy dump, sample, gdb, lldb, lsof -F, tcpdump text) into DEA evidence and findings.",
 }
 
 
@@ -143,6 +144,10 @@ class DEA:
 
     def report(self, session_id: str, out: Optional[str] = None) -> ToolResult:
         return self.call("report", session_id=session_id, out=out)
+
+    def import_artifact(self, session_id: str, tool: str, path: str, duration_s: Optional[int] = None) -> ToolResult:
+        """Analyze output you captured yourself (e.g. `sudo strace …` or `sudo fs_usage …`)."""
+        return self.call("import_artifact", session_id=session_id, tool=tool, path=path, duration_s=duration_s)
 
     # -- helpers ------------------------------------------------------------
 

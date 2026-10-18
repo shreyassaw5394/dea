@@ -1,0 +1,10 @@
+22:47:41.812345  open              F=23       (R_____)  /private/tmp/leaky-node-payload.bin        0.000031   node.84294
+22:47:41.812380  fstat64           F=23                                                        0.000004   node.84294
+22:47:41.812400  read              F=23  B=0x40000                                              0.000500 W node.84294
+22:47:41.812950  close             F=23                                                        0.000006   node.84294
+22:47:41.813000  open              [  2] (R_____)  /app/missing.json                          0.000020   node.84294
+22:47:41.813100  recvfrom          F=21  B=0x400                                               0.000030   node.84294
+22:47:41.813200  sendto            F=21  B=0x1f0                                               0.000018   node.84294
+22:47:41.813300  connect           [ 61] F=24  10.0.5.9:5432                                   0.000210   node.84294
+22:47:42.613400  kevent            F=15                                                        0.800100 W node.84294
+22:47:42.613500  RdData[A]         /private/tmp/leaky-node-payload.bin                         0.000400 W node.84294

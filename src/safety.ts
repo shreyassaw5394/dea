@@ -261,7 +261,7 @@ export function isRoot(): boolean {
 
 /** Message for a tool that needs root we do not have. Never runs sudo itself. */
 export function rootRequiredLimitation(tool: string, command: string): string {
-  return `${tool} needs elevated privileges and DEA never escalates on its own. Run it yourself and point DEA at the output, or re-run with: sudo ${command}`;
+  return `${tool} needs elevated privileges and DEA never escalates on its own. Run it yourself (sudo ${command}), save the output to a file, then: dea import <tool> <file> --session <id>`;
 }
 
 /** Detect "permission denied"-class failures from tool stderr. */

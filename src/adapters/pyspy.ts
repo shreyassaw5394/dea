@@ -205,21 +205,8 @@ function needsSudoNote(b: ResultBuilder, stderr: string, cmd: string): boolean {
   return false;
 }
 
-async function dumpStacks(ctx: AdapterContext, withLocals: boolean, tool = "dump_stacks"): Promise<ToolResult> {
-  const { session, target } = ctx;
-  const b = new ResultBuilder(tool, session, target);
-  if (!target.pid) return b.fail("no pid").build();
-  const args = ["dump", "--pid", String(target.pid), "--nonblocking"];
-  if (withLocals) args.push("--locals");
-  const cmd = `py-spy ${args.join(" ")}`;
-  const r = await runCapped("py-spy", args, { timeoutMs: 30_000 });
-  const raw = r.stdout + (r.stderr ? `\n--- stderr ---\n${r.stderr}` : "");
-  const art = await b.writeArtifact("pyspy-dump.txt", raw, "raw_text", cmd);
-  if (r.exitCode !== 0) {
-    if (!needsSudoNote(b, r.stderr, cmd)) b.limitation(`py-spy exited ${r.exitCode}: ${r.stderr.trim().slice(0, 300)}`);
-    return b.fail("py-spy dump failed").build();
-  }
-  const dump = parsePySpyDump(r.stdout);
+/** Shared by dump_stacks, snapshot_memory and `dea import`: parsed dump → evidence + findings. */
+export async function summarizePySpyDump(b: ResultBuilder, dump: PyDump, art: string, pid?: number): Promise<void> {
   const active = dump.threads.filter((t) => t.state === "active");
   const summaryEv = b.evidenceOf(
     "stack_summary",
@@ -238,7 +225,7 @@ async function dumpStacks(ctx: AdapterContext, withLocals: boolean, tool = "dump
       { artifact: art },
     );
   }
-  const cwd = target.pid ? await targetCwd(target.pid) : undefined;
+  const cwd = pid ? await targetCwd(pid) : undefined;
   const waits = findLockWaits(dump, undefined, cwd);
   const locks = waits.filter((w) => w.kind === "lock");
   const joins = waits.filter((w) => w.kind === "join");
@@ -278,6 +265,23 @@ async function dumpStacks(ctx: AdapterContext, withLocals: boolean, tool = "dump
     const f = t.frames[0];
     if (f) b.finding("info", `active thread ${t.name || t.id} is executing ${f.func} (${f.file.split("/").pop()}:${f.line})`, [summaryEv]);
   }
+}
+
+async function dumpStacks(ctx: AdapterContext, withLocals: boolean, tool = "dump_stacks"): Promise<ToolResult> {
+  const { session, target } = ctx;
+  const b = new ResultBuilder(tool, session, target);
+  if (!target.pid) return b.fail("no pid").build();
+  const args = ["dump", "--pid", String(target.pid), "--nonblocking"];
+  if (withLocals) args.push("--locals");
+  const cmd = `py-spy ${args.join(" ")}`;
+  const r = await runCapped("py-spy", args, { timeoutMs: 30_000 });
+  const raw = r.stdout + (r.stderr ? `\n--- stderr ---\n${r.stderr}` : "");
+  const art = await b.writeArtifact("pyspy-dump.txt", raw, "raw_text", cmd);
+  if (r.exitCode !== 0) {
+    if (!needsSudoNote(b, r.stderr, cmd)) b.limitation(`py-spy exited ${r.exitCode}: ${r.stderr.trim().slice(0, 300)}`);
+    return b.fail("py-spy dump failed").build();
+  }
+  await summarizePySpyDump(b, parsePySpyDump(r.stdout), art, target.pid);
   b.limitation("instant snapshot (nonblocking); take two dumps to distinguish a hang from a slow step");
   b.next("inspect_sockets", "trace_syscalls", "profile_cpu");
   return b.build();

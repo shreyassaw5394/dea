@@ -140,6 +140,8 @@ agent ──MCP──▶ DEA server ──▶ dispatcher ──▶ adapter (stra
 | **Node.js: JS stack** (`dump_stacks`) | main-thread JS call frames, idle vs blocked event loop | Node's inspector — Linux, macOS |
 | **Python: CPU** (`profile_cpu`) | top frames by self/total time, hottest stacks, `flamegraph.svg` | `py-spy` — Linux (`ptrace_scope=0` or root), macOS (sudo) |
 | **Python: threads** (`dump_stacks`) | every thread's stack, blocked threads classified as lock / join / sleep / I/O using the source line (`with lock_b:`), deadlock detection | `py-spy` — Linux, macOS (sudo) |
+| **macOS: file + network syscalls** (`trace_syscalls`) | per-call timing, blocked calls, errno (ENOENT, ECONNREFUSED…) via `fs_usage`; needs root, so DEA prints the sudo command and you `dea import fs_usage <file>` | `fs_usage` — macOS, preinstalled |
+| **Anything you captured yourself** (`dea import`) | strace, fs_usage, perf script, py-spy, sample, gdb/lldb, lsof, tcpdump text → same evidence and findings as a live run. The answer to "needs root" | — |
 | **Linux: syscalls** (`trace_syscalls`) | top syscalls by total time and count, slowest calls with paths/addresses, error counts (ENOENT, EAGAIN, ECONNREFUSED…), share of time in blocking waits | `strace` — Linux; `ptrace_scope=0` or root |
 | **Native / Node / Go / Java: CPU** (`profile_cpu`) | perf sampling → folded stacks → `flamegraph.svg` (no Perl), idle vs work split | `perf` — Linux (`perf_event_paranoid ≤ 1` or root); Node needs `--perf-basic-prof` for JIT names |
 | **Native / Node: CPU on macOS** (`profile_cpu`) | `sample` call graph → folded stacks → flamegraph | `sample` — macOS, preinstalled |
@@ -219,7 +221,9 @@ Details: [docs/safety.md](docs/safety.md) · [DISCLAIMER.md](DISCLAIMER.md) · [
 
 **Do I need to install strace / perf / py-spy?** Only for the tools you want. `readiness` lists what is usable and prints install hints. `lsof`, `ps` and Node's inspector work out of the box on Linux and macOS.
 
-**Does it need root?** Not for your own processes on macOS (`lsof`, `sample`, `lldb`, inspector) or on Linux with `ptrace_scope=0`. `py-spy` on macOS and `tcpdump` everywhere do; DEA tells you and never escalates.
+**Does it need root?** Not for your own processes on macOS (`lsof`, `sample`, `lldb`, inspector) or on Linux with `ptrace_scope=0`. `py-spy` and `fs_usage` on macOS and `tcpdump` everywhere do; DEA prints the exact `sudo` command, you run it, and `dea import <tool> <file>` analyzes the output with the same parsers.
+
+**What can't it see on macOS?** There is no strace or perf. `fs_usage` (via import) covers file and network calls; `sample`, `lldb`, `lsof` and the Node inspector cover the rest. For the full syscall and kernel-time picture, run the target in a Linux container (`docker/linux-lab`).
 
 **Does DEA upload anything?** No. No network calls, no telemetry, no update checks except the explicit `dea update`.
 

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dea-agents"
-version = "0.1.0"
+version = "0.1.1"
 description = "Debug Anything from Python agents: observe running processes (strace, py-spy, perf, lsof, tcpdump, gdb/lldb, heap snapshots) and get evidence-backed findings. Wraps the DEA CLI/MCP server; tool adapters for LangChain, LlamaIndex and CrewAI."
 readme = "README.md"
 license = "MIT"
