@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-mark-512.png" alt="" width="56" align="right">
+
 # Showcases
 
 Three deliberately broken apps in [`examples/`](../examples) and the exact DEA

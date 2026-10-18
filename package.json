@@ -49,7 +49,9 @@
     "server.json",
     "README.md",
     "DISCLAIMER.md",
-    "LICENSE"
+    "LICENSE",
+    "assets/dea-mark-512.png",
+    "assets/dea-logo.png"
   ],
   "scripts": {
     "build": "tsup",

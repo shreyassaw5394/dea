@@ -1,0 +1,13 @@
+{
+  "name": "DEA — Debug Anything",
+  "short_name": "DEA",
+  "description": "Observe any running process. No breakpoints, no restarts, no instrumentation. Evidence, not guesses.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "icons": [
+    { "src": "logo-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "logo.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
