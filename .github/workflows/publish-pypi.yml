@@ -14,7 +14,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: "3.12" }
       - run: cd python && pip install -e . build pytest && python -m pytest -q tests && python -m build
       - uses: pypa/gh-action-pypi-publish@release/v1

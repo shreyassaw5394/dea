@@ -31,7 +31,7 @@ jobs:
         run: node dist/cli.js readiness --json | head -c 4000
       - name: Pack dry run
         run: npm pack --dry-run
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: "3.12" }
       - name: Python SDK tests
         run: cd python && pip install -e . pytest && python -m pytest -q tests
