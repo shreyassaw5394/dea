@@ -3,12 +3,13 @@
 ## 0.2.0 — 2026-10-18
 
 - **Proactive use.** Skill gains a "use it without being asked" table; MCP server instructions tell agents to measure on hang/timeout/EADDRINUSE/EMFILE/OOM/segfault signals; `dea setup` installs a Claude Code hook (`~/.dea/hooks/dea-hook.mjs`, PostToolUse on Bash + UserPromptSubmit) that nudges the model when such a signal appears. `--no-hooks` to skip. `dea hook` subcommand for other integrations.
-- Docs: `docs/proactive.md`, `docs/real-world.md`.
+- `dea init`: project-level setup (.mcp.json, .cursor/mcp.json, AGENTS.md/CLAUDE.md rule) so every teammate's agent gets DEA.
+- Docs: `docs/proactive.md`, `docs/real-world.md`, `docs/workflows.md`.
 
 ## 0.1.1 — 2026-10-18
 
-- `suggested_next` now includes a REA handoff ("decompile <symbol> in <dso>") for hot native frames and blocked native threads.
-- Docs: `docs/examples.md` (11 situations), `docs/with-rea.md` (static + runtime workflows); skill gains REA/step-debugger handoff rules; community links point at GitHub Discussions.
+- `suggested_next` now includes a static-analysis handoff ("decompile <symbol> in <dso>") for hot native frames and blocked native threads.
+- Docs: `docs/examples.md` (10 situations); skill gains step-debugger / static-analysis handoff rules; community links point at GitHub Discussions.
 - Python package 0.1.0 on PyPI; CI publishes npm on `v*` tags and PyPI on `py-v*` tags.
 
 ## 0.1.0 — 2026-10-17

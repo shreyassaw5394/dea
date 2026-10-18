@@ -9,7 +9,7 @@ One MCP server and CLI that gives any coding agent — Claude Code, Codex, Curso
 [![MCP](https://img.shields.io/badge/MCP-server-8A2BE2)](server.json)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522-339933)](package.json)
 
-[Quick start](#quick-start) · [How DEA works](#how-dea-works) · [What you can observe](#what-you-can-observe) · [Showcases](#showcases) · [Python / LangChain / CrewAI](#python-langchain-llamaindex-crewai) · [Safety](#safety) · [FAQ](#faq) · [Roadmap](#roadmap) · [Community](#community)
+[Quick start](#quick-start) · [How DEA works](#how-dea-works) · [What you can observe](#what-you-can-observe) · [Showcases](#showcases) · [Workflows](docs/workflows.md) · [Python / LangChain / CrewAI](#python-langchain-llamaindex-crewai) · [Safety](#safety) · [FAQ](#faq) · [Roadmap](#roadmap) · [Community](#community)
 
 ```bash
 npx dea-agents setup
@@ -19,8 +19,6 @@ npx dea-agents setup
 
 > Website: <https://shreyassaw5394.github.io/dea> · Questions: [Discussions](https://github.com/shreyassaw5394/dea/discussions) · Only ever download DEA from this repo, the `dea-agents` npm/PyPI packages, or that site.
 
-DEA is the runtime sibling of [REA — Reverse Engineer Anything](https://github.com/morluto/rea). REA is static analysis of binaries and bundles; DEA is live observation of running software. Same shape: one MCP, many provider adapters, evidence-first results, `npx <pkg> setup` registers with every agent, MIT.
-
 ## Where DEA sits
 
 Step-through debuggers over MCP already exist and are good: [debugmcp/mcp-debugger](https://github.com/debugmcp/mcp-debugger) (7 languages), [microsoft/DebugMCP](https://github.com/microsoft/DebugMCP) (VS Code), [jdwp-mcp](https://github.com/search?q=jdwp-mcp) (Java), [jkolo/debug-mcp](https://github.com/jkolo/debug-mcp) (.NET), [pprof-mcp-agent](https://github.com/search?q=pprof-mcp-agent) (Go). They need a debug adapter, a debug port, or an instrumented/restarted target, and they assume you already know where to put the breakpoint.
@@ -29,7 +27,7 @@ DEA is the layer before that: black-box observation of any pid, container or pod
 
 > **mcp-debugger is for when you know where to put the breakpoint. DEA is for when you don't.**
 
-They are complementary. When DEA localizes a problem to a function or thread, its `suggested_next` includes the handoff: *"attach a step debugger (e.g. mcp-debugger) at `file:function`"* — and, for native symbols, *"REA: decompile `parse_frame` in `libfoo.so`"*. Using both: [docs/with-rea.md](docs/with-rea.md). More situations: [docs/examples.md](docs/examples.md).
+They are complementary. When DEA localizes a problem to a function or thread, its `suggested_next` includes the handoff: *"attach a step debugger (e.g. mcp-debugger) at `file:function`"* — and, for native symbols, *"decompile `parse_frame` in `libfoo.so` with your static-analysis tool"*. More situations: [docs/examples.md](docs/examples.md).
 
 ## Why this exists
 
@@ -91,7 +89,15 @@ dea port 8080                      # who holds a port — no session needed
 
 Every command takes `--json` and prints the exact `ToolResult`. See [docs/cli.md](docs/cli.md).
 
-### 5. Install as an agent skill
+### 5. Set up a repo for the whole team
+
+```bash
+cd my-project && dea init     # .mcp.json + .cursor/mcp.json + a rule in AGENTS.md/CLAUDE.md — commit them
+```
+
+Every teammate's Claude Code and Cursor now gets DEA from the repo, with the rule telling agents when to use it. Adoption flow day by day: [docs/workflows.md](docs/workflows.md).
+
+### 6. Install as an agent skill
 
 The `debug-anything` skill (investigation orders, evidence rules, consent
 etiquette) is installed by `setup` for Claude Code, Codex and Gemini CLI, and
@@ -101,7 +107,7 @@ is also available through [skills.sh](https://skills.sh):
 npx skills add shreyassaw5394/dea
 ```
 
-### 6. Update
+### 7. Update
 
 ```bash
 dea update                        # or: npx dea-agents@latest setup
@@ -147,9 +153,9 @@ Honest status: everything above was run live on Linux (Debian 12 container, root
 
 ## Examples
 
-**Real-world situations** — CLOSE_WAIT pileups and EMFILE, disk full but `du` disagrees, Postgres pool exhaustion, a Celery deadlock, a blocked Node event loop, OOMKilled pods, DNS on every request, EADDRINUSE after a crash, a native hot spot handed to REA — each with the session, the evidence and the fix: [docs/real-world.md](docs/real-world.md).
+**Real-world situations** — CLOSE_WAIT pileups and EMFILE, disk full but `du` disagrees, Postgres pool exhaustion, a Celery deadlock, a blocked Node event loop, OOMKilled pods, DNS on every request, EADDRINUSE after a crash, a native hot spot you cannot read — each with the session, the evidence and the fix: [docs/real-world.md](docs/real-world.md).
 
-Eleven copy-paste situations — slow API, leak, hang, port in use, container crash, spawn-under-observation, prove-the-fix, CI regression gate, consented packet capture, Python agents, and REA + DEA — are in [docs/examples.md](docs/examples.md).
+Ten copy-paste situations — slow API, leak, hang, port in use, container crash, spawn-under-observation, prove-the-fix, CI regression gate, consented packet capture, Python agents — are in [docs/examples.md](docs/examples.md).
 
 ## Showcases
 

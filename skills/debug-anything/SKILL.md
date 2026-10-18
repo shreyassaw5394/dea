@@ -99,10 +99,4 @@ ids to prove the fix. Put the diff's evidence ids in your summary.
 - **Step debugger.** When DEA localizes a problem to a function or thread,
   suggest attaching a step debugger (e.g. mcp-debugger) at `<file:function>`.
   DEA tells you where to look; a step debugger lets you look inside.
-- **REA (static analysis).** If the `rea` MCP server is also available and DEA
-  names a native symbol, shared library, binary or bundle (hot frame in
-  `libfoo.so`, a thread parked in `pthread_mutex_lock` under `worker_b`, an
-  unexplained remote host), use REA to decompile/inspect that symbol or find
-  where the code builds that connection. Cite REA and DEA evidence separately.
-  Conversely, when the user is reverse engineering with REA and asks what the
-  software *does at runtime*, attach with DEA and observe instead of inferring.
+- **Static analysis.** When DEA names a native symbol, shared library or binary you cannot read (a hot frame in `libfoo.so`, a thread parked in `pthread_mutex_lock` under `worker_b`), hand that symbol to a decompiler / static-analysis tool to see what it does; cite DEA's evidence for the runtime facts and the static tool's for the code facts.

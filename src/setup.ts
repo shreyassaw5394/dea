@@ -225,3 +225,73 @@ export async function fileExists(p: string): Promise<boolean> {
     return false;
   }
 }
+
+
+// ---------------------------------------------------------------------------
+// `dea init` — project-level setup so every teammate's agent gets DEA
+// ---------------------------------------------------------------------------
+
+export const AGENTS_MD_BLOCK = `## Runtime debugging with DEA
+
+DEA (Debug Anything) is registered as an MCP server for this repo (\`.mcp.json\`, \`.cursor/mcp.json\`).
+When something *running* misbehaves — a command hangs, a test times out, you see EADDRINUSE / ECONNREFUSED /
+EMFILE / exit 137 / OOM / a segfault, a server you started does not respond, or the user says slow, hang,
+leak or crash — attach and measure before theorizing: \`readiness\` → \`attach\` → \`dump_stacks\` /
+\`profile_cpu\` / \`inspect_sockets\` / \`snapshot_memory\` / \`container_info\` → \`detach\`. Cite evidence ids
+(e.g. \`profile_cpu#2/e3\`). Read-only tools need no permission; \`capture_traffic\` needs the user's consent.
+After a performance fix, re-measure and \`diff_runs\` to prove it; put the evidence ids in the PR.
+Docs: https://github.com/shreyassaw5394/dea
+`;
+
+export interface InitOptions {
+  dir?: string;
+  dryRun?: boolean;
+  log?: (s: string) => void;
+}
+
+/** Append the DEA block to an AGENTS.md/CLAUDE.md-style file if not present. Pure. */
+export function patchAgentsMd(existing: string | null): { next: string; changed: boolean } {
+  const text = existing ?? "";
+  if (text.includes("## Runtime debugging with DEA")) return { next: text, changed: false };
+  const sep = text.length === 0 ? "" : text.endsWith("\n\n") ? "" : text.endsWith("\n") ? "\n" : "\n\n";
+  return { next: text + sep + AGENTS_MD_BLOCK, changed: true };
+}
+
+export async function init(opts: InitOptions = {}): Promise<{ written: string[]; skipped: string[] }> {
+  const dir = opts.dir ?? process.cwd();
+  const log = opts.log ?? ((s: string) => process.stdout.write(s + "\n"));
+  const written: string[] = [];
+  const skipped: string[] = [];
+  const plans: Array<{ path: string; next: string; changed: boolean; existing: string | null; what: string }> = [];
+  for (const rel of [".mcp.json", join(".cursor", "mcp.json")]) {
+    const path = join(dir, rel);
+    const existing = existsSync(path) ? await readFile(path, "utf8") : null;
+    const { next, changed } = patchJsonConfig(existing);
+    plans.push({ path, next, changed, existing, what: "MCP server entry" });
+  }
+  // One agent-instructions file: prefer existing AGENTS.md, then CLAUDE.md, else create AGENTS.md.
+  const candidates = ["AGENTS.md", "CLAUDE.md"].map((f) => join(dir, f));
+  const target = candidates.find((p) => existsSync(p)) ?? candidates[0]!;
+  const existingMd = existsSync(target) ? await readFile(target, "utf8") : null;
+  const md = patchAgentsMd(existingMd);
+  plans.push({ path: target, next: md.next, changed: md.changed, existing: existingMd, what: "runtime-debugging rule for agents" });
+
+  log(pc.bold(`DEA init in ${dir} will:`));
+  for (const p of plans) log(`${pc.cyan("•")} ${p.path} ${p.changed ? pc.dim(`(+ ${p.what})`) : pc.dim("(already set up)")}`);
+  if (opts.dryRun) {
+    log(pc.dim("--dry-run: nothing written."));
+    return { written, skipped: plans.map((p) => p.path) };
+  }
+  for (const p of plans) {
+    if (!p.changed) {
+      skipped.push(p.path);
+      continue;
+    }
+    await mkdir(dirname(p.path), { recursive: true });
+    if (p.existing !== null) await copyFile(p.path, `${p.path}.bak-dea`);
+    await writeFile(p.path, p.next);
+    written.push(p.path);
+  }
+  log(`${pc.green("Done.")} Commit these files so every teammate's agent gets DEA. Each person still runs ${pc.bold("npx dea-agents setup")} once for the skill and hook.`);
+  return { written, skipped };
+}

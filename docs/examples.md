@@ -139,9 +139,3 @@ dea.detach(s)
 ```
 
 LangChain / LlamaIndex / CrewAI adapters: [python/README.md](../python/README.md).
-
-## 11. With REA: static + runtime
-
-You are reverse engineering an app with [REA](https://github.com/morluto/rea)
-and want to know what it does *when it runs*: which hosts it contacts, which
-function is hot, which thread hangs. See [with-rea.md](with-rea.md).

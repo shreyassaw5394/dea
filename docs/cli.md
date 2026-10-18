@@ -6,6 +6,7 @@ compact table with colored severities.
 
 ```
 dea setup [--yes] [--dry-run] [--agents claude,codex,cursor,gemini]
+dea init [--dir p] [--dry-run]             # project-level: .mcp.json, .cursor/mcp.json, AGENTS.md/CLAUDE.md rule
 dea readiness                              # alias: doctor
 dea ps [--filter name] [--limit n]         # alias: list-processes
 dea attach <pid|container|ns/pod>          # prints a session id
@@ -33,7 +34,7 @@ Exit code is 1 when the result has `ok: false`.
 
 ## More examples
 
-See [examples.md](examples.md) for eleven situations and [with-rea.md](with-rea.md) for static + runtime workflows.
+See [examples.md](examples.md) for ten situations, [real-world.md](real-world.md) for incident patterns and [workflows.md](workflows.md) for team adoption.
 
 ## Example: leaky-node showcase
 
