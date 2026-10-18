@@ -13,8 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install build pytest
-      - run: cd python && pytest -q tests && python -m build
+      - run: cd python && pip install -e . build pytest && python -m pytest -q tests && python -m build
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: python/dist
