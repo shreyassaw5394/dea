@@ -10,6 +10,10 @@ One MCP server and CLI that gives any coding agent — Claude Code, Codex, Curso
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-server-8A2BE2)](server.json)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522-339933)](package.json)
+[![npm downloads](https://img.shields.io/npm/dm/dea-agents.svg?label=npm%20downloads)](https://www.npmjs.com/package/dea-agents)
+[![PyPI downloads](https://img.shields.io/pypi/dm/dea-agents.svg?label=pypi%20downloads)](https://pypi.org/project/dea-agents/)
+[![GitHub stars](https://img.shields.io/github/stars/shreyassaw5394/dea.svg?style=flat&label=stars)](https://github.com/shreyassaw5394/dea/stargazers)
+[![Discord](https://img.shields.io/badge/discord-join-5865F2)](https://discord.gg/htPuQ5grg)
 
 [Quick start](#quick-start) · [How DEA works](#how-dea-works) · [What you can observe](#what-you-can-observe) · [Showcases](#showcases) · [Workflows](docs/workflows.md) · [Python / LangChain / CrewAI](#python-langchain-llamaindex-crewai) · [Safety](#safety) · [FAQ](#faq) · [Roadmap](#roadmap) · [Community](#community)
 
@@ -248,6 +252,14 @@ bpftrace canned scripts · Kubernetes pods via ephemeral debug containers · Win
 
 `main` is protected: every change is a pull request reviewed by a code owner.
 An adapter is ~80 lines: declare `platforms`/`requires`/`tools`, build the command, run it through `runCapped`, parse with a pure function, emit evidence and findings through `ResultBuilder` (which refuses findings without evidence). Capture the real tool output once into `tests/fixtures/` and test the parser on it. Recipe in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Contributors
+
+Everyone who has landed a pull request. Add an adapter, a fixture or a doc and your face shows up here.
+
+<a href="https://github.com/shreyassaw5394/dea/graphs/contributors"><img src="https://contrib.rocks/image?repo=shreyassaw5394/dea" alt="contributors"></a>
+
+Numbers across npm, PyPI, GitHub and the MCP Registry: `bash scripts/stats.sh`.
 
 ## License and disclaimer
 
