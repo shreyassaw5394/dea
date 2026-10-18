@@ -7,7 +7,10 @@
 <meta name="description" content="Observe any running process from your coding agent. strace, py-spy, perf, lsof, tcpdump, gdb/lldb and heap snapshots turned into evidence. MCP server + CLI. MIT.">
 <meta property="og:title" content="DEA — Debug Anything">
 <meta property="og:description" content="Observe any running process. No breakpoints, no restarts, no instrumentation. Evidence, not guesses.">
-<meta property="og:image" content="https://shreyassaw5394.github.io/dea/docs/demo.gif">
+<meta property="og:image" content="https://shreyassaw5394.github.io/dea/social.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="apple-touch-icon" href="logo-512.png">
 <style>
 :root{--bg:#0b0d12;--fg:#e8e8ec;--muted:#9aa0ad;--acc:#7cc4ff;--acc2:#ffb86b;--card:#121521;--line:#232738;color-scheme:dark}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -35,6 +38,7 @@ footer{margin:64px 0 40px;color:var(--muted);font-size:14px;text-align:center}
 <body>
 <div class="wrap">
 <header>
+  <img src="logo.svg" alt="" width="96" height="96" style="border-radius:22px;margin-bottom:10px">
   <h1>DEA — Debug Anything</h1>
   <p class="tag">Observe any running process. No breakpoints, no restarts, no instrumentation.</p>
   <div class="cmd"><span id="c">npx dea-agents setup</span><button onclick="navigator.clipboard.writeText(document.getElementById('c').textContent);this.textContent='copied'">copy</button></div>
