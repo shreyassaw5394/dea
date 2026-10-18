@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 — 2026-10-18
+
+- `suggested_next` now includes a REA handoff ("decompile <symbol> in <dso>") for hot native frames and blocked native threads.
+- Docs: `docs/examples.md` (11 situations), `docs/with-rea.md` (static + runtime workflows); skill gains REA/step-debugger handoff rules; community links point at GitHub Discussions.
+- Python package 0.1.0 on PyPI; CI publishes npm on `v*` tags and PyPI on `py-v*` tags.
+
 ## 0.1.0 — 2026-10-17
 
 First release: "Observe any running process. No breakpoints, no restarts, no instrumentation."

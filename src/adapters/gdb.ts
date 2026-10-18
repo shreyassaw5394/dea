@@ -110,6 +110,8 @@ export async function summarizeNativeStacks(b: ResultBuilder, threads: NativeThr
   }
   b.limitation("instant snapshot; the target was paused for the duration of the dump (typically <1 s)");
   b.next("inspect_sockets", "trace_syscalls", "profile_cpu");
+  const interesting = lock[0]?.at ?? io.find((l) => /#1\b/.test(l.thread))?.at;
+  if (interesting && interesting !== "?") b.next(`REA: decompile ${interesting.replace(/\s*\(.*$/, "")} statically to see what it locks/reads (npx rea-agents) — https://github.com/morluto/rea`);
   return b.build();
 }
 

@@ -29,7 +29,7 @@ DEA is the layer before that: black-box observation of any pid, container or pod
 
 > **mcp-debugger is for when you know where to put the breakpoint. DEA is for when you don't.**
 
-They are complementary. When DEA localizes a problem to a function or thread, its `suggested_next` includes the handoff: *"attach a step debugger (e.g. mcp-debugger) at `file:function`"*.
+They are complementary. When DEA localizes a problem to a function or thread, its `suggested_next` includes the handoff: *"attach a step debugger (e.g. mcp-debugger) at `file:function`"* — and, for native symbols, *"REA: decompile `parse_frame` in `libfoo.so`"*. Using both: [docs/with-rea.md](docs/with-rea.md). More situations: [docs/examples.md](docs/examples.md).
 
 ## Why this exists
 
@@ -144,6 +144,10 @@ agent ──MCP──▶ DEA server ──▶ dispatcher ──▶ adapter (stra
 | Windows | not yet — `readiness` says so | planned: ETW, procdump |
 
 Honest status: everything above was run live on Linux (Debian 12 container, root) and macOS 15 (own processes, no sudo) against the example apps. `bpftrace` scripts are staged but not wired to a tool yet. Install commands per OS: [docs/providers.md](docs/providers.md).
+
+## Examples
+
+Eleven copy-paste situations — slow API, leak, hang, port in use, container crash, spawn-under-observation, prove-the-fix, CI regression gate, consented packet capture, Python agents, and REA + DEA — are in [docs/examples.md](docs/examples.md).
 
 ## Showcases
 

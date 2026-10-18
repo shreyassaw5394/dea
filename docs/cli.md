@@ -31,6 +31,10 @@ dea update
 
 Exit code is 1 when the result has `ok: false`.
 
+## More examples
+
+See [examples.md](examples.md) for eleven situations and [with-rea.md](with-rea.md) for static + runtime workflows.
+
 ## Example: leaky-node showcase
 
 ```bash
