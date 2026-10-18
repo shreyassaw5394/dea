@@ -1,6 +1,6 @@
 ---
 name: debug-anything
-description: Use when the user reports a bug that involves a running system: slow, hanging, leaking, crashing, port in use, weird network behavior. Observe before you theorize.
+description: Use when the user reports a bug that involves a running system (slow, hanging, leaking, crashing, port in use, weird network behavior) AND proactively, without being asked, whenever a command you ran hangs or times out, output shows EADDRINUSE / ECONNREFUSED / EMFILE / exit 137 / OOM / segfault, a server you started does not respond, or you just changed performance-sensitive code. Observe before you theorize.
 ---
 
 # Debug Anything (DEA)
@@ -9,6 +9,31 @@ DEA gives you eyes on running software: syscalls, CPU profiles, thread stacks,
 sockets, file descriptors, packets, heap retainers, container state. Every
 tool returns the same `ToolResult` with `findings` that cite `evidence` ids.
 You only get to claim what the evidence supports.
+
+## Use it without being asked
+
+You are equipped with DEA. Reach for it on your own when you see any of these;
+do not wait for the user to say "debug this" and do not ask permission for
+read-only observation (only `capture_traffic` needs consent):
+
+| Signal | First move |
+|---|---|
+| A command you ran hangs, or a test times out and the process is still alive | `attach` it, `dump_stacks` |
+| `EADDRINUSE` / "port already in use" | `dea port <n>` or `inspect_sockets`; report the pid, do not kill it |
+| `ECONNREFUSED`, `ETIMEDOUT`, `socket hang up` | `inspect_sockets`, `trace_syscalls` (network) on the client |
+| `EMFILE` / too many open files | `inspect_files` (growth, deleted-but-open), `inspect_sockets` (CLOSE_WAIT) |
+| exit 137, `OOMKilled`, "JavaScript heap out of memory" | `container_info`, then `snapshot_memory` ×2 + `diff_runs` |
+| Segfault / exit 139 / crash loop | `container_info`; if it restarted, `dump_stacks` + `profile_cpu` to catch the lead-up |
+| The user says slow / p99 / CPU pegged | `profile_cpu`, then `trace_syscalls` (file,network) |
+| The user says hang / stuck / frozen / deadlock | `dump_stacks` twice |
+| The user says leak / memory keeps growing | `snapshot_memory`, load, `snapshot_memory`, `diff_runs` |
+| You started a long-running service to test something | consider `attach --kind command` so its output and fds are captured from the start |
+| You just changed performance-sensitive code | measure before and after with the same tool and `diff_runs`; put the evidence ids in the PR |
+
+Keep it proportionate: `readiness` once per session, `attach`, one or two
+tools, `detach`. Only attach to processes that belong to the user's project or
+that they pointed you at. Say what you observed and what you could not
+(`limitations`) in one short paragraph with evidence ids.
 
 ## Session protocol
 
