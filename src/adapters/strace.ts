@@ -187,6 +187,7 @@ async function traceSyscalls(ctx: AdapterContext, args: { duration_s?: number; c
     if (looksLikePermissionError(r.stderr)) {
       b.limitation(rootRequiredLimitation("trace_syscalls", cmd));
       b.limitation("Linux: kernel.yama.ptrace_scope ≥ 1 blocks attaching to non-child processes; sudo sysctl kernel.yama.ptrace_scope=0 for this boot, or run DEA as root / with CAP_SYS_PTRACE");
+      b.next("import_artifact (strace, after running the sudo command above)", "inspect_sockets", "inspect_files", "snapshot_memory");
       return b.fail("strace could not attach (permission denied)").build();
     }
     if (r.stderr.trim()) b.limitation(`strace: ${r.stderr.trim().slice(0, 300)}`);

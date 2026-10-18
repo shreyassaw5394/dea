@@ -126,6 +126,7 @@ async function dumpStacks(ctx: AdapterContext): Promise<ToolResult> {
   if (looksLikePermissionError(r.stderr) || /ptrace: Operation not permitted/.test(raw)) {
     b.limitation(rootRequiredLimitation("dump_stacks", `gdb ${args.join(" ")}`));
     b.limitation("Linux: kernel.yama.ptrace_scope ≥ 1 blocks attaching to non-child processes");
+    b.next("import_artifact (gdb, after running the sudo command above)", "inspect_sockets", "inspect_files", "snapshot_memory");
     return b.fail("gdb could not attach (permission denied)").build();
   }
   const threads = parseGdbBacktrace(r.stdout);
