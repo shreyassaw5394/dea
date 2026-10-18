@@ -16,3 +16,6 @@ python/*.egg-info/
 _site/
 .vercel
 .env*
+
+# fixtures are real captured tool output; never ignore them
+!tests/fixtures/**
