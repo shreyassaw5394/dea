@@ -69,6 +69,7 @@ async function profileCpu(ctx: AdapterContext, args: { duration_s?: number }): P
     if (looksLikePermissionError(rec.stderr) || /paranoid|perf_event_open/i.test(rec.stderr)) {
       b.limitation(rootRequiredLimitation("profile_cpu", `perf ${recArgs.join(" ")}`));
       b.limitation("Linux: lower kernel.perf_event_paranoid to 1 (sudo sysctl kernel.perf_event_paranoid=1) or grant CAP_PERFMON; inside Docker add --cap-add PERFMON --cap-add SYS_ADMIN");
+      b.next("import_artifact (perf_script, after running the sudo command above)", "dump_stacks", "trace_syscalls", "snapshot_memory");
       return b.fail("perf record needs permissions").build();
     }
     b.limitation(`perf record exited ${rec.exitCode}: ${rec.stderr.trim().slice(0, 300)}`);

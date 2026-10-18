@@ -279,6 +279,7 @@ async function dumpStacks(ctx: AdapterContext, withLocals: boolean, tool = "dump
   const art = await b.writeArtifact("pyspy-dump.txt", raw, "raw_text", cmd);
   if (r.exitCode !== 0) {
     if (!needsSudoNote(b, r.stderr, cmd)) b.limitation(`py-spy exited ${r.exitCode}: ${r.stderr.trim().slice(0, 300)}`);
+    b.next(`import_artifact (pyspy_dump, after running the sudo command above)`, "inspect_sockets", "inspect_files", "snapshot_memory");
     return b.fail("py-spy dump failed").build();
   }
   await summarizePySpyDump(b, parsePySpyDump(r.stdout), art, target.pid);
@@ -298,6 +299,7 @@ async function profileCpu(ctx: AdapterContext, args: { duration_s?: number }): P
   if (r.exitCode !== 0) {
     await b.writeArtifact("pyspy-stderr.txt", r.stderr, "raw_text");
     if (!needsSudoNote(b, r.stderr, `py-spy ${cmdArgs.join(" ")}`)) b.limitation(`py-spy exited ${r.exitCode}: ${r.stderr.trim().slice(0, 300)}`);
+    b.next("import_artifact (folded, after running the sudo command above)", "inspect_sockets", "snapshot_memory");
     return b.fail("py-spy record failed").build();
   }
   const { readFile } = await import("node:fs/promises");

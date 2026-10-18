@@ -48,6 +48,7 @@ async function dumpStacks(ctx: AdapterContext): Promise<ToolResult> {
   if (looksLikePermissionError(raw) || /attach failed|not permitted|Permission denied|does not exist|unable to attach/i.test(raw)) {
     b.limitation(rootRequiredLimitation("dump_stacks", `lldb ${args.join(" ")}`));
     b.limitation("macOS: attaching to a process you did not spawn needs sudo, or the target must opt in (com.apple.security.get-task-allow). Hardened/SIP-protected binaries cannot be attached at all.");
+    b.next("import_artifact (lldb, after running the sudo command above)", "inspect_sockets", "snapshot_memory", "profile_cpu (sample, own processes)");
     return b.fail("lldb could not attach (permission denied)").build();
   }
   const threads = parseLldbBacktrace(r.stdout);
