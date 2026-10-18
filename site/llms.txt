@@ -1,0 +1,26 @@
+# DEA — Debug Anything
+
+> Observe any running process, container or pod from an AI coding agent. No breakpoints, no restarts, no instrumentation. Every finding cites evidence. MCP server + CLI + Python package. MIT, local-only, no telemetry.
+
+Install: `npx dea-agents setup` (registers the MCP server and the debug-anything skill with Claude Code, Codex, Cursor, Gemini CLI). Project-level: `dea init`. Python: `pip install dea-agents` (LangChain, LlamaIndex, CrewAI adapters). Skill: `npx skills add shreyassaw5394/dea`.
+
+MCP tools: readiness, attach, detach, list_processes, trace_syscalls, profile_cpu, dump_stacks, inspect_sockets, inspect_files, capture_traffic (consent), snapshot_memory, diff_runs, container_info, report. Prompts: dea_slow, dea_leak, dea_hang, dea_crash, dea_port_busy.
+
+Providers: strace, py-spy, perf, lsof, tcpdump, gdb, lldb, sample (macOS), Node inspector heap snapshots, docker.
+
+## Docs
+- [README](https://debuganything.dev/docs/README.md): overview, what you can observe, safety, FAQ
+- [Installation](https://debuganything.dev/docs/installation.md): agents, permissions, Linux/macOS
+- [Examples](https://debuganything.dev/docs/examples.md): ten copy-paste situations
+- [Real-world situations](https://debuganything.dev/docs/real-world.md): incident patterns with sessions, evidence and fixes
+- [Workflows](https://debuganything.dev/docs/workflows.md): team adoption, CI gates, containers, Kubernetes
+- [Proactive use](https://debuganything.dev/docs/proactive.md): how agents use DEA without being asked
+- [MCP contracts](https://debuganything.dev/docs/mcp-contracts.md): ToolResult / Finding / Evidence schemas
+- [CLI](https://debuganything.dev/docs/cli.md)
+- [Safety](https://debuganything.dev/docs/safety.md)
+
+## Links
+- Source: https://github.com/shreyassaw5394/dea
+- npm: https://www.npmjs.com/package/dea-agents
+- PyPI: https://pypi.org/project/dea-agents/
+- Discord: https://discord.gg/htPuQ5grg
