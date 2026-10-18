@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEA — Debug Anything</title>
+<meta name="description" content="Observe any running process from your coding agent. strace, py-spy, perf, lsof, tcpdump, gdb/lldb and heap snapshots turned into evidence. MCP server + CLI. MIT.">
+<meta property="og:title" content="DEA — Debug Anything">
+<meta property="og:description" content="Observe any running process. No breakpoints, no restarts, no instrumentation. Evidence, not guesses.">
+<meta property="og:image" content="https://shreyassaw5394.github.io/dea/docs/demo.gif">
+<style>
+:root{--bg:#0b0d12;--fg:#e8e8ec;--muted:#9aa0ad;--acc:#7cc4ff;--acc2:#ffb86b;--card:#121521;--line:#232738;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header{padding:64px 0 24px;text-align:center}
+h1{font-size:clamp(34px,6vw,56px);margin:0 0 8px;letter-spacing:-.02em}
+.tag{font-size:clamp(18px,2.6vw,24px);color:var(--muted);margin:0 0 28px}
+.cmd{display:inline-flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 18px;font:15px ui-monospace,SFMono-Regular,Menlo,monospace}
+.cmd button{background:var(--acc);color:#001;border:0;border-radius:6px;padding:6px 10px;font-weight:600;cursor:pointer}
+.links{margin:18px 0 0;color:var(--muted)}.links a{margin:0 10px}
+.gif{display:block;max-width:100%;border-radius:12px;border:1px solid var(--line);margin:36px auto}
+h2{font-size:26px;margin:48px 0 12px;letter-spacing:-.01em}
+p{color:#cfd3dc}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card h3{margin:0 0 6px;font-size:17px}.card p{margin:0;color:var(--muted);font-size:14.5px}
+pre{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font:13.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#dfe3ea}
+.hi{color:var(--acc2)}.ok{color:#8be28b}.warn{color:#ffb86b}.high{color:#ff7b7b}
+table{width:100%;border-collapse:collapse;font-size:14.5px}td,th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--muted);font-weight:600}
+.quote{border-left:3px solid var(--acc);padding:6px 14px;color:var(--muted);font-style:italic;margin:14px 0}
+footer{margin:64px 0 40px;color:var(--muted);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>DEA — Debug Anything</h1>
+  <p class="tag">Observe any running process. No breakpoints, no restarts, no instrumentation.</p>
+  <div class="cmd"><span id="c">npx dea-agents setup</span><button onclick="navigator.clipboard.writeText(document.getElementById('c').textContent);this.textContent='copied'">copy</button></div>
+  <p class="links">
+    <a href="https://github.com/shreyassaw5394/dea">GitHub</a>
+    <a href="https://www.npmjs.com/package/dea-agents">npm</a>
+    <a href="https://pypi.org/project/dea-agents/">PyPI</a>
+    <a href="docs/README.md">Docs</a>
+    <a href="https://discord.gg/ubAuT4YQsT">Discord</a>
+  </p>
+</header>
+
+<img class="gif" src="docs/demo.gif" alt="DEA finding a Node.js memory leak: two snapshots, a diff, and the retainer named with evidence ids">
+
+<p>One MCP server and CLI that gives any coding agent — Claude Code, Codex, Cursor, Gemini CLI — eyes on running software. Battle-tested local tools (<code>strace</code>, <code>py-spy</code>, <code>perf</code>, <code>lsof</code>, <code>tcpdump</code>, <code>gdb</code>/<code>lldb</code>, Node's inspector) do the observing; DEA turns their output into <strong>structured evidence</strong>: every finding cites evidence ids, every limitation is stated, raw artifacts are kept for audit.</p>
+
+<p class="quote">mcp-debugger is for when you know where to put the breakpoint. DEA is for when you don't.</p>
+
+<h2>Ask your agent</h2>
+<div class="grid">
+  <div class="card"><h3>“My API gets slow after a few minutes”</h3><p>profile_cpu → trace_syscalls → inspect_sockets. CPU-bound, or waiting on something — with the frame or the remote named.</p></div>
+  <div class="card"><h3>“Memory keeps growing”</h3><p>snapshot_memory ×2 → diff_runs. Exact retained sizes: <em>Array retains 50 MB via Context.retained</em>.</p></div>
+  <div class="card"><h3>“It's stuck”</h3><p>dump_stacks. Threads waiting on locks, classified from the source line: <em>worker_ab (app.py:38) [with lock_b:]</em>.</p></div>
+  <div class="card"><h3>“Address already in use”</h3><p><code>dea port 8080</code> → pid, user and command line holding it. DEA never kills it for you.</p></div>
+</div>
+
+<h2>Or use the terminal</h2>
+<pre><span class="hi">$</span> dea why 12345 --symptom leak
+<span class="ok">✔</span> snapshot_memory (snapshot_memory#2)   RSS 48.0 MB
+… waiting 15s — exercise the target now
+<span class="ok">✔</span> snapshot_memory (snapshot_memory#3)   RSS 273.0 MB
+  <span class="warn">WARN</span>  Array (object) retains 50.1 MB = 87% of the heap, held by system / Context.retained [observed; e5,e3]
+<span class="ok">✔</span> diff_runs
+  <span class="high">HIGH</span>  heap_retainer: name=Array grew 2.0 KB → 50.1 MB [observed; e4,e1]
+report: ~/.dea/sessions/20261017-223231-ec44f5/report.md</pre>
+
+<h2>What you can observe</h2>
+<table>
+<tr><th>Target</th><th>DEA returns</th><th>Needs</th></tr>
+<tr><td>Sockets &amp; files</td><td>listening ports, connections by remote, CLOSE_WAIT pileups, fd growth, deleted-but-open files</td><td>lsof (Linux, macOS)</td></tr>
+<tr><td>Node.js</td><td>heap snapshot with exact top retainers, JS main-thread stack</td><td>built in (inspector)</td></tr>
+<tr><td>Python</td><td>CPU flamegraph, every thread's stack, lock/join/sleep/I/O classification, deadlock detection</td><td>py-spy</td></tr>
+<tr><td>Linux syscalls</td><td>top syscalls by time, slowest calls with paths, errors, blocked waits</td><td>strace</td></tr>
+<tr><td>Native / Node / Go / Java</td><td>perf or sample flamegraph; gdb / lldb thread dumps</td><td>perf, gdb (Linux) · sample, lldb (macOS)</td></tr>
+<tr><td>Network</td><td>per-remote bytes, RSTs, unanswered SYNs, retransmits, DNS; .pcap</td><td>tcpdump + consent</td></tr>
+<tr><td>Docker</td><td>OOM kills, exit codes, restarts, limits vs usage, cgroup throttling, log tail</td><td>docker</td></tr>
+</table>
+
+<h2>Safety</h2>
+<p>Read-only. 60 s cap per tool, 50 MB raw cap, 16 KB returned to the agent. Never runs sudo — it tells you the command instead. Captures are scoped to the target's ports and require consent. Secrets are redacted in payloads. No cloud, no telemetry. <a href="docs/safety.md">Details</a>.</p>
+
+<h2>Everywhere your agent is</h2>
+<pre><span class="hi">#</span> MCP (Claude Code, Codex, Cursor, Gemini CLI, anything MCP)
+npx dea-agents setup
+
+<span class="hi">#</span> Agent skill (skills.sh)
+npx skills add shreyassaw5394/dea
+
+<span class="hi">#</span> Python · LangChain · LlamaIndex · CrewAI
+pip install 'dea-agents[langchain]'
+from dea_agents.langchain import dea_tools</pre>
+
+<footer>MIT · <a href="https://github.com/shreyassaw5394/dea">github.com/shreyassaw5394/dea</a> · the runtime sibling of <a href="https://github.com/morluto/rea">REA</a> · <a href="docs/DISCLAIMER.md">Only observe systems you are authorized to debug.</a></footer>
+</div>
+</body>
+</html>

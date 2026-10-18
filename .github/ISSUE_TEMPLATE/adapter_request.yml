@@ -1,0 +1,14 @@
+name: Adapter / tool request
+description: A runtime, tool or platform DEA should observe
+labels: [adapter]
+body:
+  - type: input
+    id: tool
+    attributes: { label: Tool or runtime, placeholder: "async-profiler for Java, ETW on Windows, delve goroutine dumps…" }
+    validations: { required: true }
+  - type: textarea
+    id: evidence
+    attributes: { label: What evidence it would produce, description: Which MCP tool it serves (profile_cpu, dump_stacks, …), what the raw output looks like, what findings make sense. }
+  - type: textarea
+    id: sample
+    attributes: { label: Sample raw output, description: Paste real output if you have it — it becomes the fixture. }

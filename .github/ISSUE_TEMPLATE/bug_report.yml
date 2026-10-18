@@ -1,0 +1,19 @@
+name: Bug report
+description: DEA produced a wrong result, crashed, or could not attach
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes: { label: DEA version, placeholder: "dea --version" }
+    validations: { required: true }
+  - type: textarea
+    id: readiness
+    attributes: { label: "`dea readiness --json` output", render: json }
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes: { label: What you ran and what happened, description: Include the ToolResult (`--json`) if you have it. Redact secrets; raw artifacts are not redacted. }
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes: { label: What you expected }

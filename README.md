@@ -9,11 +9,15 @@ One MCP server and CLI that gives any coding agent — Claude Code, Codex, Curso
 [![MCP](https://img.shields.io/badge/MCP-server-8A2BE2)](server.json)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522-339933)](package.json)
 
-[Quick start](#quick-start) · [How DEA works](#how-dea-works) · [What you can observe](#what-you-can-observe) · [Showcases](#showcases) · [Safety](#safety) · [FAQ](#faq) · [Roadmap](#roadmap)
+[Quick start](#quick-start) · [How DEA works](#how-dea-works) · [What you can observe](#what-you-can-observe) · [Showcases](#showcases) · [Python / LangChain / CrewAI](#python-langchain-llamaindex-crewai) · [Safety](#safety) · [FAQ](#faq) · [Roadmap](#roadmap) · [Community](#community)
 
 ```bash
 npx dea-agents setup
 ```
+
+![DEA finding a Node.js leak: two memory snapshots, a diff, and the retainer named with evidence ids](docs/demo.gif)
+
+> Website: <https://shreyassaw5394.github.io/dea> · Questions: [Discord](https://discord.gg/ubAuT4YQsT) · Only ever download DEA from this repo, the `dea-agents` npm/PyPI packages, or that site.
 
 DEA is the runtime sibling of [REA — Reverse Engineer Anything](https://github.com/morluto/rea). REA is static analysis of binaries and bundles; DEA is live observation of running software. Same shape: one MCP, many provider adapters, evidence-first results, `npx <pkg> setup` registers with every agent, MIT.
 
@@ -60,7 +64,19 @@ Detects Claude Code, Codex, Cursor and Gemini CLI, shows the exact config entry 
 
 The agent calls `readiness`, `attach`, then the right tools, and answers with findings that cite evidence ids — or tells you what it could not observe and why.
 
-### 3. Or use the terminal
+### 3. No agent? One command
+
+```bash
+npx -y dea-agents@latest why 12345 --symptom leak     # or: slow | hang | crash | triage
+dea why my-container --symptom crash
+dea why -- node server.js                             # spawn it under observation
+```
+
+`why` attaches, runs the right tools for the symptom, prints each result, and
+ends with a ranked summary and the report path. Skips tools `readiness` says
+you cannot run instead of failing.
+
+### 4. Or step by step
 
 ```bash
 npx -y dea-agents@latest readiness
@@ -75,7 +91,17 @@ dea port 8080                      # who holds a port — no session needed
 
 Every command takes `--json` and prints the exact `ToolResult`. See [docs/cli.md](docs/cli.md).
 
-### 4. Update
+### 5. Install as an agent skill
+
+The `debug-anything` skill (investigation orders, evidence rules, consent
+etiquette) is installed by `setup` for Claude Code, Codex and Gemini CLI, and
+is also available through [skills.sh](https://skills.sh):
+
+```bash
+npx skills add shreyassaw5394/dea
+```
+
+### 6. Update
 
 ```bash
 dea update                        # or: npx dea-agents@latest setup
@@ -121,7 +147,7 @@ Honest status: everything above was run live on Linux (Debian 12 container, root
 
 ## Showcases
 
-Reproducible with `examples/`. Full transcripts in [docs/showcases.md](docs/showcases.md).
+Reproducible with `examples/`. Full transcripts in [docs/showcases.md](docs/showcases.md); a complete report DEA wrote itself is in [docs/example-report-leaky-node.md](docs/example-report-leaky-node.md).
 
 **leaky-node** — HTTP server that keeps every request body alive in a module-level array, plus a `/slow` route doing `readFileSync` in a loop and an 800 ms timer.
 `snapshot_memory` ×2 + `diff_runs`: RSS 85 → 172 MB (+102 %), heap 37 → 97 MB, the top retainer is an `Array` whose retained size grew 17 → 47 MB. `trace_syscalls` (8 s): 5 600 `openat`/`statx` lookups and 3 314 `read()` calls — "sync I/O in a loop", and `epoll_pwait` sleeping ~800 ms at a time.
@@ -131,6 +157,27 @@ Reproducible with `examples/`. Full transcripts in [docs/showcases.md](docs/show
 
 **busy-port** — a process holding `:8080` and a script failing with `EADDRINUSE`.
 `dea port 8080`: `port 8080 is held by pid 47508 (node, user shreyassawant) in LISTEN — command: node server.js. DEA will not kill it; decide yourself.`
+
+## Python, LangChain, LlamaIndex, CrewAI
+
+```bash
+pip install dea-agents                 # plain client (no deps; uses npx under the hood)
+pip install 'dea-agents[langchain]'    # dea_agents.langchain.dea_tools()
+pip install 'dea-agents[llamaindex]'   # dea_agents.llamaindex.dea_tools()
+pip install 'dea-agents[crewai]'       # dea_agents.crewai.dea_tools()
+```
+
+```python
+from dea_agents import DEA
+dea = DEA()
+s = dea.attach(12345)
+print(DEA.findings(dea.profile_cpu(s, duration_s=10)))
+dea.detach(s)
+```
+
+Each adapter exposes the same 14 tools with the same `ToolResult`. Frameworks
+with native MCP support can skip the package and run `npx -y dea-agents serve`.
+Details: [python/README.md](python/README.md).
 
 ## Why not just ask the agent to debug?
 
@@ -168,8 +215,15 @@ Details: [docs/safety.md](docs/safety.md) · [DISCLAIMER.md](DISCLAIMER.md) · [
 
 bpftrace canned scripts · Kubernetes pods via ephemeral debug containers · Windows (ETW, procdump) · Java (async-profiler, `jcmd Thread.print`) · Go (`pprof`, delve goroutine dumps) · Rust/C++ DWARF unwinding · eBPF-first tracing on Linux · Python `tracemalloc`/`memray` · Node CPU via inspector `Profiler` · lock-owner graphs · remote agent mode over SSH. Full list: [docs/roadmap.md](docs/roadmap.md).
 
+## Community
+
+- **Discord:** <https://discord.gg/ubAuT4YQsT> — questions, show-and-tell, help reading a session.
+- **Issues:** bugs and adapter requests via the templates. **Discussions** for ideas.
+- **Security:** private advisories only, see [SECURITY.md](SECURITY.md).
+
 ## Contributing
 
+`main` is protected: every change is a pull request reviewed by a code owner.
 An adapter is ~80 lines: declare `platforms`/`requires`/`tools`, build the command, run it through `runCapped`, parse with a pure function, emit evidence and findings through `ResultBuilder` (which refuses findings without evidence). Capture the real tool output once into `tests/fixtures/` and test the parser on it. Recipe in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License and disclaimer

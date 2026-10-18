@@ -52,7 +52,26 @@ installed: adapters are tested against captured fixture output in
   that includes the exact command the user can run.
 - `--json` output is the `ToolResult` contract, nothing else.
 
-## Commits and releases
+## How changes land
 
-Conventional-ish messages (`feat:`, `fix:`, `docs:`). Bump `version` in
-`package.json` and `server.json` together and add a `CHANGELOG.md` entry.
+`main` is protected: nobody pushes to it directly, including maintainers.
+
+1. Fork (or branch, if you have write access) and make your change.
+2. Open a pull request. CI runs typecheck, lint, tests and build on Linux and macOS.
+3. A code owner (see `.github/CODEOWNERS`) reviews and approves. One approval is
+   required; the reviewer merges with squash.
+4. Releases: a maintainer bumps `version` in `package.json` and `server.json`
+   together, adds a `CHANGELOG.md` entry, and tags `vX.Y.Z`; the publish
+   workflow pushes to npm.
+
+Conventional-ish commit messages (`feat:`, `fix:`, `docs:`). Small PRs merge
+faster than big ones. If you are unsure an idea fits, open an issue or ask in
+[Discord](https://discord.gg/ubAuT4YQsT) first.
+
+## Good first contributions
+
+- A fixture + parser test for a tool version we have not seen (different
+  `strace`/`perf`/`lsof` builds format output differently).
+- An adapter from [docs/roadmap.md](docs/roadmap.md): async-profiler, delve,
+  ETW, bpftrace wiring.
+- Better findings heuristics with the evidence to justify them.

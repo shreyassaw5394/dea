@@ -21,6 +21,8 @@ dea diff     --session S <a> <b>           # run ids like snapshot_memory#1, or 
 dea container --session S
 dea report   --session S [--md out.md]
 dea detach   --session S
+dea why <target> [--symptom slow|leak|hang|crash|triage] [--wait 15] [--duration 10]   # one-command investigation
+dea call <tool> '<json args>'              # any tool, raw ToolResult (used by the Python SDK)
 dea port <port>                            # who holds a port (no session)
 dea sessions list | prune [--days 7] [--all]
 dea serve                                  # MCP server over stdio (alias: mcp)
