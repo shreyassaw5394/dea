@@ -117,6 +117,16 @@ program
   });
 
 program
+  .command("init")
+  .description("set up THIS repo for DEA: .mcp.json + .cursor/mcp.json entries and an agent rule in AGENTS.md/CLAUDE.md (commit them)")
+  .option("--dir <path>", "project directory (default: cwd)")
+  .option("--dry-run", "show what would change without writing")
+  .action(async (opts) => {
+    const { init } = await import("./setup.js");
+    await init({ dir: opts.dir, dryRun: Boolean(opts.dryRun) });
+  });
+
+program
   .command("readiness")
   .alias("doctor")
   .description("probe OS, tools on PATH and permissions")

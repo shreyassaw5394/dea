@@ -44,6 +44,7 @@ footer{margin:64px 0 40px;color:var(--muted);font-size:14px;text-align:center}
     <a href="https://pypi.org/project/dea-agents/">PyPI</a>
     <a href="docs/README.md">Docs</a>
     <a href="docs/real-world.md">Real-world</a>
+    <a href="docs/workflows.md">Workflows</a>
     <a href="https://github.com/shreyassaw5394/dea/discussions">Discussions</a>
   </p>
 </header>
@@ -53,7 +54,7 @@ footer{margin:64px 0 40px;color:var(--muted);font-size:14px;text-align:center}
 <p>One MCP server and CLI that gives any coding agent — Claude Code, Codex, Cursor, Gemini CLI — eyes on running software. Battle-tested local tools (<code>strace</code>, <code>py-spy</code>, <code>perf</code>, <code>lsof</code>, <code>tcpdump</code>, <code>gdb</code>/<code>lldb</code>, Node's inspector) do the observing; DEA turns their output into <strong>structured evidence</strong>: every finding cites evidence ids, every limitation is stated, raw artifacts are kept for audit.</p>
 
 <p class="quote">mcp-debugger is for when you know where to put the breakpoint. DEA is for when you don't.</p>
-<p>Working with <a href="https://github.com/morluto/rea">REA</a>? REA tells you what the code <em>can</em> do; DEA tells you what it <em>is</em> doing. Register both and let the agent hand off between them: <a href="docs/with-rea.md">guide</a> · <a href="docs/examples.md">11 example situations</a>.</p>
+<p>Rolling it out to a team? <a href="docs/workflows.md">Adoption flow</a>: one command per developer, one command per repo, evidence in PRs, a CI gate. Plus <a href="docs/examples.md">10 copy-paste examples</a>.</p>
 
 <h2>Ask your agent</h2>
 <div class="grid">
@@ -84,7 +85,7 @@ report: ~/.dea/sessions/20261017-223231-ec44f5/report.md</pre>
   <div class="card"><h3>Latency spikes every 30 s</h3><p>212 DNS lookups for one host in 10 s, 127 sockets in TIME_WAIT. No keep-alive, no resolver cache.</p></div>
   <div class="card"><h3>EADDRINUSE after a crash</h3><p><code>dea port 3000</code>: pid, user and command line of the orphaned dev server. You decide what to kill.</p></div>
 </div>
-<p style="color:var(--muted);font-size:14px">Each with the session, the evidence and the fix: <a href="docs/real-world.md">docs/real-world.md</a>. Numbers from our reproductions are real; the rest are marked illustrative. Also: <a href="docs/examples.md">11 copy-paste examples</a> and <a href="docs/with-rea.md">REA + DEA</a>.</p>
+<p style="color:var(--muted);font-size:14px">Each with the session, the evidence and the fix: <a href="docs/real-world.md">docs/real-world.md</a>. Numbers from our reproductions are real; the rest are marked illustrative. Also: <a href="docs/examples.md">10 copy-paste examples</a> and <a href="docs/workflows.md">adoption workflows</a>.</p>
 
 <h2>What you can observe</h2>
 <table>
@@ -108,6 +109,9 @@ report: ~/.dea/sessions/20261017-223231-ec44f5/report.md</pre>
 <pre><span class="hi">#</span> MCP (Claude Code, Codex, Cursor, Gemini CLI, anything MCP)
 npx dea-agents setup
 
+<span class="hi">#</span> Your repo, your whole team (commit the files it writes)
+dea init
+
 <span class="hi">#</span> Agent skill (skills.sh)
 npx skills add shreyassaw5394/dea
 
@@ -115,7 +119,7 @@ npx skills add shreyassaw5394/dea
 pip install 'dea-agents[langchain]'
 from dea_agents.langchain import dea_tools</pre>
 
-<footer>MIT · <a href="https://github.com/shreyassaw5394/dea">github.com/shreyassaw5394/dea</a> · the runtime sibling of <a href="https://github.com/morluto/rea">REA</a> · <a href="docs/DISCLAIMER.md">Only observe systems you are authorized to debug.</a></footer>
+<footer>MIT · <a href="https://github.com/shreyassaw5394/dea">github.com/shreyassaw5394/dea</a> · <a href="docs/DISCLAIMER.md">Only observe systems you are authorized to debug.</a></footer>
 </div>
 </body>
 </html>

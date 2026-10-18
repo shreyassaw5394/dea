@@ -60,3 +60,21 @@ describe("setup against a fake home", () => {
     expect(readFileSync(join(home, ".claude.json"), "utf8")).toBe("{}");
   });
 });
+
+describe("dea init (project-level)", () => {
+  it("writes .mcp.json, .cursor/mcp.json and an AGENTS.md rule, idempotently", async () => {
+    const { init, patchAgentsMd } = await import("../src/setup.js");
+    const dir = mkdtempSync(join(tmpdir(), "dea-proj-"));
+    writeFileSync(join(dir, "CLAUDE.md"), "# My project\n\nRules.\n");
+    const r = await init({ dir, log: () => {} });
+    expect(r.written).toContain(join(dir, ".mcp.json"));
+    expect(JSON.parse(readFileSync(join(dir, ".cursor", "mcp.json"), "utf8")).mcpServers.dea.command).toBe("npx");
+    const md = readFileSync(join(dir, "CLAUDE.md"), "utf8");
+    expect(md.startsWith("# My project")).toBe(true);
+    expect(md).toContain("## Runtime debugging with DEA");
+    expect(existsSync(join(dir, "AGENTS.md"))).toBe(false);
+    const again = await init({ dir, log: () => {} });
+    expect(again.written).toEqual([]);
+    expect(patchAgentsMd(null).next).toContain("DEA");
+  });
+});

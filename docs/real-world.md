@@ -219,17 +219,7 @@ a VS Code task). DEA names it; you kill it.
 
 ---
 
-## 9. "This desktop app phones home" — REA + DEA
-
-**Symptom.** A security review asks what an Electron/native app sends out.
-
-**Session.** REA finds the code that builds the requests; DEA attaches to the
-running app, `inspect_sockets` shows the live connections, `capture_traffic`
-(consent) shows SNI, DNS names and volume. Walkthrough: [with-rea.md](with-rea.md).
-
----
-
-## 10. "It's pegged at 100 % CPU" — a native hot spot you cannot read
+## 9. "It's pegged at 100 % CPU" — a native hot spot you cannot read
 
 **Symptom.** A C++/Rust/Go service burns a core; no obvious loop in your code.
 
@@ -239,11 +229,10 @@ running app, `inspect_sockets` shows the live connections, `capture_traffic`
 
 ```
 WARN  parse_frame (libfoo.so) accounts for 71% of CPU work; the process was CPU-busy ≈98% of the time [observed; e1,e2,e3]
-next: REA: decompile parse_frame in libfoo.so statically (npx rea-agents)
+next: decompile parse_frame in libfoo.so with a static-analysis tool / disassembler
 ```
 
-**Fix.** Hand the symbol to REA (or your decompiler) to see the quadratic
-loop; after the fix, `dea diff profile_cpu#2 profile_cpu#3` is the proof in
+**Fix.** Open the symbol in your decompiler to see the quadratic loop; after the fix, `dea diff profile_cpu#2 profile_cpu#3` is the proof in
 the PR.
 
 ---

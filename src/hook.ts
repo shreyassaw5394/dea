@@ -30,7 +30,7 @@ export const TRIGGERS: Trigger[] = [
   { id: "slow_words", pattern: "\\b(slow|slower|latency|p99|p95|takes forever|sluggish|cpu (is )?(pegged|at 100)|100% cpu)\\b", flags: "i", scope: "prompt", hint: "attach DEA and run profile_cpu then trace_syscalls (file,network) — measure before optimizing" },
   { id: "leak_words", pattern: "\\b(memory (leak|keeps growing|grows|usage grows)|leaking|rss (grows|keeps)|heap (grows|keeps growing)|out of memory)\\b", flags: "i", scope: "prompt", hint: "attach DEA, snapshot_memory, exercise the target, snapshot_memory again, diff_runs" },
   { id: "crash_words", pattern: "\\b(crashed|crashes|keeps restarting|restart loop|CrashLoopBackOff|segfault|SIGSEGV|core dumped|exit code 1[34][0-9])\\b", flags: "i", scope: "both", hint: "attach DEA to the container/pid and run container_info (exit code, OOM, restarts, log tail)" },
-  { id: "segv", pattern: "Segmentation fault|SIGSEGV|SIGABRT|SIGBUS|core dumped|fatal error: unexpected signal", flags: "i", scope: "output", hint: "if it restarted, attach DEA and dump_stacks/profile_cpu to catch the lead-up; hand the symbol to a step debugger or REA" },
+  { id: "segv", pattern: "Segmentation fault|SIGSEGV|SIGABRT|SIGBUS|core dumped|fatal error: unexpected signal", flags: "i", scope: "output", hint: "if it restarted, attach DEA and dump_stacks/profile_cpu to catch the lead-up; hand the symbol to a step debugger or a static-analysis tool" },
 ];
 
 export interface TriggerHit {

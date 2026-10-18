@@ -362,7 +362,7 @@ export async function summarizeProfile(b: ResultBuilder, folded: string, duratio
   b.next("trace_syscalls", "dump_stacks", "inspect_sockets");
   if (topWork && topWork.self_pct >= 20 && (profiler === "perf" || profiler === "sample")) {
     const dso = /\(([^)]+)\)\s*$/.exec(topWork.frame)?.[1];
-    b.next(`REA: decompile ${shortFrame(topWork.frame).replace(/\s*\(.*$/, "")}${dso ? ` in ${dso}` : ""} statically (npx rea-agents) — https://github.com/morluto/rea`);
+    b.next(`static analysis: decompile ${shortFrame(topWork.frame).replace(/\s*\(.*$/, "")}${dso ? ` in ${dso}` : ""} to see what the hot code does`);
   }
   return b.build();
 }
