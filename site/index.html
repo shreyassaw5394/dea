@@ -145,12 +145,20 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
 footer .links{margin-left:auto;display:flex;gap:16px}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s,transform .7s}.reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.tl .st,.console .step{opacity:1;transform:none}}
+
+.tile .num{font-size:34px;font-weight:800;letter-spacing:-.02em;color:var(--fg);margin-bottom:4px}
+a.tile{display:block;color:inherit}a.tile:hover{text-decoration:none}
+.wall{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.wall a{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 6px;color:var(--fg);font-size:14px;transition:border-color .25s,transform .25s}
+.wall a:hover{border-color:var(--acc);transform:translateY(-2px);text-decoration:none}
+.wall img{width:32px;height:32px;border-radius:50%}
+.wall small{color:var(--dim);margin-left:4px}
 </style>
 </head>
 <body>
 <nav><div class="wrap">
   <a class="brand" href="#"><img src="logo.svg" alt="">DEA</a>
-  <div class="links"><a href="#how">How it works</a><a href="#real">Real-world</a><a href="#workflow">Workflow</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/dea">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
+  <div class="links"><a href="#how">How it works</a><a href="#real">Real-world</a><a href="#workflow">Workflow</a><a href="#community">Community</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/dea">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
 </div></nav>
 
 <section class="hero"><div class="wrap">
@@ -320,6 +328,23 @@ from dea_agents.langchain import dea_tools</pre></div>
   <p class="meta"><a href="docs/safety.md">docs/safety.md</a> · <a href="docs/DISCLAIMER.md">Only observe systems you are authorized to debug.</a></p>
 </div></section>
 
+
+<section id="community" style="padding-top:40px"><div class="wrap">
+  <div class="eyebrow">Community</div>
+  <h2>Built in the open. Numbers live.</h2>
+  <div class="tiles reveal" id="stats" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+    <a class="tile" href="https://github.com/shreyassaw5394/dea/stargazers"><div class="num" id="st-stars">—</div><p>GitHub stars</p></a>
+    <a class="tile" href="https://github.com/shreyassaw5394/dea/network/members"><div class="num" id="st-forks">—</div><p>Forks</p></a>
+    <a class="tile" href="https://www.npmjs.com/package/dea-agents"><div class="num" id="st-npm">—</div><p>npm downloads · 30 days</p></a>
+    <a class="tile" href="https://pypi.org/project/dea-agents/"><div class="num" id="st-pypi">—</div><p>PyPI downloads · 30 days</p></a>
+    <a class="tile" href="https://github.com/shreyassaw5394/dea/graphs/contributors"><div class="num" id="st-contrib">—</div><p>Contributors</p></a>
+    <a class="tile" href="https://discord.gg/htPuQ5grg"><div class="num">💬</div><p>Discord</p></a>
+  </div>
+  <h3 style="margin-top:36px;font-size:18px">Top contributors</h3>
+  <p class="meta" style="margin-top:6px">Land a pull request (an adapter, a fixture, a doc) and you appear here automatically.</p>
+  <div class="wall" id="wall"><span class="dim" style="color:var(--dim)">loading from GitHub…</span></div>
+</div></section>
+
 <footer><div class="wrap">
   <img src="logo.svg" alt="" width="28" height="28" style="border-radius:8px"><span>DEA — Debug Anything · MIT</span>
   <div class="links"><a href="https://github.com/shreyassaw5394/dea">GitHub</a><a href="https://www.npmjs.com/package/dea-agents">npm</a><a href="https://pypi.org/project/dea-agents/">PyPI</a><a href="https://discord.gg/htPuQ5grg">Discord</a><a href="docs/README.md">Docs</a></div>
@@ -403,6 +428,24 @@ const pro=document.getElementById('pro-term'),toast=document.getElementById('toa
 const proLines=["$ npm run dev","> vite","Error: listen EADDRINUSE: address already in use :::3000","    at Server.setupListenHandle [as _listen2] (node:net:1908:16)"];
 const proAfter=["$ dea port 3000","✔ inspect_sockets  81 ms","  HIGH  port 3000 is held by pid 61326 (node) in LISTEN [observed; e1,e2]","        command: node server.js. DEA will not kill it; decide yourself.","# the agent found the owner in one call — you never asked."];
 function proLoop(){toast.classList.remove('show');typeLines(pro,proLines,{speed:18,after:250},()=>{setTimeout(()=>toast.classList.add('show'),400);setTimeout(()=>{toast.classList.remove('show');const d=document.createElement('span');pro.appendChild(d);typeLines(d,proAfter,{speed:18,after:250},()=>setTimeout(proLoop,6000));},2600);});}
+
+// ---- live community numbers (public APIs, client-side, graceful) ----
+(async()=>{
+  const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'k':String(n);
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  const get=async u=>{try{const r=await fetch(u);return r.ok?await r.json():null;}catch{return null;}};
+  const repo=await get('https://api.github.com/repos/shreyassaw5394/dea');
+  if(repo){set('st-stars',fmt(repo.stargazers_count));set('st-forks',fmt(repo.forks_count));}
+  const npm=await get('https://api.npmjs.org/downloads/point/last-month/dea-agents');
+  set('st-npm',npm&&typeof npm.downloads==='number'?fmt(npm.downloads):'new');
+  const py=await get('https://pypistats.org/api/packages/dea-agents/recent');
+  set('st-pypi',py&&py.data&&typeof py.data.last_month==='number'?fmt(py.data.last_month):'new');
+  const contrib=await get('https://api.github.com/repos/shreyassaw5394/dea/contributors?per_page=24');
+  const wall=document.getElementById('wall');
+  if(contrib&&Array.isArray(contrib)&&contrib.length){set('st-contrib',fmt(contrib.length));wall.innerHTML=contrib.map(c=>`<a href="${c.html_url}" title="${c.contributions} commits"><img src="${c.avatar_url}&s=64" alt="">${c.login}<small>${c.contributions}</small></a>`).join('');}
+  else wall.innerHTML='<a href="https://github.com/shreyassaw5394/dea/graphs/contributors">see contributors on GitHub</a>';
+})();
+
 // ---- reveals & observers ----
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');
   if(e.target===pipe&&!pipe.dataset.go){pipe.dataset.go=1;if(!reduce)animatePipe();else document.querySelectorAll('.pipe .node').forEach(n=>n.classList.add('lit'));}
