@@ -14,3 +14,5 @@ python/dist/
 python/**/__pycache__/
 python/*.egg-info/
 _site/
+.vercel
+.env*
