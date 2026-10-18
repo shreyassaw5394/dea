@@ -43,6 +43,7 @@ footer{margin:64px 0 40px;color:var(--muted);font-size:14px;text-align:center}
     <a href="https://www.npmjs.com/package/dea-agents">npm</a>
     <a href="https://pypi.org/project/dea-agents/">PyPI</a>
     <a href="docs/README.md">Docs</a>
+    <a href="docs/real-world.md">Real-world</a>
     <a href="https://github.com/shreyassaw5394/dea/discussions">Discussions</a>
   </p>
 </header>
@@ -71,6 +72,19 @@ footer{margin:64px 0 40px;color:var(--muted);font-size:14px;text-align:center}
 <span class="ok">✔</span> diff_runs
   <span class="high">HIGH</span>  heap_retainer: name=Array grew 2.0 KB → 50.1 MB [observed; e4,e1]
 report: ~/.dea/sessions/20261017-223231-ec44f5/report.md</pre>
+
+<h2>Real-world situations</h2>
+<div class="grid">
+  <div class="card"><h3>EMFILE at 2 am</h3><p>412 sockets in CLOSE_WAIT behind the load balancer, 980 of 1024 fds. Keep-alive longer than the LB idle timeout.</p></div>
+  <div class="card"><h3>Disk full, <code>du</code> disagrees</h3><p>38 GB held by a deleted log file still open on fd 7. logrotate without copytruncate.</p></div>
+  <div class="card"><h3>Postgres: too many connections</h3><p>64 connections from one worker, 18× ECONNREFUSED, recvfrom at 91 % of kernel time. No pool reuse.</p></div>
+  <div class="card"><h3>Celery worker just stops</h3><p>42 threads blocked acquiring locks, none running, source lines <code>[with lock_b:]</code> / <code>[with lock_a:]</code>. Lock order.</p></div>
+  <div class="card"><h3>p99 of 1.4 s on one core</h3><p>9 274 <code>read()</code> calls in 8 s, kernel file copy at 58 % of CPU work. Sync I/O on the event loop.</p></div>
+  <div class="card"><h3>Pod OOMKilled every few hours</h3><p><code>OOMKilled=true</code>, 94 % of the limit, one Array retains 50 MB via <code>Context.retained</code>. Unbounded cache.</p></div>
+  <div class="card"><h3>Latency spikes every 30 s</h3><p>212 DNS lookups for one host in 10 s, 127 sockets in TIME_WAIT. No keep-alive, no resolver cache.</p></div>
+  <div class="card"><h3>EADDRINUSE after a crash</h3><p><code>dea port 3000</code>: pid, user and command line of the orphaned dev server. You decide what to kill.</p></div>
+</div>
+<p style="color:var(--muted);font-size:14px">Each with the session, the evidence and the fix: <a href="docs/real-world.md">docs/real-world.md</a>. Numbers from our reproductions are real; the rest are marked illustrative. Also: <a href="docs/examples.md">11 copy-paste examples</a> and <a href="docs/with-rea.md">REA + DEA</a>.</p>
 
 <h2>What you can observe</h2>
 <table>

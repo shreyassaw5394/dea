@@ -147,6 +147,8 @@ Honest status: everything above was run live on Linux (Debian 12 container, root
 
 ## Examples
 
+**Real-world situations** — CLOSE_WAIT pileups and EMFILE, disk full but `du` disagrees, Postgres pool exhaustion, a Celery deadlock, a blocked Node event loop, OOMKilled pods, DNS on every request, EADDRINUSE after a crash, a native hot spot handed to REA — each with the session, the evidence and the fix: [docs/real-world.md](docs/real-world.md).
+
 Eleven copy-paste situations — slow API, leak, hang, port in use, container crash, spawn-under-observation, prove-the-fix, CI regression gate, consented packet capture, Python agents, and REA + DEA — are in [docs/examples.md](docs/examples.md).
 
 ## Showcases
