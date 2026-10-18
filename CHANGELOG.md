@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 — 2026-10-18
+
+- **`dea import <tool> <file>`** / MCP `import_artifact`: analyze output you captured yourself (strace, fs_usage, perf script, folded stacks, py-spy dump, sample, gdb, lldb, lsof -F, tcpdump text) with the same parsers and findings as a live run. Closes the "needs root" gap without DEA ever escalating.
+- **`fs_usage` adapter (macOS)**: `trace_syscalls` on a Mac. Runs when root; otherwise prints the exact sudo command and the import step.
+- Adapters refactored into run + summarize halves (`summarizeSyscallRecords`, `summarizePySpyDump`, `summarizeCaptureEvidence`).
+
 ## 0.2.0 — 2026-10-18
 
 - **Proactive use.** Skill gains a "use it without being asked" table; MCP server instructions tell agents to measure on hang/timeout/EADDRINUSE/EMFILE/OOM/segfault signals; `dea setup` installs a Claude Code hook (`~/.dea/hooks/dea-hook.mjs`, PostToolUse on Bash + UserPromptSubmit) that nudges the model when such a signal appears. `--no-hooks` to skip. `dea hook` subcommand for other integrations.

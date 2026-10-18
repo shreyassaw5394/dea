@@ -73,9 +73,11 @@ DEA never runs these for you. Inside Docker: `--cap-add SYS_PTRACE` (and
 
 ## macOS
 
-`lsof`, `sample`, `lldb` and `tcpdump` ship with the OS; `py-spy` via
-`pip install py-spy`. Attaching to processes you did not start needs `sudo`
-(SIP). DEA reports this in `limitations` and never escalates.
+`lsof`, `sample`, `lldb`, `fs_usage` and `tcpdump` ship with the OS; `py-spy` via
+`pip install py-spy`. There is no strace or perf on macOS: `trace_syscalls` uses
+`fs_usage`, which needs root. DEA never escalates; it prints the command, you run
+it, and `dea import fs_usage <file> --session <id>` analyzes the output. Attaching
+`py-spy`/`lldb` to processes you did not start also needs `sudo` (SIP).
 
 ## Windows
 

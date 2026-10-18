@@ -18,11 +18,13 @@ import { dockerAdapter } from "./docker.js";
 import { sampleMacosAdapter } from "./sample_macos.js";
 import { bpftraceAdapter } from "./bpftrace.js";
 import { psmemAdapter } from "./psmem.js";
+import { fsUsageAdapter } from "./fs_usage.js";
 
 export const adapters: Adapter[] = [
   lsofAdapter,
   pyspyAdapter,
   straceAdapter,
+  fsUsageAdapter,
   gdbAdapter,
   lldbAdapter,
   heapNodeAdapter,

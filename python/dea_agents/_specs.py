@@ -23,9 +23,11 @@ SPECS: Dict[str, Dict[str, Any]] = {
     "diff_runs": {**SESSION, "a": {"type": "string", "description": "earlier run id, e.g. snapshot_memory#2"}, "b": {"type": "string", "description": "later run id"}},
     "container_info": {**SESSION},
     "report": {**SESSION, "out": {"type": "string", "description": "optional path to also write the markdown to"}},
+    "import_artifact": {**SESSION, "tool": {"type": "string", "enum": ["strace", "fs_usage", "perf_script", "folded", "pyspy_dump", "sample", "gdb", "lldb", "lsof", "tcpdump"]}, "path": {"type": "string", "description": "raw output file you captured"}, "duration_s": {"type": "integer"}},
 }
 
 REQUIRED: Dict[str, list] = {
+    "import_artifact": ["session_id", "tool", "path"],
     "attach": ["target"],
     "diff_runs": ["session_id", "a", "b"],
     "capture_traffic": ["session_id", "consent"],

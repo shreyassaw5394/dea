@@ -287,6 +287,7 @@ open it. same bytes the agent saw.</pre></div>
     <div class="tile"><h3>Native · Go · Java</h3><p>perf or sample flamegraphs; gdb / lldb thread dumps with mutex vs idle classification.</p><div class="req">perf, gdb · sample, lldb</div></div>
     <div class="tile"><h3>Network</h3><p>Per-remote bytes, RSTs, unanswered SYNs, retransmits, DNS, .pcap. Filter scoped to the target.</p><div class="req">tcpdump · consent</div></div>
     <div class="tile"><h3>Docker</h3><p>OOM kills, exit codes, restarts, limits vs usage, cgroup throttling, log tail.</p><div class="req">docker</div></div>
+    <div class="tile"><h3>Captured it yourself?</h3><p>Needs root? DEA prints the sudo command; you run it and <code>dea import</code> the file. strace, fs_usage, perf, py-spy, sample, gdb/lldb, lsof, tcpdump.</p><div class="req">dea import · macOS trace via fs_usage</div></div>
     <div class="tile"><h3>Before / after</h3><p>Diff any two runs: what grew, appeared, disappeared. Proof for the PR.</p><div class="req">diff_runs</div></div>
   </div>
 </div></section>

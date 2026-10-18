@@ -130,6 +130,45 @@ export function describeArgs(r: SyscallRecord): string {
   return parts.join(" ");
 }
 
+/** Shared by strace, fs_usage and `dea import`: records → evidence + findings. */
+export function summarizeSyscallRecords(b: ResultBuilder, records: SyscallRecord[], duration: number, artifactPath: string): void {
+  const agg = aggregateSyscalls(records);
+  const topEv = b.evidenceOf(
+    "syscall_stat",
+    `${records.length} syscalls, ${agg.totalMs} ms inside the kernel over ${duration}s; top by time: ${agg.stats
+      .slice(0, 5)
+      .map((s) => `${s.syscall} ${s.total_ms}ms×${s.count}`)
+      .join(", ")}`,
+    agg.stats.slice(0, 20),
+    { artifact: artifactPath },
+  );
+  const slow = agg.slowest.slice(0, 8).map((rec) => ({ syscall: rec.name, ms: round((rec.duration_s ?? 0) * 1000), pid: rec.pid, at: rec.time, target: describeArgs(rec), result: rec.result.slice(0, 60), line: rec.line }));
+  const slowEv = b.evidenceOf("syscall_slow", slow.length ? `slowest: ${slow.slice(0, 3).map((s) => `${s.syscall}(${s.target}) ${s.ms}ms`).join("; ")}` : "no timed syscalls", slow, { artifact: artifactPath, lines: slow[0] ? [slow[0].line, slow[0].line] : undefined });
+  const errEv = b.evidenceOf("syscall_error", agg.errors.length ? `errors: ${agg.errors.slice(0, 5).map((e) => `${e.syscall}→${e.errno}×${e.count}`).join(", ")}` : "no failing syscalls", agg.errors.slice(0, 15), { artifact: artifactPath });
+  const waitPct = agg.totalMs ? Math.round((100 * agg.waitMs) / agg.totalMs) : 0;
+  const waitEv = b.evidenceOf("metric", `${waitPct}% of kernel time in blocking waits (futex/poll/epoll/read/recv/nanosleep)`, { name: "wait_pct", value: waitPct, wait_ms: agg.waitMs, total_ms: agg.totalMs });
+
+  // Findings
+  const top = agg.stats[0];
+  if (top && agg.totalMs > 0 && top.total_ms / agg.totalMs > 0.5) {
+    const isWait = WAIT_SYSCALLS.has(top.syscall);
+    b.finding(isWait ? "info" : "warn", `${top.syscall} dominates: ${top.total_ms} ms over ${top.count} calls (${Math.round((100 * top.total_ms) / agg.totalMs)}% of kernel time)${isWait ? " — blocking wait, the process is waiting on something" : ""}`, [topEv, slowEv], "observed");
+  }
+  const nanosleep = agg.stats.find((s) => /nanosleep/.test(s.syscall));
+  if (nanosleep && nanosleep.total_ms > duration * 100) b.finding("warn", `${nanosleep.total_ms} ms in ${nanosleep.syscall} (${nanosleep.count} calls) — deliberate sleeps/timers on the request path`, [topEv], "inferred");
+  const fileChurn = agg.stats.filter((s) => /^(openat|open|stat|newfstatat|statx|lstat|access|readlink)$/.test(s.syscall)).reduce((n, s) => n + s.count, 0);
+  if (fileChurn > duration * 200) b.finding("warn", `${fileChurn} path lookups (open/stat) in ${duration}s — filesystem churn (missing cache? module resolution per request?)`, [topEv], "inferred");
+  const reads = agg.stats.find((s) => s.syscall === "read");
+  if (reads && reads.count > duration * 300) b.finding("warn", `${reads.count} read() calls in ${duration}s (avg ${reads.avg_ms} ms) — many small reads; sync I/O in a loop?`, [topEv], "inferred");
+  for (const e of agg.errors.slice(0, 4)) {
+    const sev = /ECONNREFUSED|ETIMEDOUT|EHOSTUNREACH|ENETUNREACH|EMFILE|ENOSPC|ENOMEM/.test(e.errno) ? "high" : e.count > 50 ? "warn" : "info";
+    const hint = e.errno === "EAGAIN" ? " (non-blocking I/O would-block; normal for event loops unless excessive)" : e.errno === "ENOENT" ? ` (missing file; e.g. ${e.example?.split(",")[0]})` : e.errno === "ECONNREFUSED" ? " — a downstream service is not accepting connections" : "";
+    b.finding(sev, `${e.count}× ${e.syscall} failed with ${e.errno}${hint}`, [errEv], "observed");
+  }
+  if (slow[0] && slow[0].ms > 500) b.finding("warn", `slowest single call: ${slow[0].syscall}(${slow[0].target}) took ${slow[0].ms} ms`, [slowEv], "observed");
+  if (b.findingCount === 0) b.finding("info", `${records.length} syscalls in ${duration}s, nothing dominant; top ${top?.syscall ?? "?"}`, [topEv, waitEv]);
+}
+
 async function traceSyscalls(ctx: AdapterContext, args: { duration_s?: number; categories?: SyscallCategory[] }): Promise<ToolResult> {
   const { session, target } = ctx;
   const b = new ResultBuilder("trace_syscalls", session, target);
@@ -156,42 +195,7 @@ async function traceSyscalls(ctx: AdapterContext, args: { duration_s?: number; c
     b.next("dump_stacks", "profile_cpu");
     return b.build();
   }
-  const records = parseStrace(raw);
-  const agg = aggregateSyscalls(records);
-  const topEv = b.evidenceOf(
-    "syscall_stat",
-    `${records.length} syscalls, ${agg.totalMs} ms inside the kernel over ${duration}s; top by time: ${agg.stats
-      .slice(0, 5)
-      .map((s) => `${s.syscall} ${s.total_ms}ms×${s.count}`)
-      .join(", ")}`,
-    agg.stats.slice(0, 20),
-    { artifact: art.path },
-  );
-  const slow = agg.slowest.slice(0, 8).map((rec) => ({ syscall: rec.name, ms: round((rec.duration_s ?? 0) * 1000), pid: rec.pid, at: rec.time, target: describeArgs(rec), result: rec.result.slice(0, 60), line: rec.line }));
-  const slowEv = b.evidenceOf("syscall_slow", slow.length ? `slowest: ${slow.slice(0, 3).map((s) => `${s.syscall}(${s.target}) ${s.ms}ms`).join("; ")}` : "no timed syscalls", slow, { artifact: art.path, lines: slow[0] ? [slow[0].line, slow[0].line] : undefined });
-  const errEv = b.evidenceOf("syscall_error", agg.errors.length ? `errors: ${agg.errors.slice(0, 5).map((e) => `${e.syscall}→${e.errno}×${e.count}`).join(", ")}` : "no failing syscalls", agg.errors.slice(0, 15), { artifact: art.path });
-  const waitPct = agg.totalMs ? Math.round((100 * agg.waitMs) / agg.totalMs) : 0;
-  const waitEv = b.evidenceOf("metric", `${waitPct}% of kernel time in blocking waits (futex/poll/epoll/read/recv/nanosleep)`, { name: "wait_pct", value: waitPct, wait_ms: agg.waitMs, total_ms: agg.totalMs });
-
-  // Findings
-  const top = agg.stats[0];
-  if (top && agg.totalMs > 0 && top.total_ms / agg.totalMs > 0.5) {
-    const isWait = WAIT_SYSCALLS.has(top.syscall);
-    b.finding(isWait ? "info" : "warn", `${top.syscall} dominates: ${top.total_ms} ms over ${top.count} calls (${Math.round((100 * top.total_ms) / agg.totalMs)}% of kernel time)${isWait ? " — blocking wait, the process is waiting on something" : ""}`, [topEv, slowEv], "observed");
-  }
-  const nanosleep = agg.stats.find((s) => /nanosleep/.test(s.syscall));
-  if (nanosleep && nanosleep.total_ms > duration * 100) b.finding("warn", `${nanosleep.total_ms} ms in ${nanosleep.syscall} (${nanosleep.count} calls) — deliberate sleeps/timers on the request path`, [topEv], "inferred");
-  const fileChurn = agg.stats.filter((s) => /^(openat|open|stat|newfstatat|statx|lstat|access|readlink)$/.test(s.syscall)).reduce((n, s) => n + s.count, 0);
-  if (fileChurn > duration * 200) b.finding("warn", `${fileChurn} path lookups (open/stat) in ${duration}s — filesystem churn (missing cache? module resolution per request?)`, [topEv], "inferred");
-  const reads = agg.stats.find((s) => s.syscall === "read");
-  if (reads && reads.count > duration * 300) b.finding("warn", `${reads.count} read() calls in ${duration}s (avg ${reads.avg_ms} ms) — many small reads; sync I/O in a loop?`, [topEv], "inferred");
-  for (const e of agg.errors.slice(0, 4)) {
-    const sev = /ECONNREFUSED|ETIMEDOUT|EHOSTUNREACH|ENETUNREACH|EMFILE|ENOSPC|ENOMEM/.test(e.errno) ? "high" : e.count > 50 ? "warn" : "info";
-    const hint = e.errno === "EAGAIN" ? " (non-blocking I/O would-block; normal for event loops unless excessive)" : e.errno === "ENOENT" ? ` (missing file; e.g. ${e.example?.split(",")[0]})` : e.errno === "ECONNREFUSED" ? " — a downstream service is not accepting connections" : "";
-    b.finding(sev, `${e.count}× ${e.syscall} failed with ${e.errno}${hint}`, [errEv], "observed");
-  }
-  if (slow[0] && slow[0].ms > 500) b.finding("warn", `slowest single call: ${slow[0].syscall}(${slow[0].target}) took ${slow[0].ms} ms`, [slowEv], "observed");
-  if (b.findingCount === 0) b.finding("info", `${records.length} syscalls in ${duration}s, nothing dominant; top ${top?.syscall ?? "?"}`, [topEv, waitEv]);
+  summarizeSyscallRecords(b, parseStrace(raw), duration, art.path);
   b.limitation(`traced ${duration}s only (${set}); strace adds overhead to every syscall — latencies are inflated`);
   if (r.outputCapped) b.limitation(`raw log hit the ${LIMITS.MAX_RAW_BYTES / 1024 / 1024} MB cap and was cut short`);
   b.next("profile_cpu", "inspect_sockets", "inspect_files");

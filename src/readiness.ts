@@ -125,7 +125,7 @@ export async function probeReadiness(): Promise<Readiness> {
   const available = new Set<string>();
   const unavailable = new Map<string, string>();
   for (const t of ToolNameSchema.options as ToolName[]) {
-    if (["readiness", "attach", "detach", "list_processes", "diff_runs", "report"].includes(t)) {
+    if (["readiness", "attach", "detach", "list_processes", "diff_runs", "report", "import_artifact"].includes(t)) {
       available.add(t);
       continue;
     }

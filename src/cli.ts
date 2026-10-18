@@ -262,6 +262,17 @@ program
   });
 
 program
+  .command("import")
+  .argument("<tool>", "strace | fs_usage | perf_script | folded | pyspy_dump | sample | gdb | lldb | lsof | tcpdump")
+  .argument("<file>", "raw output file you captured yourself (e.g. with sudo)")
+  .requiredOption("--session <id>", "session id")
+  .option("--duration <s>", "how long the capture ran (for profiles without timestamps)")
+  .description("analyze tool output you captured yourself — same evidence and findings as a live run")
+  .action(async function (this: Command, tool: string, file: string, opts) {
+    await emit(this, await runTool("import_artifact", { session_id: opts.session, tool, path: file, duration_s: opts.duration ? Number(opts.duration) : undefined }));
+  });
+
+program
   .command("call")
   .argument("<tool>", "MCP tool name, e.g. trace_syscalls")
   .argument("[args]", "JSON object of arguments", "{}")

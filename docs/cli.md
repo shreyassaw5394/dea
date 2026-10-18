@@ -23,6 +23,7 @@ dea container --session S
 dea report   --session S [--md out.md]
 dea detach   --session S
 dea why <target> [--symptom slow|leak|hang|crash|triage] [--wait 15] [--duration 10]   # one-command investigation
+dea import <tool> <file> --session S [--duration s]   # analyze output you captured yourself: strace | fs_usage | perf_script | folded | pyspy_dump | sample | gdb | lldb | lsof | tcpdump
 dea call <tool> '<json args>'              # any tool, raw ToolResult (used by the Python SDK)
 dea port <port>                            # who holds a port (no session)
 dea sessions list | prune [--days 7] [--all]

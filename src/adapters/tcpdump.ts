@@ -164,6 +164,29 @@ export function buildFilter(ports: number[], extra?: string): string {
   return extra ? `${base} and (${assertSafeBpfFragment(extra)})` : base;
 }
 
+/** Shared by capture_traffic and `dea import`: packets → evidence + findings. */
+export function summarizeCaptureEvidence(b: ResultBuilder, pkts: PacketLine[], localPorts: Set<number>, meta: { filter: string; duration: number; pcapPath?: string; textPath: string }): void {
+  const { filter, duration } = meta;
+  const local = localPorts;
+  const s = summarizeTraffic(pkts, local);
+  const filterEv = b.evidenceOf("note", `filter: ${filter}`, { filter, ports: [...local].slice(0, 40), duration_s: duration });
+  const totalEv = b.evidenceOf("packet_summary", `${s.packets} packets, ${humanBytes(s.bytes)} payload over ${s.duration_s}s; RST=${s.rst} retransmit≈${s.retransmits} unanswered SYN=${s.syn_no_synack}`, { name: "packets", packets: s.packets, bytes: s.bytes, rst: s.rst, retransmits: s.retransmits, syn_no_synack: s.syn_no_synack, duration_s: s.duration_s }, { artifact: (meta.pcapPath ?? meta.textPath) });
+  const remoteEv = b.evidenceOf("packet_summary", s.byRemote.length ? `per remote: ${s.byRemote.slice(0, 5).map((r2) => `${r2.remote} ${r2.packets}p/${humanBytes(r2.bytes)}${r2.rst ? ` RST×${r2.rst}` : ""}${r2.retransmits ? ` rtx×${r2.retransmits}` : ""}`).join("; ")}` : "no packets matched", s.byRemote.slice(0, 25), { artifact: meta.textPath });
+  if (s.dns.length) b.evidenceOf("dns_query", `DNS: ${s.dns.slice(0, 6).map((d) => `${d.name}×${d.count}`).join(", ")}`, s.dns.slice(0, 30), { artifact: meta.textPath });
+  if (s.sni.length) b.evidenceOf("tls_sni", `TLS SNI: ${s.sni.slice(0, 6).map((d) => `${d.name}×${d.count}`).join(", ")}`, s.sni.slice(0, 30), { artifact: meta.textPath });
+
+  if (s.packets === 0) b.finding("info", `no packets on the target's ports in ${duration}s`, [totalEv, filterEv]);
+  if (s.rst > 0) {
+    const worst = [...s.byRemote].sort((a, c) => c.rst - a.rst)[0]!;
+    b.finding(s.rst >= 10 ? "high" : "warn", `${s.rst} TCP RST(s), most with ${worst.remote} (${worst.rst}) — connections are being refused or torn down abruptly`, [totalEv, remoteEv], "observed");
+  }
+  if (s.syn_no_synack > 0) b.finding("high", `${s.syn_no_synack} SYN(s) never got a SYN-ACK — a remote is unreachable or firewalled`, [totalEv, remoteEv], "observed");
+  if (s.retransmits >= 5) b.finding("warn", `≈${s.retransmits} probable retransmissions — packet loss or a slow peer`, [totalEv], "inferred");
+  const dnsRepeat = s.dns.find((d) => d.count >= 20);
+  if (dnsRepeat) b.finding("warn", `${dnsRepeat.name} resolved ${dnsRepeat.count}× in ${duration}s — no DNS caching`, [b.evidenceOf("dns_query", "repeated lookups", dnsRepeat)], "inferred");
+  if (b.findingCount === 0 && s.packets > 0) b.finding("info", `${s.packets} packets, top remote ${s.byRemote[0]?.remote} (${humanBytes(s.byRemote[0]?.bytes ?? 0)})`, [remoteEv]);
+}
+
 async function targetPorts(pids: number[]): Promise<number[]> {
   const r = await runCapped("lsof", ["-nP", "-w", "-a", "-F", "pcufatsinTP", "-i", "-p", pids.join(",")], { timeoutMs: 15_000 });
   const ports: number[] = [];
@@ -209,25 +232,7 @@ async function captureTraffic(ctx: AdapterContext, args: { duration_s?: number; 
   const art = await b.addArtifact(pcap, "pcap", { description: `tcpdump ${duration}s, filter: ${filter}` });
   const read = await runCapped("tcpdump", ["-nn", "-tt", "-r", pcap], { timeoutMs: 30_000 });
   const textPath = await b.writeArtifact("capture.txt", read.stdout, "raw_text", "tcpdump -nn -tt -r capture.pcap");
-  const pkts = parseTcpdump(read.stdout);
-  const local = new Set(ports);
-  const s = summarizeTraffic(pkts, local);
-  const filterEv = b.evidenceOf("note", `filter: ${filter}`, { filter, ports: [...local].slice(0, 40), duration_s: duration });
-  const totalEv = b.evidenceOf("packet_summary", `${s.packets} packets, ${humanBytes(s.bytes)} payload over ${s.duration_s}s; RST=${s.rst} retransmit≈${s.retransmits} unanswered SYN=${s.syn_no_synack}`, { name: "packets", packets: s.packets, bytes: s.bytes, rst: s.rst, retransmits: s.retransmits, syn_no_synack: s.syn_no_synack, duration_s: s.duration_s }, { artifact: art.path });
-  const remoteEv = b.evidenceOf("packet_summary", s.byRemote.length ? `per remote: ${s.byRemote.slice(0, 5).map((r2) => `${r2.remote} ${r2.packets}p/${humanBytes(r2.bytes)}${r2.rst ? ` RST×${r2.rst}` : ""}${r2.retransmits ? ` rtx×${r2.retransmits}` : ""}`).join("; ")}` : "no packets matched", s.byRemote.slice(0, 25), { artifact: textPath });
-  if (s.dns.length) b.evidenceOf("dns_query", `DNS: ${s.dns.slice(0, 6).map((d) => `${d.name}×${d.count}`).join(", ")}`, s.dns.slice(0, 30), { artifact: textPath });
-  if (s.sni.length) b.evidenceOf("tls_sni", `TLS SNI: ${s.sni.slice(0, 6).map((d) => `${d.name}×${d.count}`).join(", ")}`, s.sni.slice(0, 30), { artifact: textPath });
-
-  if (s.packets === 0) b.finding("info", `no packets on the target's ports in ${duration}s`, [totalEv, filterEv]);
-  if (s.rst > 0) {
-    const worst = [...s.byRemote].sort((a, c) => c.rst - a.rst)[0]!;
-    b.finding(s.rst >= 10 ? "high" : "warn", `${s.rst} TCP RST(s), most with ${worst.remote} (${worst.rst}) — connections are being refused or torn down abruptly`, [totalEv, remoteEv], "observed");
-  }
-  if (s.syn_no_synack > 0) b.finding("high", `${s.syn_no_synack} SYN(s) never got a SYN-ACK — a remote is unreachable or firewalled`, [totalEv, remoteEv], "observed");
-  if (s.retransmits >= 5) b.finding("warn", `≈${s.retransmits} probable retransmissions — packet loss or a slow peer`, [totalEv], "inferred");
-  const dnsRepeat = s.dns.find((d) => d.count >= 20);
-  if (dnsRepeat) b.finding("warn", `${dnsRepeat.name} resolved ${dnsRepeat.count}× in ${duration}s — no DNS caching`, [b.evidenceOf("dns_query", "repeated lookups", dnsRepeat)], "inferred");
-  if (b.findingCount === 0 && s.packets > 0) b.finding("info", `${s.packets} packets, top remote ${s.byRemote[0]?.remote} (${humanBytes(s.byRemote[0]?.bytes ?? 0)})`, [remoteEv]);
+  summarizeCaptureEvidence(b, parseTcpdump(read.stdout), new Set(ports), { filter, duration, pcapPath: art.path, textPath });
   b.limitation("retransmits = same flow and TCP seq range seen again >2 ms later (loopback In/Out duplicates collapsed); open the .pcap in Wireshark for exact analysis");
   b.limitation("TLS SNI and payloads need a deeper snaplen/-v; this capture used -s 256 -q. Raw .pcap may contain secrets and is NOT redacted");
   if (!isRoot()) b.limitation("capture ran without root — if it worked, your user has BPF access");

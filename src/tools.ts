@@ -40,6 +40,7 @@ export const TOOL_DESCRIPTIONS: Record<keyof typeof ToolArgs, string> = {
   diff_runs: "Diff two prior runs of the same tool in this session (e.g. snapshot_memory#1 vs snapshot_memory#2, profile_cpu#1 vs #2): what grew, appeared, disappeared.",
   container_info: "docker inspect/stats/top/logs tail for the target container, host pid mapping, cgroup limits: throttled? OOM-killed before? restarts?",
   report: "Markdown report of the whole session: findings, evidence excerpts, artifact paths. Optionally written to a file.",
+  import_artifact: "Analyze raw tool output you captured yourself (e.g. `sudo strace …`, `sudo fs_usage …`, `perf script`, `py-spy dump`, `lsof -F`, `tcpdump -nn -tt -r`) and turn it into the same evidence and findings DEA would produce. Use when DEA could not run the tool (no root, macOS).",
 };
 
 export async function runTool(name: string, rawArgs: Record<string, unknown>): Promise<ToolResult> {
@@ -64,6 +65,11 @@ export async function runTool(name: string, rawArgs: Record<string, unknown>): P
         return await toolDiffRuns(args as { session_id: string; a: string; b: string });
       case "report":
         return await toolReport(args as { session_id: string; out?: string });
+      case "import_artifact": {
+        const session = await loadSession(String(args.session_id));
+        const { importArtifact } = await import("./import.js");
+        return await recordRun(session, await importArtifact(session, args as { tool: import("./contracts.js").ImportTool; path: string; duration_s?: number }));
+      }
       default:
         return await dispatchAdapter(name, args);
     }

@@ -155,6 +155,7 @@ export const ToolName = z.enum([
   "diff_runs",
   "container_info",
   "report",
+  "import_artifact",
 ]);
 export type ToolName = z.infer<typeof ToolName>;
 
@@ -284,6 +285,9 @@ export type Readiness = z.infer<typeof Readiness>;
 // Tool argument schemas (shared by MCP server and CLI)
 // ---------------------------------------------------------------------------
 
+export const ImportTool = z.enum(["strace", "fs_usage", "perf_script", "folded", "pyspy_dump", "sample", "gdb", "lldb", "lsof", "tcpdump"]);
+export type ImportTool = z.infer<typeof ImportTool>;
+
 export const SyscallCategory = z.enum(["network", "file", "process", "signal", "memory", "all"]);
 export type SyscallCategory = z.infer<typeof SyscallCategory>;
 
@@ -335,6 +339,12 @@ export const ToolArgs = {
   report: z.object({
     session_id: z.string().min(1),
     out: z.string().optional().describe("Optional path to also write the markdown to"),
+  }),
+  import_artifact: z.object({
+    session_id: z.string().min(1),
+    tool: ImportTool.describe("What produced the file"),
+    path: z.string().min(1).describe("Path to the raw output file you captured yourself (e.g. with sudo)"),
+    duration_s: z.number().int().min(1).max(3600).optional().describe("How long the capture ran, when the file has no timestamps (profiles)"),
   }),
 } as const;
 
