@@ -24,11 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Assemble site
-        run: |
-          mkdir -p _site/docs
-          cp -r site/* _site/
-          cp -r docs/* _site/docs/
-          cp README.md _site/docs/README.md
+        run: bash scripts/build-site.sh
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }

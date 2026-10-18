@@ -12,7 +12,7 @@ import { VERSION } from "./version.js";
 const program = new Command();
 program
   .name("dea")
-  .description("◎ DEA — Debug Anything. Observe any running process. No breakpoints, no restarts, no instrumentation.\n  https://shreyassaw5394.github.io/dea")
+  .description("◎ DEA — Debug Anything. Observe any running process. No breakpoints, no restarts, no instrumentation.\n  https://debuganything.dev")
   .version(VERSION, "-v, --version")
   .option("--json", "print the raw ToolResult JSON")
   .showHelpAfterError();

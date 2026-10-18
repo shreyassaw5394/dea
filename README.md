@@ -1,4 +1,4 @@
-<p align="center"><a href="https://shreyassaw5394.github.io/dea"><img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-logo.png" alt="DEA — Debug Anything" width="640"></a></p>
+<p align="center"><a href="https://debuganything.dev"><img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-logo.png" alt="DEA — Debug Anything" width="640"></a></p>
 
 # DEA: Debug Anything
 
@@ -19,7 +19,7 @@ npx dea-agents setup
 
 ![DEA finding a Node.js leak: two memory snapshots, a diff, and the retainer named with evidence ids](docs/demo.gif)
 
-> Website: <https://shreyassaw5394.github.io/dea> · Community: [Discord](https://discord.gg/htPuQ5grg) · [Discussions](https://github.com/shreyassaw5394/dea/discussions) · Only ever download DEA from this repo, the `dea-agents` npm/PyPI packages, or that site.
+> Website: <https://debuganything.dev> · Community: [Discord](https://discord.gg/htPuQ5grg) · [Discussions](https://github.com/shreyassaw5394/dea/discussions) · Only ever download DEA from this repo, the `dea-agents` npm/PyPI packages, or that site.
 
 ## Where DEA sits
 
