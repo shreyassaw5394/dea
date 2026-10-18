@@ -8,4 +8,5 @@ cp -r docs/* _site/docs/
 cp README.md _site/docs/README.md
 cp docs/demo.mp4 _site/docs/demo.mp4 2>/dev/null || true
 cp assets/dea-logo.png assets/dea-logo-light.png assets/dea-mark-512.png _site/ 2>/dev/null || true
+{ cat site/llms.txt; echo; for f in README.md docs/installation.md docs/examples.md docs/real-world.md docs/workflows.md docs/proactive.md docs/cli.md docs/providers.md docs/safety.md; do echo; echo "----- $f -----"; echo; cat "$f"; done; } > _site/llms-full.txt
 echo "site assembled in _site/ ($(find _site -type f | wc -l | tr -d ' ') files)"

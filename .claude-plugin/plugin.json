@@ -1,0 +1,15 @@
+{
+  "name": "dea",
+  "version": "0.3.0",
+  "description": "Debug Anything: let your agent observe any running process (strace, py-spy, perf, lsof, tcpdump, gdb/lldb, heap snapshots) and get evidence-backed findings. Read-only, no sudo, no telemetry.",
+  "author": { "name": "Shreyas Sawant", "url": "https://github.com/shreyassaw5394" },
+  "homepage": "https://debuganything.dev",
+  "repository": "https://github.com/shreyassaw5394/dea",
+  "license": "MIT",
+  "keywords": ["debugging", "observability", "profiling", "strace", "py-spy", "perf", "tcpdump", "memory-leak", "deadlock", "mcp"],
+  "mcpServers": {
+    "dea": { "command": "npx", "args": ["-y", "dea-agents@latest", "serve"] }
+  },
+  "skills": "./skills",
+  "hooks": "./hooks/hooks.json"
+}
