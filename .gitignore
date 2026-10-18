@@ -13,3 +13,4 @@ examples/**/__pycache__/
 python/dist/
 python/**/__pycache__/
 python/*.egg-info/
+_site/
