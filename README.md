@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/dea-logo.svg" alt="DEA — Debug Anything" width="640"></p>
+
 # DEA: Debug Anything
 
 **Observe any running process. No breakpoints, no restarts, no instrumentation.**
