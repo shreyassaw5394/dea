@@ -11,4 +11,7 @@ First release: "Observe any running process. No breakpoints, no restarts, no ins
 - **Safety**: read-only, 60 s / 30 s wall caps, 50 MB raw cap, 16 KB payload cap, no auto-sudo, scoped captures, redaction of secrets in payloads, child cleanup on detach/exit.
 - **Setup**: `dea setup` registers the MCP server and the `debug-anything` skill with Claude Code, Codex, Cursor and Gemini CLI (backs up configs, asks first).
 - **Examples**: `leaky-node`, `deadlock-py`, `busy-port` with reproducible DEA sessions in `docs/showcases.md`.
+- **CLI extras**: `dea why <target> --symptom …` one-command investigation; `dea call <tool> <json>` for scripts/SDKs; `dea port <n>`.
+- **Python**: `dea-agents` on PyPI with LangChain, LlamaIndex and CrewAI tool adapters (`python/`).
+- **Site**: GitHub Pages landing + docs (`site/`, `.github/workflows/pages.yml`).
 - **Linux lab**: `docker/linux-lab` image with every provider for fixture capture and live runs from macOS.

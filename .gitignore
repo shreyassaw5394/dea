@@ -9,3 +9,7 @@ examples/**/__pycache__/
 *.heapsnapshot
 .vhs-out/
 .lab-dea/
+.lab-dea/
+python/dist/
+python/**/__pycache__/
+python/*.egg-info/

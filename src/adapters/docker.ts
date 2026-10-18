@@ -232,6 +232,9 @@ async function containerInfoFor(b: ResultBuilder, name: string, _ctx: AdapterCon
   if (interesting.length) {
     b.finding("info", `recent logs contain ${interesting.length} error-ish line(s) (see evidence)`, [b.evidenceOf("log_excerpt", "error-ish log lines", interesting.slice(-5), { artifact: logsPath })]);
   }
+  if (b.findingCount === 0 && st.Running) {
+    b.finding("info", `container running${stats ? `, memory ${stats.mem_pct}% of ${hc.Memory ? humanBytes(hc.Memory) : "host"} and cpu ${stats.cpu_pct}%` : ""}, no OOM kill, no restarts`, statsEv ? [stateEv, limitsEv, statsEv] : [stateEv, limitsEv]);
+  }
   b.next("snapshot_memory", "profile_cpu", "inspect_sockets");
   return b.build();
 }

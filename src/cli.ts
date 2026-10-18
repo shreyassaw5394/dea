@@ -195,6 +195,61 @@ program
   });
 
 program
+  .command("why")
+  .alias("investigate")
+  .argument("<target...>", "pid, container, pod, or a command after --")
+  .option("--symptom <s>", "slow | leak | hang | crash | triage (default: triage)", "triage")
+  .option("--kind <kind>", "pid|container|pod|command (default: auto)")
+  .option("--wait <s>", "leak: seconds between the two memory snapshots", "15")
+  .option("--duration <s>", "profile/trace seconds", "10")
+  .description("one-command investigation: attach → the right tools for the symptom → report → detach")
+  .action(async function (this: Command, targetParts: string[], opts) {
+    const { investigate, summarizeFindings } = await import("./investigate.js");
+    const json = wantJson(this);
+    const target = targetParts.join(" ");
+    const symptom = ["slow", "leak", "hang", "crash", "triage"].includes(opts.symptom) ? opts.symptom : "triage";
+    if (!json) process.stdout.write(`${pc.bold("DEA")} investigating ${pc.cyan(target)} for ${pc.cyan(symptom)} …\n\n`);
+    const out = await investigate(target, {
+      symptom,
+      kind: opts.kind ?? (targetParts.length > 1 ? "command" : undefined),
+      waitS: Number(opts.wait),
+      durationS: Number(opts.duration),
+      onResult: (r) => {
+        if (!json) process.stdout.write(renderHuman(r) + "\n");
+      },
+      onNote: (s) => {
+        if (!json) process.stdout.write(pc.dim(`… ${s}\n`));
+      },
+    });
+    if (json) return void process.stdout.write(JSON.stringify(out, null, 2) + "\n");
+    const ranked = summarizeFindings(out.results.filter((r) => !["attach", "detach", "report"].includes(r.tool)));
+    process.stdout.write(pc.bold("\n=== Summary ===\n"));
+    if (!ranked.length) process.stdout.write("no findings — see limitations above\n");
+    for (const f of ranked.slice(0, 12)) process.stdout.write(`${SEV[f.severity as keyof typeof SEV](pad(f.severity.toUpperCase(), 5))} ${f.summary} ${pc.dim(`[${f.confidence}; ${f.ref}]`)}\n`);
+    if (out.report_path) process.stdout.write(`\n${pc.dim("report:")} ${out.report_path}\n`);
+    if (out.results.some((r) => !r.ok)) process.exitCode = 1;
+  });
+
+program
+  .command("call")
+  .argument("<tool>", "MCP tool name, e.g. trace_syscalls")
+  .argument("[args]", "JSON object of arguments", "{}")
+  .description("call any tool by name with JSON args and print the ToolResult (used by the Python SDK and scripts)")
+  .action(async (tool: string, args: string) => {
+    let parsed: Record<string, unknown>;
+    try {
+      parsed = JSON.parse(args) as Record<string, unknown>;
+    } catch {
+      process.stdout.write(JSON.stringify({ ok: false, tool, error: "args must be a JSON object" }) + "\n");
+      process.exitCode = 1;
+      return;
+    }
+    const r = await runTool(tool, parsed);
+    process.stdout.write(JSON.stringify(r, null, 2) + "\n");
+    if (!r.ok) process.exitCode = 1;
+  });
+
+program
   .command("port")
   .argument("<port>", "TCP/UDP port number")
   .description("who holds a port? (lsof -i :PORT, no session needed)")

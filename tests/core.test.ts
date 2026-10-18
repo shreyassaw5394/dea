@@ -65,3 +65,13 @@ describe("report", () => {
     expect(md).toContain("x \\| y");
   });
 });
+
+describe("investigate summary", () => {
+  it("ranks findings by severity with run refs", async () => {
+    const { summarizeFindings } = await import("../src/investigate.js");
+    const mk = (tool: string, sev: "info" | "warn" | "high"): ToolResult => ({ ok: true, tool, run_id: `${tool}#1`, session_id: "s", target: { kind: "pid", id: "1", host: "local" }, duration_ms: 1, findings: [{ id: "f1", severity: sev, summary: sev, evidence_ids: ["e1"], confidence: "observed" }], evidence: [{ id: "e1", kind: "note", summary: "", data: null }], limitations: [], suggested_next: [], artifacts: [] });
+    const r = summarizeFindings([mk("a", "info"), mk("b", "high"), mk("c", "warn")]);
+    expect(r.map((x) => x.severity)).toEqual(["high", "warn", "info"]);
+    expect(r[0]!.ref).toBe("b#1/e1");
+  });
+});
