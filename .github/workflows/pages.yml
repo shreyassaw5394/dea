@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Assemble site
         run: bash scripts/build-site.sh
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
       - id: deployment
