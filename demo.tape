@@ -9,7 +9,7 @@ Set Theme "Catppuccin Mocha"
 Set TypingSpeed 35ms
 
 Hide
-Type "export PATH=$DEA_BIN:$PATH; cd examples/leaky-node && node server.js > /dev/null 2>&1 & PID=$!; sleep 1; clear"
+Type "export PATH=$DEA_BIN:$PATH; cd examples/leaky-node; node server.js > /dev/null 2>&1 & PID=$!; sleep 1; clear"
 Enter
 Show
 Type "# A Node server is leaking memory. Let DEA tell us why, with evidence."
