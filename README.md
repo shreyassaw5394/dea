@@ -164,6 +164,10 @@ Reproducible with `examples/`. Full transcripts in [docs/showcases.md](docs/show
 **busy-port** — a process holding `:8080` and a script failing with `EADDRINUSE`.
 `dea port 8080`: `port 8080 is held by pid 47508 (node, user shreyassawant) in LISTEN — command: node server.js. DEA will not kill it; decide yourself.`
 
+## Agents use it without being asked
+
+Once installed, agents are told to reach for DEA on their own: when a command they ran hangs, a test times out, output shows `EADDRINUSE` / `ECONNREFUSED` / `EMFILE` / exit 137 / OOM / segfault, a server they started does not respond, or you mention slow, hang, leak or crash. For Claude Code, `setup` also installs a tiny hook that spots those signals in command output and prompts and nudges the model toward the right DEA tool. Read-only observation needs no permission; `capture_traffic` always does. Details and the off switch (`--no-hooks`): [docs/proactive.md](docs/proactive.md).
+
 ## Python, LangChain, LlamaIndex, CrewAI
 
 ```bash

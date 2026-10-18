@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0 — 2026-10-18
+
+- **Proactive use.** Skill gains a "use it without being asked" table; MCP server instructions tell agents to measure on hang/timeout/EADDRINUSE/EMFILE/OOM/segfault signals; `dea setup` installs a Claude Code hook (`~/.dea/hooks/dea-hook.mjs`, PostToolUse on Bash + UserPromptSubmit) that nudges the model when such a signal appears. `--no-hooks` to skip. `dea hook` subcommand for other integrations.
+- Docs: `docs/proactive.md`, `docs/real-world.md`.
+
 ## 0.1.1 — 2026-10-18
 
 - `suggested_next` now includes a REA handoff ("decompile <symbol> in <dso>") for hot native frames and blocked native threads.

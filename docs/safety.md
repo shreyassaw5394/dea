@@ -63,6 +63,10 @@ passes through `redact()`: Bearer tokens, AWS keys, JWTs, `password=`,
 URLs. **Raw artifacts on disk are not redacted** — `.pcap`, `.heapsnapshot`
 and strace logs can contain secrets. Treat the sessions directory as sensitive.
 
+## Proactive hook
+
+`dea setup` registers a Claude Code hook that reads command output and prompts *locally*, matches a fixed list of regexes, and prints a context note. It runs no DEA tool, sends nothing anywhere, and can be removed with `--no-hooks`. See [proactive.md](proactive.md).
+
 ## No cloud, no telemetry
 
 DEA makes no network calls of its own. The only outbound action is the explicit

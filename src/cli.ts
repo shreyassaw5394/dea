@@ -90,9 +90,30 @@ program
   .option("--home <dir>", "home directory to write configs into (for testing)")
   .option("--agents <list>", "comma-separated subset: claude,codex,cursor,gemini")
   .option("--dry-run", "show what would change without writing")
+  .option("--no-hooks", "do not install the Claude Code proactive hook")
   .action(async (opts) => {
     const { setup } = await import("./setup.js");
-    await setup({ yes: Boolean(opts.yes), home: opts.home, agents: opts.agents?.split(",").map((s: string) => s.trim()), dryRun: Boolean(opts.dryRun) });
+    await setup({ yes: Boolean(opts.yes), home: opts.home, agents: opts.agents?.split(",").map((s: string) => s.trim()), dryRun: Boolean(opts.dryRun), hooks: opts.hooks !== false });
+  });
+
+program
+  .command("hook")
+  .argument("[event]", "PostToolUse | UserPromptSubmit (read from stdin JSON when omitted)")
+  .description("agent hook: read a hook event on stdin, print a DEA nudge when the output/prompt shows a runtime-problem signal")
+  .action(async (_event?: string) => {
+    const { detectTriggers, renderNudge } = await import("./hook.js");
+    let raw = "";
+    for await (const c of process.stdin) raw += c;
+    let ev: any = {};
+    try {
+      ev = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    const scope = ev.hook_event_name === "UserPromptSubmit" ? "prompt" : "output";
+    const text = scope === "prompt" ? String(ev.prompt ?? "") : [ev.tool_response?.stdout, ev.tool_response?.stderr, ev.tool_response?.output].filter(Boolean).join("\n");
+    const nudge = renderNudge(detectTriggers(text, scope), scope);
+    if (nudge) process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: ev.hook_event_name, additionalContext: nudge } }) + "\n");
   });
 
 program

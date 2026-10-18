@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createInterface } from "node:readline/promises";
 import pc from "picocolors";
+import { HOOK_SCRIPT } from "./hook.js";
 
 export const MCP_ENTRY = { command: "npx", args: ["-y", "dea-agents@latest", "serve"] } as const;
 
@@ -81,6 +82,31 @@ export function patchJsonConfig(existing: string | null, key = "mcpServers"): { 
   return { next: JSON.stringify(obj, null, 2) + "\n", changed: true };
 }
 
+/** Claude Code hooks entries (settings.json). Pure. */
+export function patchClaudeHooks(existing: string | null, scriptPath: string): { next: string; changed: boolean } {
+  let obj: Record<string, any> = {};
+  if (existing && existing.trim()) {
+    try {
+      obj = JSON.parse(existing);
+    } catch {
+      throw new Error("existing settings.json is not valid JSON; refusing to overwrite it");
+    }
+  }
+  const cmd = `node "${scriptPath}"`;
+  const hooks = (obj.hooks ??= {});
+  let changed = false;
+  const ensure = (event: string, matcher: string | undefined) => {
+    const list: any[] = (hooks[event] ??= []);
+    const has = list.some((g) => Array.isArray(g?.hooks) && g.hooks.some((h: any) => typeof h?.command === "string" && h.command.includes("dea-hook.mjs")));
+    if (has) return;
+    list.push({ ...(matcher ? { matcher } : {}), hooks: [{ type: "command", command: cmd, timeout: 10 }] });
+    changed = true;
+  };
+  ensure("PostToolUse", "Bash");
+  ensure("UserPromptSubmit", undefined);
+  return { next: JSON.stringify(obj, null, 2) + "\n", changed };
+}
+
 export const TOML_BLOCK = `[mcp_servers.dea]\ncommand = "npx"\nargs = ["-y", "dea-agents@latest", "serve"]\n`;
 
 /** Patch a TOML config: replace an existing [mcp_servers.dea] table or append one. Pure, no TOML dependency. */
@@ -110,6 +136,8 @@ export interface SetupOptions {
   home?: string;
   agents?: string[];
   dryRun?: boolean;
+  /** Install the Claude Code proactive hook (default true). */
+  hooks?: boolean;
   /** Test hook. */
   log?: (s: string) => void;
 }
@@ -137,6 +165,9 @@ export async function setup(opts: SetupOptions = {}): Promise<{ written: string[
       log(pc.dim(agent.format === "json" ? JSON.stringify({ [agent.key]: { dea: MCP_ENTRY } }, null, 2) : TOML_BLOCK.trim()));
     }
     if (agent.skillsDir) log(pc.dim(`  + copy skills/debug-anything/SKILL.md → ${agent.skillsDir(home)}/SKILL.md`));
+    if (agent.id === "claude" && opts.hooks !== false) {
+      log(pc.dim(`  + write ${join(home, ".dea", "hooks", "dea-hook.mjs")} and register it in ${join(home, ".claude", "settings.json")} (hooks.PostToolUse[Bash], hooks.UserPromptSubmit) so the agent reaches for DEA on EADDRINUSE / OOM / timeouts / "it hangs" without being asked. Disable with --no-hooks.`));
+    }
   }
   if (opts.dryRun) {
     log(pc.dim("\n--dry-run: nothing written."));
@@ -164,6 +195,22 @@ export async function setup(opts: SetupOptions = {}): Promise<{ written: string[
       await mkdir(dir, { recursive: true });
       await copyFile(join(skillSrc, "SKILL.md"), join(dir, "SKILL.md"));
       written.push(join(dir, "SKILL.md"));
+    }
+    if (p.agent.id === "claude" && opts.hooks !== false) {
+      const hookDir = join(home, ".dea", "hooks");
+      await mkdir(hookDir, { recursive: true });
+      const script = join(hookDir, "dea-hook.mjs");
+      await writeFile(script, HOOK_SCRIPT, { mode: 0o755 });
+      written.push(script);
+      const settingsPath = join(home, ".claude", "settings.json");
+      const existing = existsSync(settingsPath) ? await readFile(settingsPath, "utf8") : null;
+      const { next, changed } = patchClaudeHooks(existing, script);
+      if (changed) {
+        await mkdir(dirname(settingsPath), { recursive: true });
+        if (existing !== null) await copyFile(settingsPath, `${settingsPath}.bak-dea`);
+        await writeFile(settingsPath, next);
+        written.push(settingsPath);
+      }
     }
   }
   log(`\n${pc.green("Done.")} ${written.length} file(s) written. ${pc.bold("Restart your agent")} and ask it: “My API gets slow after a few minutes — attach to it and tell me why, with evidence.”`);

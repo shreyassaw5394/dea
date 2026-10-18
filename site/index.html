@@ -98,6 +98,9 @@ report: ~/.dea/sessions/20261017-223231-ec44f5/report.md</pre>
 <tr><td>Docker</td><td>OOM kills, exit codes, restarts, limits vs usage, cgroup throttling, log tail</td><td>docker</td></tr>
 </table>
 
+<h2>Agents use it on their own</h2>
+<p>Once set up, the skill and the MCP instructions tell the agent to attach and measure, unprompted, when a command hangs, a test times out, output shows <code>EADDRINUSE</code> / <code>EMFILE</code> / exit 137 / a segfault, or you mention slow, hang, leak or crash. In Claude Code a 40 ms hook spots those signals and nudges the model toward the right tool. Read-only observation needs no permission; packet capture always does. <a href="docs/proactive.md">How it works, and the off switch.</a></p>
+
 <h2>Safety</h2>
 <p>Read-only. 60 s cap per tool, 50 MB raw cap, 16 KB returned to the agent. Never runs sudo — it tells you the command instead. Captures are scoped to the target's ports and require consent. Secrets are redacted in payloads. No cloud, no telemetry. <a href="docs/safety.md">Details</a>.</p>
 

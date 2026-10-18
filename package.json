@@ -1,7 +1,7 @@
 {
   "name": "dea-agents",
   "mcpName": "io.github.shreyassaw5394/dea",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Debug Anything: observe and diagnose any running process, container or pod from your agent with one CLI and MCP server. Evidence, not guesses.",
   "license": "MIT",
   "type": "module",
