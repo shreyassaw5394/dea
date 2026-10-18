@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-mark-512.png" alt="" width="56" align="right">
+
 # Real-world situations
 
 Incident patterns every on-call engineer has seen, and what a DEA session

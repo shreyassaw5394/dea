@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-mark-512.png" alt="" width="56" align="right">
+
 # Adopting DEA in your workflow
 
 From "I installed it" to "every agent on the team measures before it guesses".

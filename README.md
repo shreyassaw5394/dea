@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/dea-logo.svg" alt="DEA — Debug Anything" width="640"></p>
+<p align="center"><a href="https://shreyassaw5394.github.io/dea"><img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-logo.png" alt="DEA — Debug Anything" width="640"></a></p>
 
 # DEA: Debug Anything
 

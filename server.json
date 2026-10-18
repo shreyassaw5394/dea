@@ -15,8 +15,16 @@
       "identifier": "dea-agents",
       "version": "0.2.0",
       "runtimeHint": "npx",
-      "transport": { "type": "stdio" },
-      "packageArguments": [{ "type": "positional", "value": "serve" }]
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "serve"
+        }
+      ]
     }
-  ]
+  ],
+  "websiteUrl": "https://shreyassaw5394.github.io/dea"
 }
