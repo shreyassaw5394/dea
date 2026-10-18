@@ -1,7 +1,7 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Discussions
-    url: https://github.com/shreyassaw5394/dea/discussions
+  - name: Discord
+    url: https://discord.gg/htPuQ5grg
     about: Questions, show-and-tell, help with a session
   - name: Security issue
     url: https://github.com/shreyassaw5394/dea/security/advisories/new
