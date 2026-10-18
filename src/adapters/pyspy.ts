@@ -360,6 +360,10 @@ export async function summarizeProfile(b: ResultBuilder, folded: string, duratio
   if (b.findingCount === 0) b.finding("info", `CPU spread thin: top work frame ${shortFrame((workFrames[0] ?? frames[0])!.frame)} at ${(workFrames[0] ?? frames[0])!.self_pct}%`, [framesEv]);
   b.limitation(`sampled ${duration}s only (${profiler}${sampleHz ? ` @ ${sampleHz} Hz` : ""}); idle frames across all threads are excluded from the hot-frame ranking`);
   b.next("trace_syscalls", "dump_stacks", "inspect_sockets");
+  if (topWork && topWork.self_pct >= 20 && (profiler === "perf" || profiler === "sample")) {
+    const dso = /\(([^)]+)\)\s*$/.exec(topWork.frame)?.[1];
+    b.next(`REA: decompile ${shortFrame(topWork.frame).replace(/\s*\(.*$/, "")}${dso ? ` in ${dso}` : ""} statically (npx rea-agents) — https://github.com/morluto/rea`);
+  }
   return b.build();
 }
 
