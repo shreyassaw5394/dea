@@ -149,7 +149,7 @@ export function detectTool(raw: string): ImportTool | undefined {
   if (/^Call graph:/m.test(head) || /^Analysis of sampling/m.test(head)) return "sample";
   if (/^p\d+\s*$/m.test(head) && /^f\d+/m.test(head)) return "lsof";
   if (/^\d+\.\d+\s+(\S+\s+(In|Out)\s+)?IP6? /m.test(head) || /^\d{2}:\d{2}:\d{2}\.\d+\s+(\S+\s+(In|Out)\s+)?IP6? /m.test(head)) return "tcpdump";
-  if (/^[\w.$:;<>()\[\]~/+-]+(;[^ ]+)+ \d+$/m.test(head)) return "folded";
+  if (/^[\w.$:;<>()[\]~/+-]+(;[^ ]+)+ \d+$/m.test(head)) return "folded";
   if (/^\s*[0-9a-f]+ .+ \(.*\)$/m.test(head) && /^\S+\s+\d+(\/\d+)? (\[\d+\] )?\d+\.\d+:/m.test(head)) return "perf_script";
   if (/\b\w+\(.*\)\s+=\s+(-?\d+|0x[0-9a-f]+|\?)/.test(head) && /<\d+\.\d+>|^\d{2}:\d{2}:\d{2}/m.test(head)) return "strace";
   if (/\b\w+\(.*\)\s+=\s+(-?\d+|0x[0-9a-f]+)/.test(head)) return "strace";
