@@ -205,9 +205,9 @@ sessionTool("container", "container_info", "docker inspect/stats/logs + cgroup l
 program
   .command("diff")
   .requiredOption("--session <id>", "session id")
-  .argument("<a>", "earlier run id, e.g. snapshot_memory#1")
+  .argument("<a>", "earlier run id (snapshot_memory#1), or <session_id>:<run> for a baseline from another session")
   .argument("<b>", "later run id, e.g. snapshot_memory#2")
-  .description("diff two prior runs")
+  .description("diff two runs — within a session, or against a recorded healthy baseline session")
   .action(async function (this: Command, a: string, b: string, opts) {
     await emit(this, await runTool("diff_runs", { session_id: opts.session, a, b }));
   });
