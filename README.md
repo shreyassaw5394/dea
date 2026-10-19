@@ -150,6 +150,9 @@ agent ──MCP──▶ DEA server ──▶ dispatcher ──▶ adapter (stra
 
 ## What you can observe
 
+New in 0.4: Java thread dumps (`jstack`, live or imported), Go goroutine dumps, a [paste-in browser analyzer](https://debuganything.dev/analyze), shareable HTML reports (`dea report --html`), cross-session baseline diffs (`dea diff --session now '<baseline>:<run>' <run>`), and [CI hang forensics as a GitHub Action](https://github.com/shreyassaw5394/dea-action).
+
+
 | Target | What DEA returns | Requirements |
 |---|---|---|
 | **Any process: sockets** (`inspect_sockets`) | listening ports, connections grouped by remote, CLOSE_WAIT / TIME_WAIT / SYN_SENT pileups, fd count vs ulimit | `lsof` — Linux, macOS; no root for your own processes |
