@@ -5,7 +5,7 @@
  */
 import { join } from "node:path";
 import { writeFile } from "node:fs/promises";
-import { ToolArgs, type Readiness, type Target, type ToolResult } from "./contracts.js";
+import { ToolArgs, type Readiness, type Session, type Target, type ToolResult } from "./contracts.js";
 import { ResultBuilder, failedResult } from "./evidence.js";
 import { probeReadiness } from "./readiness.js";
 import { createSession, detachSession, loadRun, recordRun, requireAttached, saveSession, loadSession, platform } from "./session.js";
@@ -180,10 +180,21 @@ async function toolListProcesses(args: { filter?: string; limit: number }): Prom
   return b.build();
 }
 
+/** Resolve "ref" or "<other_session>:<ref>" — the latter reads a baseline run from another session. */
+async function loadRunRef(session: Session, ref: string): Promise<{ run: ToolResult; from?: string }> {
+  const m = ref.match(/^([\w-]{6,}):(.+)$/);
+  if (m) {
+    const other = await loadSession(m[1]!);
+    return { run: await loadRun(other, m[2]!), from: other.id };
+  }
+  return { run: await loadRun(session, ref) };
+}
+
 async function toolDiffRuns(args: { session_id: string; a: string; b: string }): Promise<ToolResult> {
   const session = await loadSession(args.session_id);
-  const [a, bb] = await Promise.all([loadRun(session, args.a), loadRun(session, args.b)]);
-  const result = await diffRuns(session, a, bb);
+  const [ra, rb] = await Promise.all([loadRunRef(session, args.a), loadRunRef(session, args.b)]);
+  const result = await diffRuns(session, ra.run, rb.run);
+  if (ra.from || rb.from) result.limitations.push(`cross-session diff: a=${ra.from ?? session.id}, b=${rb.from ?? session.id} — a healthy baseline vs this run; environment may differ between sessions`);
   return recordRun(session, result);
 }
 
