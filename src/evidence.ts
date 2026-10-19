@@ -36,11 +36,22 @@ export class ResultBuilder {
     return join(this.artifactDir, `${stamp}-${this.tool}-${safe}`);
   }
 
-  /** Write a text/JSON artifact and register it. Returns the path. */
+  /** True when this builder runs without a filesystem (browser / analyzeText). */
+  get inMemory(): boolean {
+    return this.session?.dir === ":memory:";
+  }
+
+  /** Write a text/JSON artifact and register it. Returns the path. In-memory sessions register without writing. */
   async writeArtifact(name: string, content: string | Buffer, kind: ArtifactKind, description?: string): Promise<string> {
+    const bytes = typeof content === "string" ? new TextEncoder().encode(content).length : content.byteLength;
+    if (this.inMemory) {
+      const path = `(pasted) ${name.replace(/[^A-Za-z0-9._ -]/g, "_")}`;
+      this.artifacts.push({ path, kind, bytes, description });
+      return path;
+    }
     const path = this.artifactPath(name);
     await writeFile(path, content);
-    this.artifacts.push({ path, kind, bytes: Buffer.byteLength(content), description });
+    this.artifacts.push({ path, kind, bytes, description });
     return path;
   }
 
