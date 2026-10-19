@@ -166,7 +166,7 @@ a.tile{display:block;color:inherit}a.tile:hover{text-decoration:none}
     <div class="eyebrow">Debug Anything · open source · MIT</div>
     <h1>Your AI agent can write the code.<br><span>Now it can see it run.</span></h1>
     <p class="sub">When your app is slow, stuck, crashing or eating memory, your AI agent used to read the code and guess. With DEA it looks inside the <em>running</em> app, measures what is actually happening, and shows you the proof. One command to install. No terminal skills needed.</p>
-    <div class="cmd"><span class="p">$</span><span id="cmd">npx dea-agents why 1234</span><button onclick="navigator.clipboard&&navigator.clipboard.writeText('npx dea-agents why 1234');this.textContent='copied'">copy</button></div>
+    <div class="cmd"><span class="p">$</span><span id="cmd">npx dea-agents why <em style="font-style:normal;color:var(--dim)">&lt;pid&gt;</em></span><button onclick="navigator.clipboard&&navigator.clipboard.writeText('npx dea-agents why ');this.textContent='copied — add your pid'">copy</button></div>
     <p class="meta" style="margin-top:8px">One command: attach → the right tools for the symptom → ranked findings, every one citing evidence. Agent setup: <code>npx dea-agents setup</code> · No install? <a href="analyze">Paste tool output in the browser →</a></p>
     <div class="ctas"><a class="btn primary" href="#video">Watch it find a leak · 40s</a><a class="btn" href="https://github.com/shreyassaw5394/dea">★ GitHub</a><a class="btn" href="docs/README.md">Read the docs</a></div>
     <p class="meta">Works with Claude Code, Cursor, Codex, Gemini CLI and anything that speaks MCP · Python: <code>pip install dea-agents</code></p>
