@@ -78,4 +78,7 @@ Same 14 tools, same ToolResult, plus the guided prompts.
 DEA is read-only, never runs sudo, caps every tool at 60 s, redacts secrets in
 what it returns, and keeps raw artifacts under `~/.dea/sessions/`. See
 [docs/safety.md](https://github.com/shreyassaw5394/dea/blob/main/docs/safety.md).
-MIT.
+
+## License and disclaimer
+
+MIT. Provided "as is", without warranty of any kind; the authors accept no liability for any damage arising from use. Only observe systems you own or are explicitly authorized to debug — you are solely responsible for authorization and legal compliance. Findings are automated diagnostics, not professional advice. See the full [DISCLAIMER](https://github.com/shreyassaw5394/dea/blob/main/DISCLAIMER.md).

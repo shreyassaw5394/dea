@@ -268,4 +268,4 @@ Numbers across npm, PyPI, GitHub and the MCP Registry: `bash scripts/stats.sh`.
 
 ## License and disclaimer
 
-MIT — see [LICENSE](LICENSE). DEA attaches observation tools to running software: **only observe systems you own or are authorized to debug.** Observation is not free (ptrace pauses, captures contain secrets). See [DISCLAIMER.md](DISCLAIMER.md).
+MIT — see [LICENSE](LICENSE). DEA is provided **"as is", without warranty of any kind**; the authors and contributors accept **no liability** for outages, data exposure, or any other damage arising from its use. DEA attaches observation tools to running software: **only observe systems you own or are explicitly authorized to debug** — you are solely responsible for authorization and for complying with applicable laws and policies. Observation is not free (ptrace pauses targets; captures and heap dumps can contain secrets), findings are automated diagnostics rather than professional advice, and DEA is an independent project developed by its contributors in their personal capacities, unaffiliated with any employer or with the third-party tools it orchestrates. Full terms: [DISCLAIMER.md](DISCLAIMER.md).
