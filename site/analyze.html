@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paste debugger output, get findings — DEA analyzer</title>
+<meta name="description" content="Paste strace, py-spy, lsof, gdb, lldb, perf, sample or tcpdump output and get evidence-backed findings in your browser. Nothing is uploaded — analysis runs locally. Free online strace analyzer, py-spy dump reader, lsof explainer.">
+<meta name="keywords" content="strace analyzer online, how to read strace output, py-spy dump analyzer, lsof output explained, gdb backtrace analyzer, tcpdump analyzer online, perf script flamegraph, debug output analyzer">
+<link rel="canonical" href="https://debuganything.dev/analyze">
+<meta property="og:url" content="https://debuganything.dev/analyze">
+<meta property="og:title" content="Paste debugger output, get findings — DEA">
+<meta property="og:description" content="strace, py-spy, lsof, gdb, perf, tcpdump → evidence-backed findings, in your browser. Nothing uploaded.">
+<meta property="og:image" content="https://debuganything.dev/social.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<meta name="theme-color" content="#0b0d12">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"DEA output analyzer","url":"https://debuganything.dev/analyze","applicationCategory":"DeveloperApplication","operatingSystem":"Any (browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Paste strace, py-spy, lsof, gdb, lldb, perf, sample or tcpdump output and get evidence-backed findings. Runs entirely in the browser."}
+</script>
+<style>
+:root{--bg:#0b0d12;--bg2:#0f1320;--fg:#eef2f8;--muted:#9aa3b2;--dim:#5f6878;--acc:#7cc4ff;--acc2:#ffb86b;--ok:#8be28b;--warn:#ffb86b;--high:#ff7b7b;--card:#121521;--line:#1f2434;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+code,pre,textarea,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px}
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,13,18,.72);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:18px;height:60px}
+nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--fg)}nav .brand img{width:30px;height:30px;border-radius:8px}
+nav .links{margin-left:auto;display:flex;gap:18px;font-size:14px}nav .links a{color:var(--muted)}nav .links a:hover{color:var(--fg)}
+h1{font-size:34px;line-height:1.15;margin:40px 0 8px}
+.sub{color:var(--muted);max-width:640px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:22px}
+textarea{width:100%;min-height:240px;background:var(--bg2);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px;line-height:1.5;resize:vertical}
+textarea:focus{outline:1px solid var(--acc)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+select,button{background:var(--bg2);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;cursor:pointer}
+button.primary{background:var(--acc);color:#07202f;font-weight:700;border-color:transparent}
+button.primary:disabled{opacity:.5;cursor:default}
+.hint{color:var(--dim);font-size:13px}
+.finding{border:1px solid var(--line);border-left:4px solid var(--dim);border-radius:10px;padding:12px 14px;margin-top:10px;background:var(--bg2)}
+.finding.high{border-left-color:var(--high)}.finding.warn{border-left-color:var(--warn)}.finding.info{border-left-color:var(--acc)}
+.finding .sev{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.finding.high .sev{color:var(--high)}.finding.warn .sev{color:var(--warn)}.finding.info .sev{color:var(--acc)}
+.ev{margin-top:10px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.ev code{color:var(--fg)}
+details{margin-top:8px}summary{cursor:pointer;color:var(--muted);font-size:13px}
+.lim{color:var(--dim);font-size:13px;margin-top:10px}
+.cta{margin-top:26px;background:linear-gradient(135deg,rgba(124,196,255,.12),rgba(255,184,107,.08));border:1px solid var(--line);border-radius:14px;padding:18px}
+.cta pre{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow-x:auto;font-size:13px}
+footer{border-top:1px solid var(--line);margin-top:60px;padding:30px 0 50px;color:var(--dim);font-size:13px}
+.badge{font-size:12px;color:var(--ok);border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--bg2)}
+.samples{display:flex;gap:8px;flex-wrap:wrap}
+.samples button{font-size:12.5px;padding:6px 10px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="brand" href="/"><img src="logo.svg" alt="">DEA</a>
+  <div class="links"><a href="/#install">Install</a><a href="/#tools">Tools</a><a href="https://github.com/shreyassaw5394/dea">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
+</div></nav>
+
+<div class="wrap">
+  <h1>Paste debugger output. Get findings.</h1>
+  <p class="sub">The same evidence-first analysis <a href="/">DEA</a> runs for AI agents, compiled to your browser. Paste <b>strace</b>, <b>py-spy dump</b>, <b>lsof&nbsp;-F</b>, <b>gdb</b>/<b>lldb</b> backtraces, <b>perf script</b>, folded stacks, macOS <b>sample</b>, or <b>tcpdump</b> text.</p>
+  <p><span class="badge">● Nothing is uploaded — analysis runs entirely in this tab</span></p>
+
+  <div class="panel">
+    <textarea id="in" spellcheck="false" placeholder="$ sudo strace -f -T -tt -p 1234 -o out.txt   (then paste out.txt here)
+$ py-spy dump --pid 1234
+$ lsof -nP -F pcufatsinTP -p 1234
+$ gdb -p 1234 -batch -ex 'thread apply all bt'
+$ sudo tcpdump -nn -tt port 5432"></textarea>
+    <div class="row">
+      <label class="hint" for="tool">Tool</label>
+      <select id="tool">
+        <option value="">auto-detect</option>
+        <option value="strace">strace</option>
+        <option value="fs_usage">fs_usage (macOS)</option>
+        <option value="pyspy_dump">py-spy dump</option>
+        <option value="gdb">gdb backtrace</option>
+        <option value="lldb">lldb backtrace</option>
+        <option value="lsof">lsof -F</option>
+        <option value="perf_script">perf script</option>
+        <option value="folded">folded stacks</option>
+        <option value="sample">sample (macOS)</option>
+        <option value="tcpdump">tcpdump text</option>
+      </select>
+      <button class="primary" id="go">Analyze</button>
+      <span class="hint" id="status"></span>
+      <span style="margin-left:auto" class="samples">
+        <span class="hint">try a sample:</span>
+        <button data-sample="deadlock">python deadlock</button>
+        <button data-sample="closewait">socket leak</button>
+      </span>
+    </div>
+  </div>
+
+  <div id="out"></div>
+
+  <div class="cta" id="cta" hidden>
+    <b>Want this attached to the live process — from your AI agent?</b>
+    <p class="sub" style="margin:6px 0 10px">DEA runs these tools against running pids, containers and pods, and hands your agent evidence-backed findings over MCP. Read-only, no sudo, MIT.</p>
+    <pre>claude mcp add dea -- npx -y dea-agents mcp     # Claude Code
+npx -y dea-agents why 1234                      # or just the CLI</pre>
+    <a href="/">Everything DEA can see →</a>
+  </div>
+
+  <footer>Provided "as is", without warranty; analysis may be incomplete or wrong — verify before acting. Only analyze output you are authorized to possess. <a href="https://github.com/shreyassaw5394/dea/blob/main/DISCLAIMER.md">Disclaimer</a> · <a href="https://github.com/shreyassaw5394/dea">GitHub</a> · MIT</footer>
+</div>
+
+<script type="module">
+import { analyzeText, detectTool } from "/assets/dea-web.js";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const SAMPLES = {
+  deadlock: `Thread 0x7F0A1 (active): "MainThread"\n    acquire (threading.py:123)\n    __enter__ (threading.py:265)\n    transfer (bank.py:41)\n    <module> (bank.py:88)\nThread 0x7F0A2 (active): "worker-1"\n    acquire (threading.py:123)\n    __enter__ (threading.py:265)\n    transfer (bank.py:44)\n    run (threading.py:982)`,
+  closewait: `p1234
+cnode
+u501
+f12
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53200
+TST=CLOSE_WAIT
+f13
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53201
+TST=CLOSE_WAIT
+f14
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53202
+TST=CLOSE_WAIT
+f15
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53203
+TST=CLOSE_WAIT
+f16
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53204
+TST=CLOSE_WAIT
+f17
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53205
+TST=CLOSE_WAIT
+f18
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53206
+TST=CLOSE_WAIT
+f19
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53207
+TST=CLOSE_WAIT
+f20
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53208
+TST=CLOSE_WAIT
+f21
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53209
+TST=CLOSE_WAIT
+f22
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53210
+TST=CLOSE_WAIT
+f23
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53211
+TST=CLOSE_WAIT
+f24
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53212
+TST=CLOSE_WAIT
+f25
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53213
+TST=CLOSE_WAIT
+f26
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53214
+TST=CLOSE_WAIT
+f27
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53215
+TST=CLOSE_WAIT
+f28
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53216
+TST=CLOSE_WAIT
+f29
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53217
+TST=CLOSE_WAIT
+f30
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53218
+TST=CLOSE_WAIT
+f31
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53219
+TST=CLOSE_WAIT
+f32
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53220
+TST=CLOSE_WAIT
+f33
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53221
+TST=CLOSE_WAIT
+f34
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53222
+TST=CLOSE_WAIT
+f35
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53223
+TST=CLOSE_WAIT
+f36
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53224
+TST=CLOSE_WAIT
+f37
+au
+tIPv4
+PTCP
+n127.0.0.1:8080->127.0.0.1:53225
+TST=CLOSE_WAIT`,
+};
+document.querySelectorAll("[data-sample]").forEach((b) => b.addEventListener("click", () => { $("#in").value = SAMPLES[b.dataset.sample]; $("#tool").value = b.dataset.sample === "deadlock" ? "pyspy_dump" : "lsof"; run(); }));
+async function run() {
+  const raw = $("#in").value;
+  if (!raw.trim()) { $("#status").textContent = "paste something first"; return; }
+  let tool = $("#tool").value || detectTool(raw);
+  if (!tool) { $("#status").textContent = "couldn't auto-detect the tool — pick it from the list"; return; }
+  $("#status").textContent = `analyzing as ${tool}…`;
+  const r = await analyzeText(tool, raw);
+  $("#status").textContent = "";
+  const ev = new Map(r.evidence.map((e) => [e.id, e]));
+  const sevRank = { high: 0, warn: 1, info: 2 };
+  const findings = [...r.findings].sort((a, b) => (sevRank[a.severity] ?? 3) - (sevRank[b.severity] ?? 3));
+  $("#out").innerHTML = r.ok
+    ? `<div class="panel"><b>${findings.length} finding${findings.length === 1 ? "" : "s"}</b> <span class="hint">· ${r.evidence.length} pieces of evidence · analyzed as ${esc(tool)}</span>
+       ${findings.map((f) => `
+        <div class="finding ${f.severity}">
+          <span class="sev">${f.severity}</span> &nbsp;${esc(f.summary)}${f.detail ? `<div class="hint" style="margin-top:4px">${esc(f.detail)}</div>` : ""}
+          <div class="ev">${f.evidence_ids.map((id) => { const e = ev.get(id); return e ? `<div><code>${esc(e.id)}</code> ${esc(e.summary)}</div>` : ""; }).join("")}</div>
+        </div>`).join("")}
+       ${r.suggested_next?.length ? `<details><summary>what DEA would look at next</summary><div class="lim">${r.suggested_next.map(esc).join(" · ")}</div></details>` : ""}
+       ${r.limitations?.length ? `<div class="lim">${r.limitations.map(esc).join("<br>")}</div>` : ""}
+      </div>`
+    : `<div class="panel"><b>Could not analyze:</b> <span class="hint">${esc(r.error ?? "unknown error")}</span></div>`;
+  $("#cta").hidden = false;
+  $("#out").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+$("#go").addEventListener("click", run);
+</script>
+</body>
+</html>
