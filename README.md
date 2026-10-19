@@ -18,7 +18,7 @@ One MCP server and CLI that gives any coding agent — Claude Code, Codex, Curso
 [Quick start](#quick-start) · [How DEA works](#how-dea-works) · [What you can observe](#what-you-can-observe) · [Showcases](#showcases) · [Workflows](docs/workflows.md) · [Python / LangChain / CrewAI](#python-langchain-llamaindex-crewai) · [Safety](#safety) · [FAQ](#faq) · [Roadmap](#roadmap) · [Community](#community)
 
 ```bash
-npx dea-agents why 1234        # or: why api-container --symptom leak
+npx dea-agents why <pid>       # or: why api-container --symptom leak
 ```
 
 One command against any pid, container or pod: attach → the right tools for the symptom (`slow` / `leak` / `hang` / `crash` / `triage`) → **ranked findings, every one citing evidence ids** → detach. Hooking it to your agent instead: `npx dea-agents setup`. No install at all? [Paste tool output in the browser](https://debuganything.dev/analyze).
