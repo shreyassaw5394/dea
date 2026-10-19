@@ -159,7 +159,7 @@ a.tile{display:block;color:inherit}a.tile:hover{text-decoration:none}
 <body>
 <nav><div class="wrap">
   <a class="brand" href="#"><img src="logo.svg" alt="">Debug Anything</a>
-  <div class="links"><a href="analyze" style="color:var(--acc)">Analyzer</a><a href="#how">How it works</a><a href="#real">Real-world</a><a href="#workflow">Workflow</a><a href="#skills">Skills</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/debuganything">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
+  <div class="links"><a href="analyze" style="color:var(--acc)">Analyzer</a><a href="#how">How it works</a><a href="#real">Real-world</a><a href="#workflow">Workflow</a><a href="#new">What's new</a><a href="#skills">Skills</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/debuganything">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
 </div></nav>
 
 <section class="hero"><div class="wrap">
@@ -299,6 +299,37 @@ open it. same bytes the agent saw.</pre></div>
     <div class="tile"><h3>Docker</h3><p>OOM kills, exit codes, restarts, limits vs usage, cgroup throttling, log tail.</p><div class="req">docker</div></div>
     <div class="tile"><h3>Captured it yourself?</h3><p>Needs root? Debug Anything prints the sudo command; you run it and <code>debuganything import</code> the file. strace, fs_usage, perf, py-spy, sample, gdb/lldb, lsof, tcpdump.</p><div class="req">debuganything import · macOS trace via fs_usage</div></div>
     <div class="tile"><h3>Before / after</h3><p>Diff any two runs: what grew, appeared, disappeared. Proof for the PR.</p><div class="req">diff_runs</div></div>
+  </div>
+</div></section>
+
+<section id="new"><div class="wrap">
+  <div class="eyebrow">What's new</div>
+  <h2>October 2026</h2>
+  <div class="inst reveal" style="margin-top:20px">
+    <div class="box">
+      <h3>The <code>inspect-product</code> skill <span style="color:#7cc4ff;font-size:13px">new</span></h3>
+      <p class="sub" style="margin:8px 0 0">Audit a whole product instead of one bug. The agent signs up fresh, walks the real path, watches the server while it does, and reports findings that each carry a reproduction. On its first run against a live app it found a balance that never refreshed on screen — twenty points earned, nothing shown, until you happened to navigate.</p>
+    </div>
+    <div class="box">
+      <h3>Java and Go</h3>
+      <p class="sub" style="margin:8px 0 0">JVM thread dumps and goroutine dumps, live or pasted. Deadlocks the JVM reports itself, monitor contention, goroutine leaks by parked site, and goroutines stuck for minutes.</p>
+    </div>
+    <div class="box">
+      <h3>Paste, don't install</h3>
+      <p class="sub" style="margin:8px 0 0">The <a href="analyze">analyzer</a> reads strace, py-spy, jstack, goroutine, lsof, gdb, perf and tcpdump output in your browser. Nothing is uploaded.</p>
+    </div>
+    <div class="box">
+      <h3>Reports you can send</h3>
+      <p class="sub" style="margin:8px 0 0"><code>debuganything report --html</code> writes one self-contained file: ranked findings, evidence you can expand, flamegraphs embedded. Paste it in a thread.</p>
+    </div>
+    <div class="box">
+      <h3>Compare against a healthy run</h3>
+      <p class="sub" style="margin:8px 0 0">Record a session while things are fine, then diff a broken one against it: <code>debuganything diff --session now '&lt;baseline&gt;:inspect_files' inspect_files</code>.</p>
+    </div>
+    <div class="box">
+      <h3>When CI hangs</h3>
+      <p class="sub" style="margin:8px 0 0">The <a href="https://github.com/shreyassaw5394/debuganything-action">GitHub Action</a> wraps your test command. On a timeout it attaches before the kill and uploads stacks, sockets and findings.</p>
+    </div>
   </div>
 </div></section>
 
