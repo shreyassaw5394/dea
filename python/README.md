@@ -78,7 +78,6 @@ Same 14 tools, same ToolResult, plus the guided prompts.
 DEA is read-only, never runs sudo, caps every tool at 60 s, redacts secrets in
 what it returns, and keeps raw artifacts under `~/.dea/sessions/`. See
 [docs/safety.md](https://github.com/shreyassaw5394/dea/blob/main/docs/safety.md).
-MIT.
 
 ## License and disclaimer
 
