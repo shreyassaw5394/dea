@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0 — 2026-10-19
+
+- **In-browser analyzer** at <https://debuganything.dev/analyze>: paste strace, py-spy, jstack, goroutine, lsof, gdb/lldb, perf, folded, sample or tcpdump output and get the same evidence-backed findings — nothing uploaded. Core refactor: `src/analyze.ts` is the pure analysis entry (`analyzeText`, `detectTool`), shared by `dea import` and the web bundle.
+- **Java**: `jstack`/`jcmd Thread.print` live adapter (runtime=java) and `dea import jstack` — JVM-reported deadlocks, circular monitor waits, monitor contention, thread explosions.
+- **Go**: `dea import goroutines` for `/debug/pprof/goroutine?debug=2` / SIGQUIT dumps — goroutine leaks by parked site, minutes-stuck goroutines, mutex contention, global stalls.
+- **Shareable HTML report**: `dea report --html` / MCP `report {html:true}` — one self-contained file with ranked findings, expandable evidence and embedded flamegraphs.
+- **Baseline diffs across sessions**: `diff_runs` accepts `<session_id>:<run>` refs, so a recorded healthy run can be diffed against a broken one.
+- **CI hang forensics**: new [dea-action](https://github.com/shreyassaw5394/dea-action) — wrap a CI command; on timeout DEA attaches and uploads stacks, sockets and findings before the kill.
+- `dea why` is now the flagship entry point in the README and on the site.
+
 ## 0.3.1 — 2026-10-18
 
 - Permission-denied attaches (strace, py-spy, gdb, lldb, perf) now populate `suggested_next` with the `dea import` follow-up and the unprivileged tools that still work, instead of returning empty. (Thanks @Kantorcodes for the question that surfaced it.)
