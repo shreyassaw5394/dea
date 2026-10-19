@@ -35,7 +35,7 @@ def _model(tool: str) -> Type[BaseModel]:
 
 def dea_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["StructuredTool"]:
     """Build one LangChain StructuredTool per Debug Anything tool."""
-    debuganything = client or DEA()
+    debuganything = client or DebugAnything()
     out: List[StructuredTool] = []
     for name, desc in TOOLS.items():
         if include and name not in include:

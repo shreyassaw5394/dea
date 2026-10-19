@@ -19,7 +19,7 @@ except ImportError as e:  # pragma: no cover
 
 
 def dea_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["FunctionTool"]:
-    debuganything = client or DEA()
+    debuganything = client or DebugAnything()
     out: List[FunctionTool] = []
     for name, desc in TOOLS.items():
         if include and name not in include:

@@ -4,20 +4,19 @@
 
 - **The product is now called Debug Anything everywhere.** The abbreviation is
   gone: the name should say what the tool does.
-  - npm: `dea-agents` → **`debuganything`** (binaries `debuganything`, `debugany`)
-  - PyPI: `dea-agents` → **`debuganything`** (`DebugAnything` class, `DebugAnythingError`)
+  - npm: **`debuganything`** (binaries `debuganything`, `debugany`)
+  - PyPI: **`debuganything`** (`DebugAnything` class, `DebugAnythingError`)
   - MCP server id: `io.github.shreyassaw5394/debuganything`
   - repo: `shreyassaw5394/debuganything` · site unchanged at debuganything.dev
-  - session directory `~/.dea/` → `~/.debuganything/`
+  - session directory: `~/.debuganything/`
   - logo, mark and social artwork re-lettered
 - New `inspect-product` skill: walk a running product as a real user, observe
   it, and return ranked findings that each carry a reproduction and evidence.
 - MCP Registry now publishes automatically on release tags (GitHub OIDC).
 - Smithery deployment config added.
 
-> Upgrading: `npm i -g debuganything` / `pip install debuganything`. The old
-> packages are deprecated and point here. Re-run `debuganything setup` to
-> update your agent config.
+> Install: `npm i -g debuganything` or `pip install debuganything`. Re-run
+> `debuganything setup` to update your agent config.
 
 ## 0.4.0 — 2026-10-19
 

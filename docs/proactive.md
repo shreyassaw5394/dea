@@ -51,7 +51,7 @@ After every Bash command and every user prompt it scans for the signals above
 note to the model:
 
 ```
-[Debug Anything] The last command's output shows a runtime problem signal. DEA (Debug Anything) is installed: observe before you theorize.
+[Debug Anything] The last command's output shows a runtime problem signal. DebugAnything (Debug Anything) is installed: observe before you theorize.
 - port_busy (“EADDRINUSE: address already in use :::3000”): run `debuganything port <port>` … never kill it blindly
 Protocol: readiness (once per session) → attach <pid|container|command> → the tool above → detach. Cite evidence ids …
 ```

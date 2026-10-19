@@ -1,4 +1,4 @@
-# Linux lab for DEA: every Linux provider installed, used to capture fixtures
+# Linux lab for Debug Anything: every Linux provider installed, used to capture fixtures
 # and to run the Linux adapters live from a macOS host.
 #   docker build -t dea-lab docker/linux-lab
 #   docker run --rm -it --privileged -v "$PWD":/dea -w /dea dea-lab bash

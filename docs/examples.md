@@ -133,7 +133,7 @@ exact `sudo` command instead of running it.
 
 ```python
 from debuganything import Debug Anything
-debuganything = DEA()
+debuganything = DebugAnything()
 s = da.attach("api-3")
 for line in Debug Anything.findings(da.container_info(s)):
     print(line)

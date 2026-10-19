@@ -233,7 +233,7 @@ export async function fileExists(p: string): Promise<boolean> {
 
 export const AGENTS_MD_BLOCK = `## Runtime debugging with Debug Anything
 
-DEA (Debug Anything) is registered as an MCP server for this repo (\`.mcp.json\`, \`.cursor/mcp.json\`).
+DebugAnything (Debug Anything) is registered as an MCP server for this repo (\`.mcp.json\`, \`.cursor/mcp.json\`).
 When something *running* misbehaves — a command hangs, a test times out, you see EADDRINUSE / ECONNREFUSED /
 EMFILE / exit 137 / OOM / a segfault, a server you started does not respond, or the user says slow, hang,
 leak or crash — attach and measure before theorizing: \`readiness\` → \`attach\` → \`dump_stacks\` /

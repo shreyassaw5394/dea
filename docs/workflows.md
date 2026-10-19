@@ -96,7 +96,7 @@ A Python SRE agent that reacts to an alert and reports with evidence:
 
 ```python
 from debuganything import Debug Anything
-debuganything = DEA()
+debuganything = DebugAnything()
 s = da.attach(alert["pid"])
 r = da.dump_stacks(s) if alert["kind"] == "hang" else da.profile_cpu(s, 10)
 post_to_slack("\n".join(Debug Anything.findings(r)) + f"\nreport: {da.report(s)['artifacts'][0]['path']}")

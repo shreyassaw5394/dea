@@ -21,7 +21,7 @@ pip install 'debuganything[crewai]'       # + CrewAI BaseTools
 ```python
 from debuganything import DebugAnything
 
-debuganything = DEA()                       # uses `debuganything` if installed, else `npx -y debuganything@latest`
+debuganything = DebugAnything()                       # uses `debuganything` if installed, else `npx -y debuganything@latest`
 print(da.readiness()["findings"])
 s = da.attach(12345)             # pid, "my-container", "ns/pod", or a command
 before = da.snapshot_memory(s)

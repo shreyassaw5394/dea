@@ -1,6 +1,6 @@
 {
-  "name": "DEA — Debug Anything",
-  "short_name": "DEA",
+  "name": "Debug Anything",
+  "short_name": "Debug Anything",
   "description": "Observe any running process. No breakpoints, no restarts, no instrumentation. Evidence, not guesses.",
   "start_url": "./",
   "display": "standalone",

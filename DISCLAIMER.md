@@ -1,6 +1,6 @@
 # Disclaimer
 
-**By downloading, installing, or using DEA ("Debug Anything"), you accept this
+**By downloading, installing, or using DebugAnything ("Debug Anything"), you accept this
 disclaimer in full. If you do not agree with it, do not use Debug Anything.**
 
 Debug Anything is a free, open-source diagnostic tool distributed under the

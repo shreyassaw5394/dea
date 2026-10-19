@@ -1,6 +1,6 @@
 # Disclaimer and responsible use
 
-DEA ("Debug Anything") attaches observation tools (`strace`, `py-spy`, `perf`,
+DebugAnything ("Debug Anything") attaches observation tools (`strace`, `py-spy`, `perf`,
 `lsof`, `tcpdump`, `gdb`, `lldb`, heap snapshots, and others) to running
 software and reports what it sees.
 

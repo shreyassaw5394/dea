@@ -6,7 +6,7 @@ method returns the Debug Anything ``ToolResult`` dict: ``findings`` cite ``evide
 files under ``~/.debuganything/sessions/<id>/``.
 
     from debuganything import DebugAnything
-    debuganything = DEA()
+    debuganything = DebugAnything()
     s = da.attach(12345)
     print(da.profile_cpu(s, duration_s=10)["findings"])
     da.detach(s)

@@ -32,7 +32,7 @@ def _model(tool: str) -> Type[BaseModel]:
 
 
 def dea_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["BaseTool"]:
-    debuganything = client or DEA()
+    debuganything = client or DebugAnything()
     out: List[BaseTool] = []
     for tool_name, desc in TOOLS.items():
         if include and tool_name not in include:

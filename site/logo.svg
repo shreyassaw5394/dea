@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <!-- DEA mark: a lens looking at a live process trace. Evidence, not guesses. -->
+  <!-- Debug Anything mark: a lens looking at a live process trace. Evidence, not guesses. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#121a2b"/>

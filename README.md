@@ -211,7 +211,7 @@ pip install 'debuganything[crewai]'       # debuganything.crewai.dea_tools()
 
 ```python
 from debuganything import DebugAnything
-debuganything = DEA()
+debuganything = DebugAnything()
 s = da.attach(12345)
 print(da.findings(da.profile_cpu(s, duration_s=10)))
 da.detach(s)
