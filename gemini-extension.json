@@ -1,9 +1,9 @@
 {
-  "name": "dea",
+  "name": "debuganything",
   "version": "0.3.0",
   "description": "Debug Anything: observe any running process and get evidence-backed findings.",
   "mcpServers": {
-    "dea": { "command": "npx", "args": ["-y", "dea-agents@latest", "serve"] }
+    "debuganything": { "command": "npx", "args": ["-y", "debuganything@latest", "serve"] }
   },
   "contextFileName": "GEMINI.md"
 }

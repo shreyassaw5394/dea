@@ -1,11 +1,11 @@
-<img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-mark-512.png" alt="" width="56" align="right">
+<img src="https://raw.githubusercontent.com/shreyassaw5394/debuganything/main/assets/debuganything-mark-512.png" alt="" width="56" align="right">
 
 # Real-world situations
 
-Incident patterns every on-call engineer has seen, and what a DEA session
+Incident patterns every on-call engineer has seen, and what a Debug Anything session
 looks like on each. Where numbers come from our own reproductions
 (`examples/`, the Linux lab) they are real; the rest are marked *illustrative*
-and show the shape of the evidence, not a specific customer. Every finding DEA
+and show the shape of the evidence, not a specific customer. Every finding Debug Anything
 prints cites evidence ids; that is the point.
 
 ---
@@ -17,12 +17,12 @@ hours after deploy. Restart fixes it. Logs say `EMFILE: too many open files`.
 
 **What usually happens.** Someone raises `ulimit -n` and moves on.
 
-**DEA session.**
+**Debug Anything session.**
 
 ```bash
-S=$(dea attach 2231 --json | jq -r .session_id)
-dea sockets --session $S
-dea files   --session $S --window 10
+S=$(debuganything attach 2231 --json | jq -r .session_id)
+debuganything sockets --session $S
+debuganything files   --session $S --window 10
 ```
 
 **Evidence (illustrative).**
@@ -39,7 +39,7 @@ e4    metric_series   fds 902 → 980 over 10s (+78)
 timeout; the app never notices the LB closed. Set the server keep-alive below
 the LB's, or handle `close`/`timeout` on the socket.
 
-**Prove it.** `dea sockets` again after the fix → `CLOSE_WAIT=3`; `dea diff`
+**Prove it.** `debuganything sockets` again after the fix → `CLOSE_WAIT=3`; `debuganything diff`
 shows the state count dropping.
 
 ---
@@ -48,12 +48,12 @@ shows the state count dropping.
 
 **Symptom.** `/var` is full. `du -sh /var/log` is small. Deleting files frees nothing.
 
-**DEA session.**
+**Debug Anything session.**
 
 ```bash
-dea ps --filter java
-S=$(dea attach 4120 --json | jq -r .session_id)
-dea files --session $S
+debuganything ps --filter java
+S=$(debuganything attach 4120 --json | jq -r .session_id)
+debuganything files --session $S
 ```
 
 **Evidence (illustrative, Linux only).**
@@ -64,7 +64,7 @@ e5    fd    /var/log/app/app.log.1 (deleted)  fd 7  38.2 GB
 ```
 
 **Fix.** logrotate deleted the file but the process still has it open. Use
-`copytruncate`, or send the app its reopen signal (`SIGHUP`/`SIGUSR1`). DEA
+`copytruncate`, or send the app its reopen signal (`SIGHUP`/`SIGUSR1`). Debug Anything
 tells you which pid and fd; it will not truncate it for you.
 
 ---
@@ -74,13 +74,13 @@ tells you which pid and fd; it will not truncate it for you.
 **Symptom.** Under load, requests queue; Postgres shows 100/100 connections;
 p99 goes to 8 s.
 
-**DEA session.**
+**Debug Anything session.**
 
 ```bash
-S=$(dea attach 8812 --json | jq -r .session_id)    # a gunicorn worker
-dea sockets --session $S
-dea trace   --session $S --duration 10 --categories network
-dea stacks  --session $S
+S=$(debuganything attach 8812 --json | jq -r .session_id)    # a gunicorn worker
+debuganything sockets --session $S
+debuganything trace   --session $S --duration 10 --categories network
+debuganything stacks  --session $S
 ```
 
 **Evidence (illustrative).**
@@ -103,7 +103,7 @@ worker count × pool size below `max_connections`.
 
 **Symptom.** Throughput drops to zero every few hours. CPU idle. Restart fixes it.
 
-**DEA session.** `dea why 5570 --symptom hang`
+**Debug Anything session.** `debuganything why 5570 --symptom hang`
 
 **Evidence (real, from `examples/deadlock-py` in the Linux lab).**
 
@@ -123,13 +123,13 @@ process's own files, so you know exactly where.
 
 **Symptom.** p50 is 20 ms, p99 is 1.4 s, CPU on one core is pegged in bursts.
 
-**DEA session.**
+**Debug Anything session.**
 
 ```bash
-S=$(dea attach 3310 --json | jq -r .session_id)
-dea stacks  --session $S          # inspector pause: what is the main thread doing right now?
-dea profile --session $S --duration 10
-dea trace   --session $S --duration 8 --categories file
+S=$(debuganything attach 3310 --json | jq -r .session_id)
+debuganything stacks  --session $S          # inspector pause: what is the main thread doing right now?
+debuganything profile --session $S --duration 10
+debuganything trace   --session $S --duration 8 --categories file
 ```
 
 **Evidence (real, from `examples/leaky-node` `/slow` in the Linux lab).**
@@ -152,15 +152,15 @@ cache the file.
 **Symptom.** Kubernetes shows `OOMKilled`, restart count climbing. Nothing in
 the app logs.
 
-**DEA session.**
+**Debug Anything session.**
 
 ```bash
-S=$(dea attach api-7f9c --json | jq -r .session_id)     # container name / id
-dea container --session $S
-dea memory    --session $S
+S=$(debuganything attach api-7f9c --json | jq -r .session_id)     # container name / id
+debuganything container --session $S
+debuganything memory    --session $S
 # wait 10 minutes of traffic
-dea memory    --session $S
-dea diff      --session $S snapshot_memory#3 snapshot_memory#4
+debuganything memory    --session $S
+debuganything diff      --session $S snapshot_memory#3 snapshot_memory#4
 ```
 
 **Evidence (real numbers from `examples/leaky-node`; container block illustrative).**
@@ -182,11 +182,11 @@ Chrome DevTools if you want the full dominator tree.
 
 **Symptom.** Calls to a partner API are fast most of the time, then 300–900 ms.
 
-**DEA session (needs consent).**
+**Debug Anything session (needs consent).**
 
 ```bash
-dea capture --session $S --duration 10 --consent
-dea sockets --session $S
+debuganything capture --session $S --duration 10 --consent
+debuganything sockets --session $S
 ```
 
 **Evidence (illustrative).**
@@ -207,17 +207,17 @@ count drops first; the DNS count second.
 
 **Symptom.** `npm run dev` fails with `EADDRINUSE :3000`. Nothing obvious is running.
 
-**DEA session.** `dea port 3000`
+**Debug Anything session.** `debuganything port 3000`
 
 **Evidence (real, macOS).**
 
 ```
 HIGH  port 8080 is held by pid 61326 (node, user shreyassawant) in LISTEN [observed; e1,e2]
-      command: node server.js. DEA will not kill it; decide yourself.
+      command: node server.js. Debug Anything will not kill it; decide yourself.
 ```
 
 Usually an orphaned child from a previous dev-server run (nodemon, ts-node,
-a VS Code task). DEA names it; you kill it.
+a VS Code task). Debug Anything names it; you kill it.
 
 ---
 
@@ -225,7 +225,7 @@ a VS Code task). DEA names it; you kill it.
 
 **Symptom.** A C++/Rust/Go service burns a core; no obvious loop in your code.
 
-**DEA session.** `dea profile --session $S --duration 15`
+**Debug Anything session.** `debuganything profile --session $S --duration 15`
 
 **Evidence (illustrative).**
 
@@ -234,7 +234,7 @@ WARN  parse_frame (libfoo.so) accounts for 71% of CPU work; the process was CPU-
 next: decompile parse_frame in libfoo.so with a static-analysis tool / disassembler
 ```
 
-**Fix.** Open the symbol in your decompiler to see the quadratic loop; after the fix, `dea diff profile_cpu#2 profile_cpu#3` is the proof in
+**Fix.** Open the symbol in your decompiler to see the quadratic loop; after the fix, `debuganything diff profile_cpu#2 profile_cpu#3` is the proof in
 the PR.
 
 ---
@@ -245,4 +245,4 @@ the PR.
   the symptom. No log spelunking, no guessing which flag `strace` needs.
 - The output names a pid, fd, socket state, symbol or source line, and the
   evidence id that backs it.
-- The fix is yours. DEA never kills, truncates, signals or patches anything.
+- The fix is yours. Debug Anything never kills, truncates, signals or patches anything.

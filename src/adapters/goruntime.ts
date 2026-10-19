@@ -1,7 +1,7 @@
 /**
  * Go goroutine dumps: parse `/debug/pprof/goroutine?debug=2` or SIGQUIT
  * output, detect goroutine leaks, long-blocked goroutines and deadlocks.
- * Pure parsing/summarizing (dea import + web analyzer).
+ * Pure parsing/summarizing (debuganything import + web analyzer).
  */
 import type { ToolResult } from "../contracts.js";
 import { ResultBuilder } from "../evidence.js";

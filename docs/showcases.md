@@ -1,8 +1,8 @@
-<img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-mark-512.png" alt="" width="56" align="right">
+<img src="https://raw.githubusercontent.com/shreyassaw5394/debuganything/main/assets/debuganything-mark-512.png" alt="" width="56" align="right">
 
 # Showcases
 
-Three deliberately broken apps in [`examples/`](../examples) and the exact DEA
+Three deliberately broken apps in [`examples/`](../examples) and the exact Debug Anything
 sessions that diagnose them. Transcripts below are real output: the Linux run
 is the `docker/linux-lab` image (Debian 12, arm64, root, Node 22.23, Python
 3.11) driven by `docker/linux-lab/run-lab.sh`; the macOS run is a MacBook Pro
@@ -10,7 +10,7 @@ is the `docker/linux-lab` image (Debian 12, arm64, root, Node 22.23, Python
 
 Every finding cites evidence ids (`e1`, `e2`…); the evidence rows point at
 artifacts in the session directory. Nothing below was typed by hand. The full
-markdown report DEA wrote for the leaky-node session is in
+markdown report Debug Anything wrote for the leaky-node session is in
 [example-report-leaky-node.md](example-report-leaky-node.md).
 
 ---
@@ -24,14 +24,14 @@ route pushes every request body into a module-level array through a closure
 
 ```bash
 cd examples/leaky-node && node server.js &        # pid printed
-S=$(dea attach <pid> --json | jq -r .session_id)
-dea memory  --session $S                          # baseline
+S=$(debuganything attach <pid> --json | jq -r .session_id)
+debuganything memory  --session $S                          # baseline
 node load.js 400 2                                # 400 × /work (64 KB bodies)
-dea memory  --session $S
-dea diff    --session $S snapshot_memory#2 snapshot_memory#3
-dea trace   --session $S --duration 8 --categories file,network   # Linux
-dea profile --session $S --duration 8
-dea report  --session $S --md report.md && dea detach --session $S
+debuganything memory  --session $S
+debuganything diff    --session $S snapshot_memory#2 snapshot_memory#3
+debuganything trace   --session $S --duration 8 --categories file,network   # Linux
+debuganything profile --session $S --duration 8
+debuganything report  --session $S --md report.md && debuganything detach --session $S
 ```
 
 ### The leak (macOS, no sudo)
@@ -96,11 +96,11 @@ whose request handler, from request 20 on, starts two workers that take
 ```bash
 cd examples/deadlock-py && python3 app.py &       # :5055
 for i in $(seq 1 25); do curl -s -m 1 localhost:5055/; done   # hangs at 20
-S=$(dea attach <pid> --json | jq -r .session_id)
-dea stacks --session $S
+S=$(debuganything attach <pid> --json | jq -r .session_id)
+debuganything stacks --session $S
 ```
 
-Linux lab transcript (py-spy; on macOS py-spy needs `sudo` and DEA says so
+Linux lab transcript (py-spy; on macOS py-spy needs `sudo` and Debug Anything says so
 instead of escalating):
 
 ```
@@ -117,7 +117,7 @@ instead of escalating):
 ```
 
 py-spy shows a thread blocked in a C-level lock acquire with the *Python
-caller* as its top frame, so DEA reads that source line (resolving relative
+caller* as its top frame, so Debug Anything reads that source line (resolving relative
 paths against the target's cwd) and classifies the wait: `with lock_b:` →
 lock; `.join(` → join; `sleep(` → sleep; `.recv(` → I/O. Two or more threads
 in lock waits with nothing running is reported as a *likely* deadlock
@@ -141,13 +141,13 @@ another fails to bind.
 ```bash
 cd examples/busy-port && node server.js &
 node bind.js            # bind :8080 failed: EADDRINUSE
-dea port 8080
+debuganything port 8080
 ```
 
 ```
 ✔ inspect_sockets  367 ms
   HIGH  port 8080 is held by pid 61326 (node, user shreyassawant) in LISTEN [observed; e1,e2]
-        command: node server.js. DEA will not kill it; decide yourself.
+        command: node server.js. Debug Anything will not kill it; decide yourself.
   e1   socket          port 8080: pid 61326 node [LISTEN]
   e2   process         pid 61326: node server.js (user shreyassawant)
 ```

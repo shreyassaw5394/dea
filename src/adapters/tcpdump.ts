@@ -164,7 +164,7 @@ export function buildFilter(ports: number[], extra?: string): string {
   return extra ? `${base} and (${assertSafeBpfFragment(extra)})` : base;
 }
 
-/** Shared by capture_traffic and `dea import`: packets → evidence + findings. */
+/** Shared by capture_traffic and `debuganything import`: packets → evidence + findings. */
 export function summarizeCaptureEvidence(b: ResultBuilder, pkts: PacketLine[], localPorts: Set<number>, meta: { filter: string; duration: number; pcapPath?: string; textPath: string }): void {
   const { filter, duration } = meta;
   const local = localPorts;

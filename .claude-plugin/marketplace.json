@@ -1,10 +1,10 @@
 {
-  "name": "dea",
+  "name": "debuganything",
   "owner": { "name": "Shreyas Sawant", "url": "https://github.com/shreyassaw5394" },
-  "metadata": { "description": "DEA — Debug Anything. Runtime observation for coding agents.", "version": "0.3.0" },
+  "metadata": { "description": "Debug Anything. Runtime observation for coding agents.", "version": "0.3.0" },
   "plugins": [
     {
-      "name": "dea",
+      "name": "debuganything",
       "source": "./",
       "description": "Observe any running process from your agent and get findings that cite evidence. Installs the MCP server, the debug-anything skill and the proactive hook.",
       "version": "0.3.0",

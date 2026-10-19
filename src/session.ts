@@ -1,5 +1,5 @@
 /**
- * Session lifecycle: create under ~/.dea/sessions/<id>/, persist metadata,
+ * Session lifecycle: create under ~/.debuganything/sessions/<id>/, persist metadata,
  * save every ToolResult as a run, clean up children on detach.
  */
 import { mkdir, readFile, writeFile, readdir, rm, stat } from "node:fs/promises";
@@ -11,7 +11,7 @@ import { Session, type Target, type ToolResult } from "./contracts.js";
 import { killTrackedChildren } from "./safety.js";
 
 export function deaHome(): string {
-  return process.env.DEA_HOME ?? join(homedir(), ".dea");
+  return process.env.DEA_HOME ?? join(homedir(), ".debuganything");
 }
 
 export function sessionsDir(): string {
@@ -54,7 +54,7 @@ export async function saveSession(session: Session): Promise<void> {
 export async function loadSession(id: string): Promise<Session> {
   if (!/^[A-Za-z0-9_-]{1,80}$/.test(id)) throw new Error(`invalid session id: ${JSON.stringify(id)}`);
   const file = join(sessionsDir(), id, "session.json");
-  if (!existsSync(file)) throw new Error(`session not found: ${id}. Call attach first, or list sessions with \`dea sessions list\`.`);
+  if (!existsSync(file)) throw new Error(`session not found: ${id}. Call attach first, or list sessions with \`debuganything sessions list\`.`);
   const raw = JSON.parse(await readFile(file, "utf8"));
   return Session.parse(raw);
 }

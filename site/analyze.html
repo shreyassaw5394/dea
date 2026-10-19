@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Paste debugger output, get findings — DEA analyzer</title>
+<title>Paste debugger output, get findings — Debug Anything analyzer</title>
 <meta name="description" content="Paste strace, py-spy, lsof, gdb, lldb, perf, sample or tcpdump output and get evidence-backed findings in your browser. Nothing is uploaded — analysis runs locally. Free online strace analyzer, py-spy dump reader, lsof explainer.">
 <meta name="keywords" content="strace analyzer online, how to read strace output, py-spy dump analyzer, lsof output explained, gdb backtrace analyzer, tcpdump analyzer online, perf script flamegraph, debug output analyzer">
 <link rel="canonical" href="https://debuganything.dev/analyze">
 <meta property="og:url" content="https://debuganything.dev/analyze">
-<meta property="og:title" content="Paste debugger output, get findings — DEA">
+<meta property="og:title" content="Paste debugger output, get findings — Debug Anything">
 <meta property="og:description" content="strace, py-spy, lsof, gdb, perf, tcpdump → evidence-backed findings, in your browser. Nothing uploaded.">
 <meta property="og:image" content="https://debuganything.dev/social.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <meta name="theme-color" content="#0b0d12">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"DEA output analyzer","url":"https://debuganything.dev/analyze","applicationCategory":"DeveloperApplication","operatingSystem":"Any (browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Paste strace, py-spy, lsof, gdb, lldb, perf, sample or tcpdump output and get evidence-backed findings. Runs entirely in the browser."}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Debug Anything output analyzer","url":"https://debuganything.dev/analyze","applicationCategory":"DeveloperApplication","operatingSystem":"Any (browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Paste strace, py-spy, lsof, gdb, lldb, perf, sample or tcpdump output and get evidence-backed findings. Runs entirely in the browser."}
 </script>
 <style>
 :root{--bg:#0b0d12;--bg2:#0f1320;--fg:#eef2f8;--muted:#9aa3b2;--dim:#5f6878;--acc:#7cc4ff;--acc2:#ffb86b;--ok:#8be28b;--warn:#ffb86b;--high:#ff7b7b;--card:#121521;--line:#1f2434;color-scheme:dark}
@@ -56,13 +56,13 @@ footer{border-top:1px solid var(--line);margin-top:60px;padding:30px 0 50px;colo
 </head>
 <body>
 <nav><div class="wrap">
-  <a class="brand" href="/"><img src="logo.svg" alt="">DEA</a>
-  <div class="links"><a href="/#install">Install</a><a href="/#tools">Tools</a><a href="https://github.com/shreyassaw5394/dea">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
+  <a class="brand" href="/"><img src="logo.svg" alt="">Debug Anything</a>
+  <div class="links"><a href="/#install">Install</a><a href="/#tools">Tools</a><a href="https://github.com/shreyassaw5394/debuganything">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
 </div></nav>
 
 <div class="wrap">
   <h1>Paste debugger output. Get findings.</h1>
-  <p class="sub">The same evidence-first analysis <a href="/">DEA</a> runs for AI agents, compiled to your browser. Paste <b>strace</b>, <b>py-spy dump</b>, <b>jstack</b> Java thread dumps, <b>Go goroutine</b> dumps, <b>lsof&nbsp;-F</b>, <b>gdb</b>/<b>lldb</b> backtraces, <b>perf script</b>, folded stacks, macOS <b>sample</b>, or <b>tcpdump</b> text.</p>
+  <p class="sub">The same evidence-first analysis <a href="/">Debug Anything</a> runs for AI agents, compiled to your browser. Paste <b>strace</b>, <b>py-spy dump</b>, <b>jstack</b> Java thread dumps, <b>Go goroutine</b> dumps, <b>lsof&nbsp;-F</b>, <b>gdb</b>/<b>lldb</b> backtraces, <b>perf script</b>, folded stacks, macOS <b>sample</b>, or <b>tcpdump</b> text.</p>
   <p><span class="badge">● Nothing is uploaded — analysis runs entirely in this tab</span></p>
 
   <div class="panel">
@@ -104,17 +104,17 @@ $ sudo tcpdump -nn -tt port 5432"></textarea>
 
   <div class="cta" id="cta" hidden>
     <b>Want this attached to the live process — from your AI agent?</b>
-    <p class="sub" style="margin:6px 0 10px">DEA runs these tools against running pids, containers and pods, and hands your agent evidence-backed findings over MCP. Read-only, no sudo, MIT.</p>
-    <pre>claude mcp add dea -- npx -y dea-agents mcp     # Claude Code
-npx -y dea-agents why 1234                      # or just the CLI</pre>
-    <a href="/">Everything DEA can see →</a>
+    <p class="sub" style="margin:6px 0 10px">Debug Anything runs these tools against running pids, containers and pods, and hands your agent evidence-backed findings over MCP. Read-only, no sudo, MIT.</p>
+    <pre>claude mcp add debuganything -- npx -y debuganything mcp     # Claude Code
+npx -y debuganything why 1234                      # or just the CLI</pre>
+    <a href="/">Everything Debug Anything can see →</a>
   </div>
 
-  <footer>Provided "as is", without warranty; analysis may be incomplete or wrong — verify before acting. Only analyze output you are authorized to possess. <a href="https://github.com/shreyassaw5394/dea/blob/main/DISCLAIMER.md">Disclaimer</a> · <a href="https://github.com/shreyassaw5394/dea">GitHub</a> · MIT</footer>
+  <footer>Provided "as is", without warranty; analysis may be incomplete or wrong — verify before acting. Only analyze output you are authorized to possess. <a href="https://github.com/shreyassaw5394/debuganything/blob/main/DISCLAIMER.md">Disclaimer</a> · <a href="https://github.com/shreyassaw5394/debuganything">GitHub</a> · MIT</footer>
 </div>
 
 <script type="module">
-import { analyzeText, detectTool } from "/assets/dea-web.js";
+import { analyzeText, detectTool } from "/assets/debuganything-web.js";
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const SAMPLES = {
@@ -298,7 +298,7 @@ async function run() {
           <span class="sev">${f.severity}</span> &nbsp;${esc(f.summary)}${f.detail ? `<div class="hint" style="margin-top:4px">${esc(f.detail)}</div>` : ""}
           <div class="ev">${f.evidence_ids.map((id) => { const e = ev.get(id); return e ? `<div><code>${esc(e.id)}</code> ${esc(e.summary)}</div>` : ""; }).join("")}</div>
         </div>`).join("")}
-       ${r.suggested_next?.length ? `<details><summary>what DEA would look at next</summary><div class="lim">${r.suggested_next.map(esc).join(" · ")}</div></details>` : ""}
+       ${r.suggested_next?.length ? `<details><summary>what Debug Anything would look at next</summary><div class="lim">${r.suggested_next.map(esc).join(" · ")}</div></details>` : ""}
        ${r.limitations?.length ? `<div class="lim">${r.limitations.map(esc).join("<br>")}</div>` : ""}
       </div>`
     : `<div class="panel"><b>Could not analyze:</b> <span class="hint">${esc(r.error ?? "unknown error")}</span></div>`;

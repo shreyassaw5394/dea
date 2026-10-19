@@ -19,7 +19,7 @@ describe("renderHtmlReportFromRuns", () => {
   const html = renderHtmlReportFromRuns(session, [run], [{ name: "f.svg", svg: "<svg><script>evil()</script><rect/></svg>" }]);
   it("is a complete standalone document", () => {
     expect(html).toMatch(/^<!doctype html>/);
-    expect(html).toContain("DEA report");
+    expect(html).toContain("Debug Anything report");
     expect(html).not.toContain("http://"); // no external resources
   });
   it("renders findings with evidence and escapes HTML", () => {

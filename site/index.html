@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>DEA — Debug Anything</title>
-<meta name="description" content="Your AI agent can write the code. Now it can see it run. DEA attaches to any running process and turns strace, py-spy, perf, lsof, tcpdump, gdb/lldb and heap snapshots into evidence-backed findings. MCP server + CLI + Python. MIT.">
-<meta name="keywords" content="debug running process AI agent, MCP debugging server, strace for Claude Code, py-spy Cursor, memory leak agent, deadlock detection, flamegraph MCP, Debug Anything, dea-agents">
+<title>Debug Anything</title>
+<meta name="description" content="Your AI agent can write the code. Now it can see it run. Debug Anything attaches to any running process and turns strace, py-spy, perf, lsof, tcpdump, gdb/lldb and heap snapshots into evidence-backed findings. MCP server + CLI + Python. MIT.">
+<meta name="keywords" content="debug running process AI agent, MCP debugging server, strace for Claude Code, py-spy Cursor, memory leak agent, deadlock detection, flamegraph MCP, Debug Anything, debuganything">
 <link rel="canonical" href="https://debuganything.dev/">
 <meta property="og:url" content="https://debuganything.dev/">
-<meta property="og:title" content="DEA — Debug Anything">
+<meta property="og:title" content="Debug Anything">
 <meta property="og:description" content="Your AI agent can write the code. Now it can see it run. Evidence, not guesses.">
 <meta property="og:image" content="https://debuganything.dev/social.png">
 <meta property="og:type" content="website">
@@ -19,7 +19,7 @@
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#0b0d12">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"DEA — Debug Anything","alternateName":"dea-agents","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS","url":"https://debuganything.dev","downloadUrl":"https://www.npmjs.com/package/dea-agents","codeRepository":"https://github.com/shreyassaw5394/dea","license":"https://opensource.org/licenses/MIT","description":"Observe any running process from your AI coding agent: strace, py-spy, perf, lsof, tcpdump, gdb/lldb and heap snapshots turned into evidence-backed findings. MCP server, CLI and Python package.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"image":"https://debuganything.dev/social.png"}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Debug Anything","alternateName":"debuganything","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS","url":"https://debuganything.dev","downloadUrl":"https://www.npmjs.com/package/debuganything","codeRepository":"https://github.com/shreyassaw5394/debuganything","license":"https://opensource.org/licenses/MIT","description":"Observe any running process from your AI coding agent: strace, py-spy, perf, lsof, tcpdump, gdb/lldb and heap snapshots turned into evidence-backed findings. MCP server, CLI and Python package.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"image":"https://debuganything.dev/social.png"}
 </script>
 <style>
 :root{--bg:#0b0d12;--bg2:#0f1320;--fg:#eef2f8;--muted:#9aa3b2;--dim:#5f6878;--acc:#7cc4ff;--acc2:#ffb86b;--ok:#8be28b;--warn:#ffb86b;--high:#ff7b7b;--card:#121521;--line:#1f2434;--glow:rgba(124,196,255,.25);color-scheme:dark}
@@ -157,21 +157,21 @@ a.tile{display:block;color:inherit}a.tile:hover{text-decoration:none}
 </head>
 <body>
 <nav><div class="wrap">
-  <a class="brand" href="#"><img src="logo.svg" alt="">DEA</a>
-  <div class="links"><a href="analyze" style="color:var(--acc)">Analyzer</a><a href="#how">How it works</a><a href="#real">Real-world</a><a href="#workflow">Workflow</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/dea">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
+  <a class="brand" href="#"><img src="logo.svg" alt="">Debug Anything</a>
+  <div class="links"><a href="analyze" style="color:var(--acc)">Analyzer</a><a href="#how">How it works</a><a href="#real">Real-world</a><a href="#workflow">Workflow</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/debuganything">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
 </div></nav>
 
 <section class="hero"><div class="wrap">
   <div>
     <div class="eyebrow">Debug Anything · open source · MIT</div>
     <h1>Your AI agent can write the code.<br><span>Now it can see it run.</span></h1>
-    <p class="sub">When your app is slow, stuck, crashing or eating memory, your AI agent used to read the code and guess. With DEA it looks inside the <em>running</em> app, measures what is actually happening, and shows you the proof. One command to install. No terminal skills needed.</p>
-    <div class="cmd"><span class="p">$</span><span id="cmd">npx dea-agents why <em style="font-style:normal;color:var(--dim)">&lt;pid&gt;</em></span><button onclick="navigator.clipboard&&navigator.clipboard.writeText('npx dea-agents why ');this.textContent='copied — add your pid'">copy</button></div>
-    <p class="meta" style="margin-top:8px">One command: attach → the right tools for the symptom → ranked findings, every one citing evidence. Agent setup: <code>npx dea-agents setup</code> · No install? <a href="analyze">Paste tool output in the browser →</a></p>
-    <div class="ctas"><a class="btn primary" href="#video">Watch it find a leak · 40s</a><a class="btn" href="https://github.com/shreyassaw5394/dea">★ GitHub</a><a class="btn" href="docs/README.md">Read the docs</a></div>
-    <p class="meta">Works with Claude Code, Cursor, Codex, Gemini CLI and anything that speaks MCP · Python: <code>pip install dea-agents</code></p>
+    <p class="sub">When your app is slow, stuck, crashing or eating memory, your AI agent used to read the code and guess. With Debug Anything it looks inside the <em>running</em> app, measures what is actually happening, and shows you the proof. One command to install. No terminal skills needed.</p>
+    <div class="cmd"><span class="p">$</span><span id="cmd">npx debuganything why <em style="font-style:normal;color:var(--dim)">&lt;pid&gt;</em></span><button onclick="navigator.clipboard&&navigator.clipboard.writeText('npx debuganything why ');this.textContent='copied — add your pid'">copy</button></div>
+    <p class="meta" style="margin-top:8px">One command: attach → the right tools for the symptom → ranked findings, every one citing evidence. Agent setup: <code>npx debuganything setup</code> · No install? <a href="analyze">Paste tool output in the browser →</a></p>
+    <div class="ctas"><a class="btn primary" href="#video">Watch it find a leak · 40s</a><a class="btn" href="https://github.com/shreyassaw5394/debuganything">★ GitHub</a><a class="btn" href="docs/README.md">Read the docs</a></div>
+    <p class="meta">Works with Claude Code, Cursor, Codex, Gemini CLI and anything that speaks MCP · Python: <code>pip install debuganything</code></p>
   </div>
-  <div class="term" aria-label="DEA session replay"><div class="bar"><i></i><i></i><i></i><span>dea — real session, replayed</span></div><pre id="replay"></pre></div>
+  <div class="term" aria-label="Debug Anything session replay"><div class="bar"><i></i><i></i><i></i><span>debuganything — real session, replayed</span></div><pre id="replay"></pre></div>
 </div></section>
 
 
@@ -180,7 +180,7 @@ a.tile{display:block;color:inherit}a.tile:hover{text-decoration:none}
   <h2>You say what's wrong. Your agent goes and looks.</h2>
   <div class="tiles reveal" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
     <div class="tile"><div style="font-size:34px;margin-bottom:8px">🗣️</div><h3>1. You say it, however you say it</h3><p>“It's slow after a while.” “It just freezes.” “Memory keeps going up.” “Port already in use.” “The container keeps dying.”</p></div>
-    <div class="tile"><div style="font-size:34px;margin-bottom:8px">🔍</div><h3>2. The agent looks inside the running app</h3><p>Not the code on screen, the program actually running. DEA uses the same tools senior engineers use, drives them for the agent, and keeps it safe: it only watches, never changes anything.</p></div>
+    <div class="tile"><div style="font-size:34px;margin-bottom:8px">🔍</div><h3>2. The agent looks inside the running app</h3><p>Not the code on screen, the program actually running. Debug Anything uses the same tools senior engineers use, drives them for the agent, and keeps it safe: it only watches, never changes anything.</p></div>
     <div class="tile"><div style="font-size:34px;margin-bottom:8px">🧾</div><h3>3. You get the cause, with a receipt</h3><p>“This list grows and is never emptied.” “This function uses 58% of the CPU.” “Two threads are waiting on each other.” Every sentence points at the measurement behind it, so it can't make things up.</p></div>
   </div>
   <p class="meta" style="margin-top:18px">Then it fixes the code the way it already can, measures again, and shows the before/after. That is the whole loop.</p>
@@ -188,14 +188,14 @@ a.tile{display:block;color:inherit}a.tile:hover{text-decoration:none}
 
 <section id="how"><div class="wrap">
   <div class="eyebrow">How it sees</div>
-  <h2>The agent asks. DEA measures. Every claim points at proof.</h2>
-  <p class="sub">The agent never touches a tool directly. DEA picks the right one, runs it inside hard limits, keeps the raw output as an artifact, and returns a short structured result.</p>
+  <h2>The agent asks. Debug Anything measures. Every claim points at proof.</h2>
+  <p class="sub">The agent never touches a tool directly. Debug Anything picks the right one, runs it inside hard limits, keeps the raw output as an artifact, and returns a short structured result.</p>
   <div class="pipe reveal">
-    <svg viewBox="0 0 1060 300" role="img" aria-label="Agent to DEA to tools to evidence to finding">
+    <svg viewBox="0 0 1060 300" role="img" aria-label="Agent to Debug Anything to tools to evidence to finding">
       <defs><marker id="m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffb86b"/></marker></defs>
       <g id="n1"><rect class="node" x="10" y="110" width="150" height="80" rx="14"/><text class="lbl" x="85" y="145" text-anchor="middle">Agent</text><text class="sm" x="85" y="168" text-anchor="middle">"it's slow"</text></g>
       <path class="flow" id="f1" d="M160 150 H215" marker-end="url(#m)"/>
-      <g id="n2"><rect class="node" x="220" y="95" width="170" height="110" rx="14"/><text class="lbl" x="305" y="137" text-anchor="middle">DEA</text><text class="sm" x="305" y="160" text-anchor="middle">attach · cap · parse</text><text class="sm" x="305" y="180" text-anchor="middle">redact · cite</text></g>
+      <g id="n2"><rect class="node" x="220" y="95" width="170" height="110" rx="14"/><text class="lbl" x="305" y="137" text-anchor="middle">Debug Anything</text><text class="sm" x="305" y="160" text-anchor="middle">attach · cap · parse</text><text class="sm" x="305" y="180" text-anchor="middle">redact · cite</text></g>
       <path class="flow" id="f2" d="M390 125 C430 125 430 40 470 40" marker-end="url(#m)"/>
       <path class="flow" id="f3" d="M390 140 C430 140 430 95 470 95" marker-end="url(#m)"/>
       <path class="flow" id="f4" d="M390 150 H470" marker-end="url(#m)"/>
@@ -250,7 +250,7 @@ a.tile{display:block;color:inherit}a.tile:hover{text-decoration:none}
     <div class="box" data-l="2"><h3>Evidence</h3><pre><span class="evid">e14</span> lock_wait  worker-ab-20 at worker_ab (app.py:38) <span class="k" style="color:#ffb86b">[with lock_b:]</span>
 <span class="evid">e1</span>  stack_summary  64 threads: 0 active</pre></div>
     <div class="arrow">→</div>
-    <div class="box" data-l="3"><h3>Artifact</h3><pre>~/.dea/sessions/…/artifacts/
+    <div class="box" data-l="3"><h3>Artifact</h3><pre>~/.debuganything/sessions/…/artifacts/
   pyspy-dump.txt  <span class="dim" style="color:#5f6878">(raw, 6.3 KB)</span>
 open it. same bytes the agent saw.</pre></div>
   </div>
@@ -262,12 +262,12 @@ open it. same bytes the agent saw.</pre></div>
   <h2>From one laptop to the whole team in a week.</h2>
   <p class="sub">One command per developer, one command per repo, evidence in pull requests, a gate in CI. Nothing to host.</p>
   <div class="tl" id="tl">
-    <div class="st"><div class="dot">0</div><h3>You</h3><p>Register with your agent. Ask it something about a running process.</p><code>npx dea-agents setup</code></div>
-    <div class="st"><div class="dot">1</div><h3>Your repo</h3><p>Commit three files; every teammate's agent gets DEA and the rule for when to use it.</p><code>dea init</code></div>
-    <div class="st"><div class="dot">2</div><h3>Pull requests</h3><p>Perf and bug fixes carry run ids. Reviewers open the artifact instead of asking "did you measure?"</p><code>dea diff profile_cpu#2 profile_cpu#3</code></div>
-    <div class="st"><div class="dot">3</div><h3>CI</h3><p>Smoke test under two snapshots; fail the job if RSS grows.</p><code>dea diff … --json | jq -e …</code></div>
-    <div class="st"><div class="dot">4</div><h3>Containers</h3><p>Linux hosts attach by container name. Kubernetes via an ephemeral debug container.</p><code>kubectl debug … -- dea why 1</code></div>
-    <div class="st"><div class="dot">5</div><h3>On-call agent</h3><p>A Python agent reacts to the alert, measures, posts findings with the report path.</p><code>pip install dea-agents</code></div>
+    <div class="st"><div class="dot">0</div><h3>You</h3><p>Register with your agent. Ask it something about a running process.</p><code>npx debuganything setup</code></div>
+    <div class="st"><div class="dot">1</div><h3>Your repo</h3><p>Commit three files; every teammate's agent gets Debug Anything and the rule for when to use it.</p><code>debuganything init</code></div>
+    <div class="st"><div class="dot">2</div><h3>Pull requests</h3><p>Perf and bug fixes carry run ids. Reviewers open the artifact instead of asking "did you measure?"</p><code>debuganything diff profile_cpu#2 profile_cpu#3</code></div>
+    <div class="st"><div class="dot">3</div><h3>CI</h3><p>Smoke test under two snapshots; fail the job if RSS grows.</p><code>debuganything diff … --json | jq -e …</code></div>
+    <div class="st"><div class="dot">4</div><h3>Containers</h3><p>Linux hosts attach by container name. Kubernetes via an ephemeral debug container.</p><code>kubectl debug … -- debuganything why 1</code></div>
+    <div class="st"><div class="dot">5</div><h3>On-call agent</h3><p>A Python agent reacts to the alert, measures, posts findings with the report path.</p><code>pip install debuganything</code></div>
   </div>
   <p class="meta" style="margin-top:22px">Day-by-day guide: <a href="docs/workflows.md">workflows.md</a></p>
 </div></section>
@@ -276,7 +276,7 @@ open it. same bytes the agent saw.</pre></div>
   <div class="eyebrow">Unprompted</div>
   <h2>You stop asking. The agent goes to look.</h2>
   <div class="pro">
-    <div class="term reveal" style="position:relative;min-height:300px"><div class="bar"><i></i><i></i><i></i><span>claude code</span></div><pre id="pro-term" style="min-height:250px"></pre><div class="toast" id="toast"><b>[DEA]</b> The last command's output shows a runtime problem signal. <br>port_busy (“EADDRINUSE :::3000”): run <code>dea port 3000</code>; never kill it blindly.</div></div>
+    <div class="term reveal" style="position:relative;min-height:300px"><div class="bar"><i></i><i></i><i></i><span>claude code</span></div><pre id="pro-term" style="min-height:250px"></pre><div class="toast" id="toast"><b>[Debug Anything]</b> The last command's output shows a runtime problem signal. <br>port_busy (“EADDRINUSE :::3000”): run <code>debuganything port 3000</code>; never kill it blindly.</div></div>
     <div>
       <p class="sub" style="margin-top:0">The skill and the MCP instructions tell the agent to attach and measure on these signals. In Claude Code, a 40 ms hook spots them in command output and prompts, and nudges the model toward the right tool. Read-only observation needs no permission; packet capture always does.</p>
       <div class="signals"><span>EADDRINUSE</span><span>ECONNREFUSED</span><span>EMFILE</span><span>exit 137</span><span>OOMKilled</span><span>SIGSEGV</span><span>test timeout</span><span>"it hangs"</span><span>"it's slow"</span><span>"memory keeps growing"</span><span>after a perf change</span></div>
@@ -296,7 +296,7 @@ open it. same bytes the agent saw.</pre></div>
     <div class="tile"><h3>Native · Go · Java</h3><p>perf or sample flamegraphs; gdb / lldb thread dumps with mutex vs idle classification.</p><div class="req">perf, gdb · sample, lldb</div></div>
     <div class="tile"><h3>Network</h3><p>Per-remote bytes, RSTs, unanswered SYNs, retransmits, DNS, .pcap. Filter scoped to the target.</p><div class="req">tcpdump · consent</div></div>
     <div class="tile"><h3>Docker</h3><p>OOM kills, exit codes, restarts, limits vs usage, cgroup throttling, log tail.</p><div class="req">docker</div></div>
-    <div class="tile"><h3>Captured it yourself?</h3><p>Needs root? DEA prints the sudo command; you run it and <code>dea import</code> the file. strace, fs_usage, perf, py-spy, sample, gdb/lldb, lsof, tcpdump.</p><div class="req">dea import · macOS trace via fs_usage</div></div>
+    <div class="tile"><h3>Captured it yourself?</h3><p>Needs root? Debug Anything prints the sudo command; you run it and <code>debuganything import</code> the file. strace, fs_usage, perf, py-spy, sample, gdb/lldb, lsof, tcpdump.</p><div class="req">debuganything import · macOS trace via fs_usage</div></div>
     <div class="tile"><h3>Before / after</h3><p>Diff any two runs: what grew, appeared, disappeared. Proof for the PR.</p><div class="req">diff_runs</div></div>
   </div>
 </div></section>
@@ -305,18 +305,18 @@ open it. same bytes the agent saw.</pre></div>
   <div class="eyebrow">Everywhere your agent is</div>
   <h2>One line, any agent.</h2>
   <div class="inst reveal">
-    <div class="box"><h3>MCP · Claude Code, Cursor, Codex, Gemini CLI</h3><pre><b>npx</b> dea-agents setup</pre></div>
-    <div class="box"><h3>Your repo, your whole team</h3><pre><b>dea</b> init   <span class="dim" style="color:#5f6878"># commit .mcp.json, .cursor/mcp.json, AGENTS.md</span></pre></div>
-    <div class="box"><h3>No agent? One command</h3><pre><b>dea</b> why 12345 --symptom slow</pre></div>
-    <div class="box"><h3>Agent skill</h3><pre><b>npx</b> skills add shreyassaw5394/dea</pre></div>
-    <div class="box"><h3>Python · LangChain · LlamaIndex · CrewAI</h3><pre><b>pip</b> install 'dea-agents[langchain]'
-from dea_agents.langchain import dea_tools</pre></div>
-    <div class="box"><h3>One click</h3><pre><a href="https://cursor.com/en/install-mcp?name=dea&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRlYS1hZ2VudHNAbGF0ZXN0Iiwic2VydmUiXX0=">Install in Cursor →</a>
-<a href="https://vscode.dev/redirect/mcp/install?name=dea&config=%7B%22name%22%3A%22dea%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22dea-agents%40latest%22%2C%22serve%22%5D%7D">Install in VS Code →</a></pre></div>
-    <div class="box"><h3>Claude Code plugin · Gemini extension</h3><pre>/plugin marketplace add shreyassaw5394/dea
-/plugin install dea@dea
-gemini extensions install https://github.com/shreyassaw5394/dea</pre></div>
-    <div class="box"><h3>Any MCP client</h3><pre>{"command":"npx","args":["-y","dea-agents@latest","serve"]}</pre></div>
+    <div class="box"><h3>MCP · Claude Code, Cursor, Codex, Gemini CLI</h3><pre><b>npx</b> debuganything setup</pre></div>
+    <div class="box"><h3>Your repo, your whole team</h3><pre><b>debuganything</b> init   <span class="dim" style="color:#5f6878"># commit .mcp.json, .cursor/mcp.json, AGENTS.md</span></pre></div>
+    <div class="box"><h3>No agent? One command</h3><pre><b>debuganything</b> why 12345 --symptom slow</pre></div>
+    <div class="box"><h3>Agent skill</h3><pre><b>npx</b> skills add shreyassaw5394/debuganything</pre></div>
+    <div class="box"><h3>Python · LangChain · LlamaIndex · CrewAI</h3><pre><b>pip</b> install 'debuganything[langchain]'
+from debuganything.langchain import dea_tools</pre></div>
+    <div class="box"><h3>One click</h3><pre><a href="https://cursor.com/en/install-mcp?name=debuganything&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRlYS1hZ2VudHNAbGF0ZXN0Iiwic2VydmUiXX0=">Install in Cursor →</a>
+<a href="https://vscode.dev/redirect/mcp/install?name=debuganything&config=%7B%22name%22%3A%22dea%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22debuganything%40latest%22%2C%22serve%22%5D%7D">Install in VS Code →</a></pre></div>
+    <div class="box"><h3>Claude Code plugin · Gemini extension</h3><pre>/plugin marketplace add shreyassaw5394/debuganything
+/plugin install debuganything@debuganything
+gemini extensions install https://github.com/shreyassaw5394/debuganything</pre></div>
+    <div class="box"><h3>Any MCP client</h3><pre>{"command":"npx","args":["-y","debuganything@latest","serve"]}</pre></div>
   </div>
 </div></section>
 
@@ -339,11 +339,11 @@ gemini extensions install https://github.com/shreyassaw5394/dea</pre></div>
   <div class="eyebrow">Community</div>
   <h2>Built in the open. Numbers live.</h2>
   <div class="tiles reveal" id="stats" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
-    <a class="tile" href="https://github.com/shreyassaw5394/dea/stargazers"><div class="num" id="st-stars">—</div><p>GitHub stars</p></a>
-    <a class="tile" href="https://github.com/shreyassaw5394/dea/network/members"><div class="num" id="st-forks">—</div><p>Forks</p></a>
-    <a class="tile" href="https://www.npmjs.com/package/dea-agents"><div class="num" id="st-npm">—</div><p>npm downloads · 30 days</p></a>
-    <a class="tile" href="https://pypi.org/project/dea-agents/"><div class="num" id="st-pypi">—</div><p>PyPI downloads · 30 days</p></a>
-    <a class="tile" href="https://github.com/shreyassaw5394/dea/graphs/contributors"><div class="num" id="st-contrib">—</div><p>Contributors</p></a>
+    <a class="tile" href="https://github.com/shreyassaw5394/debuganything/stargazers"><div class="num" id="st-stars">—</div><p>GitHub stars</p></a>
+    <a class="tile" href="https://github.com/shreyassaw5394/debuganything/network/members"><div class="num" id="st-forks">—</div><p>Forks</p></a>
+    <a class="tile" href="https://www.npmjs.com/package/debuganything"><div class="num" id="st-npm">—</div><p>npm downloads · 30 days</p></a>
+    <a class="tile" href="https://pypi.org/project/debuganything/"><div class="num" id="st-pypi">—</div><p>PyPI downloads · 30 days</p></a>
+    <a class="tile" href="https://github.com/shreyassaw5394/debuganything/graphs/contributors"><div class="num" id="st-contrib">—</div><p>Contributors</p></a>
     <a class="tile" href="https://discord.gg/htPuQ5grg"><div class="num">💬</div><p>Discord</p></a>
   </div>
   <h3 style="margin-top:36px;font-size:18px">Top contributors</h3>
@@ -352,10 +352,10 @@ gemini extensions install https://github.com/shreyassaw5394/dea</pre></div>
 </div></section>
 
 <footer><div class="wrap">
-  <img src="logo.svg" alt="" width="28" height="28" style="border-radius:8px"><span>DEA — Debug Anything · MIT</span>
-  <div class="links"><a href="https://github.com/shreyassaw5394/dea">GitHub</a><a href="https://www.npmjs.com/package/dea-agents">npm</a><a href="https://pypi.org/project/dea-agents/">PyPI</a><a href="https://discord.gg/htPuQ5grg">Discord</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/dea/blob/main/DISCLAIMER.md">Disclaimer</a></div>
+  <img src="logo.svg" alt="" width="28" height="28" style="border-radius:8px"><span>Debug Anything · MIT</span>
+  <div class="links"><a href="https://github.com/shreyassaw5394/debuganything">GitHub</a><a href="https://www.npmjs.com/package/debuganything">npm</a><a href="https://pypi.org/project/debuganything/">PyPI</a><a href="https://discord.gg/htPuQ5grg">Discord</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/debuganything/blob/main/DISCLAIMER.md">Disclaimer</a></div>
 </div>
-<div class="wrap" style="margin-top:14px;font-size:12.5px;line-height:1.6">Provided "as is", without warranty of any kind; the authors accept no liability for any damage arising from use. Only observe systems you own or are explicitly authorized to debug — you are solely responsible for authorization and legal compliance. Findings are automated diagnostics, not professional advice. An independent open-source project by individual contributors, unaffiliated with any employer or with the third-party tools it orchestrates. <a href="https://github.com/shreyassaw5394/dea/blob/main/DISCLAIMER.md">Full disclaimer</a>.</div></footer>
+<div class="wrap" style="margin-top:14px;font-size:12.5px;line-height:1.6">Provided "as is", without warranty of any kind; the authors accept no liability for any damage arising from use. Only observe systems you own or are explicitly authorized to debug — you are solely responsible for authorization and legal compliance. Findings are automated diagnostics, not professional advice. An independent open-source project by individual contributors, unaffiliated with any employer or with the third-party tools it orchestrates. <a href="https://github.com/shreyassaw5394/debuganything/blob/main/DISCLAIMER.md">Full disclaimer</a>.</div></footer>
 
 <script>
 (function(){
@@ -369,16 +369,16 @@ const color=l=>{
 };
 // ---- hero replay (real session, macOS) ----
 const session=[
-"$ S=$(dea attach 61326 --json | jq -r .session_id)",
-"$ dea memory --session $S",
+"$ S=$(debuganything attach 61326 --json | jq -r .session_id)",
+"$ debuganything memory --session $S",
 "✔ snapshot_memory (snapshot_memory#2)  1.6 s",
 "  INFO  RSS 48.0 MB, stable over 1s [observed; e1,e2]",
 "$ node load.js 400   # 400 requests to /work",
-"$ dea memory --session $S",
+"$ debuganything memory --session $S",
 "✔ snapshot_memory (snapshot_memory#3)  1.4 s",
 "  INFO  RSS 273.0 MB, stable over 1s [observed; e1,e2]",
 "  WARN  Array (object) retains 50.1 MB = 87% of the heap, held by system / Context.retained [observed; e5,e3]",
-"$ dea diff --session $S snapshot_memory#2 snapshot_memory#3",
+"$ debuganything diff --session $S snapshot_memory#2 snapshot_memory#3",
 "✔ diff_runs (diff_runs#4)  2 ms",
 "  WARN  name=rss grew 48.0 MB → 273.0 MB (+468%) [observed; e2,e1]",
 "  HIGH  heap_summary: name=heap_total grew 6.8 MB → 57.5 MB [observed; e3,e1]",
@@ -406,14 +406,14 @@ function animatePipe(){const seq=[['n1'],['f1'],['n2'],['f2','f3','f4','f5','f6'
   setTimeout(()=>{document.querySelectorAll('.pipe .lit').forEach(n=>n.classList.remove('lit'));document.querySelectorAll('.pipe .flow.on').forEach(n=>n.classList.remove('on'));setTimeout(animatePipe,1200);},seq.length*350+2600);}
 // ---- incident console ----
 const incidents=[
- {ic:'🔌',t:'EMFILE at 2 am',plain:'The app slowly runs out of “hands” to hold connections because it never lets go of the old ones.',s:'CLOSE_WAIT pileup behind the load balancer',sym:'500s a few hours after deploy. Logs say <em>EMFILE: too many open files</em>. Restart fixes it.',cmd:'dea sockets --session $S\ndea files   --session $S --window 10',out:['HIGH  412 sockets in CLOSE_WAIT — the peer closed and the target never called close() [inferred; e2]','HIGH  980 fds open vs soft limit 1024 (96%) — EMFILE imminent [observed; e4]','e3   socket  top remotes: 10.0.3.17 ×388 (CLOSE_WAIT 371)   ← the load balancer'],fix:'Keep-alive timeout longer than the LB idle timeout. Set the server below it, or handle close/timeout on the socket. Prove: CLOSE_WAIT=3 after.'},
- {ic:'💽',t:'Disk full, du disagrees',plain:'A huge log file was deleted but the app is still holding it open, so the space never comes back.',s:'Deleted-but-open log file',sym:'/var is 100% full. <em>du</em> says 40 GB free. Deleting files frees nothing.',cmd:'dea files --session $S',out:['HIGH  1 file(s) deleted while still open hold 38.2 GB of disk — "disk full but nothing there" [observed; e5]','e5   fd  /var/log/app/app.log.1 (deleted)  fd 7  38.2 GB'],fix:'logrotate deleted it; the process still holds fd 7. copytruncate, or send the reopen signal. DEA names the pid and fd; it will not truncate it for you.'},
- {ic:'🐘',t:'Postgres: too many connections',plain:'Every worker opens its own line to the database and never shares, so the database runs out of lines.',s:'Pool exhaustion in a Django app',sym:'Under load, requests queue. Postgres shows 100/100 connections. p99 at 8 s.',cmd:'dea sockets --session $S\ndea trace   --session $S --duration 10 --categories network',out:['WARN  64 connections to 10.0.5.9 — pool exhaustion or missing reuse [inferred; e3]','WARN  18× connect failed with ECONNREFUSED — downstream not accepting connections [observed; e3]','INFO  recvfrom dominates: 7 412 ms over 211 calls (91% of kernel time) [observed; e1,e2]'],fix:'Each worker opens its own connections (CONN_MAX_AGE=0). pgbouncer in front, or CONN_MAX_AGE, and cap workers × pool below max_connections.'},
- {ic:'🧊',t:'Celery worker just stops',plain:'Two workers each wait for the other to finish first. Neither ever does. Classic deadlock.',s:'Deadlock after a refactor (real lab output)',sym:'Throughput drops to zero every few hours. CPU idle. Restart fixes it.',cmd:'dea why 5570 --symptom hang',out:['HIGH  likely deadlock: 42 thread(s) blocked acquiring locks and no thread is running — worker-ab-20 at worker_ab (app.py:38) [with lock_b:]; worker-ba-20 at worker_ba (app.py:45) [with lock_a:] [inferred; e14,e1]','e1   stack_summary  64 thread(s): 0 active, 64 idle'],fix:'Two paths take lock_a / lock_b in opposite order. The source lines in brackets are read from the process\'s own files.'},
- {ic:'🐢',t:'p99 of 1.4 s on one core',plain:'The app reads a file from disk on every request instead of once. Most requests are fast; some wait behind the slow ones.',s:'Blocked Node event loop (real lab output)',sym:'p50 is 20 ms, p99 is 1.4 s, one core pegged in bursts.',cmd:'dea profile --session $S --duration 10\ndea trace   --session $S --duration 8 --categories file',out:['WARN  18000 path lookups (open/stat) in 8s — filesystem churn [inferred; e1]','WARN  9274 read() calls in 8s (avg 0.104 ms) — sync I/O in a loop? [inferred; e1]','WARN  __arch_copy_to_user accounts for 58.3% of CPU work; CPU-busy ≈22% of the time [observed; e1,e2,e3]'],fix:'readFileSync on the request path. Move it to a worker thread or stream it; cache the file.'},
- {ic:'💥',t:'Pod OOMKilled every few hours',plain:'A list that only ever grows. The container hits its memory limit and gets killed. Restart, repeat.',s:'A quiet leak (real numbers from the leaky-node demo)',sym:'Kubernetes shows <em>OOMKilled</em>, restart count climbing. Nothing in the app logs.',cmd:'dea container --session $S\ndea memory --session $S   # twice, then diff',out:['HIGH  container was OOM-killed (State.OOMKilled=true) [observed; e1,e2]','WARN  Array (object) retains 50.1 MB = 87% of the heap, held by system / Context.retained [observed; e5,e3]','HIGH  heap_retainer: name=Array grew 2.0 KB → 50.1 MB [observed; e4,e1]'],fix:'A module-level cache that is only appended to. Bound it (LRU, TTL). Open the .heapsnapshot in DevTools for the full tree.'},
- {ic:'🌐',t:'Latency spikes every 30 s',plain:'The app looks up the partner\'s address on every single call instead of remembering it.',s:'DNS on every request',sym:'Calls to a partner API are fast, then 300–900 ms.',cmd:'dea capture --session $S --duration 10 --consent\ndea sockets --session $S',out:['WARN  api.partner.com resolved 212× in 10s — no DNS caching [inferred; e4]','WARN  127 sockets in TIME_WAIT — connection churn (no keep-alive?) [inferred; e2]'],fix:'New connection and lookup per request. Keep-alive agent and a resolver cache.'},
- {ic:'🚪',t:'EADDRINUSE after a crash',plain:'A previous copy of your dev server is still running and sitting on the port. DEA tells you which one.',s:'Orphaned dev server (real output)',sym:'<em>npm run dev</em> fails with EADDRINUSE :3000. Nothing obvious is running.',cmd:'dea port 3000',out:['HIGH  port 3000 is held by pid 61326 (node, user shreyas) in LISTEN [observed; e1,e2]','      command: node server.js. DEA will not kill it; decide yourself.'],fix:'An orphaned child from the previous run. DEA names it; you kill it.'}
+ {ic:'🔌',t:'EMFILE at 2 am',plain:'The app slowly runs out of “hands” to hold connections because it never lets go of the old ones.',s:'CLOSE_WAIT pileup behind the load balancer',sym:'500s a few hours after deploy. Logs say <em>EMFILE: too many open files</em>. Restart fixes it.',cmd:'debuganything sockets --session $S\ndea files   --session $S --window 10',out:['HIGH  412 sockets in CLOSE_WAIT — the peer closed and the target never called close() [inferred; e2]','HIGH  980 fds open vs soft limit 1024 (96%) — EMFILE imminent [observed; e4]','e3   socket  top remotes: 10.0.3.17 ×388 (CLOSE_WAIT 371)   ← the load balancer'],fix:'Keep-alive timeout longer than the LB idle timeout. Set the server below it, or handle close/timeout on the socket. Prove: CLOSE_WAIT=3 after.'},
+ {ic:'💽',t:'Disk full, du disagrees',plain:'A huge log file was deleted but the app is still holding it open, so the space never comes back.',s:'Deleted-but-open log file',sym:'/var is 100% full. <em>du</em> says 40 GB free. Deleting files frees nothing.',cmd:'debuganything files --session $S',out:['HIGH  1 file(s) deleted while still open hold 38.2 GB of disk — "disk full but nothing there" [observed; e5]','e5   fd  /var/log/app/app.log.1 (deleted)  fd 7  38.2 GB'],fix:'logrotate deleted it; the process still holds fd 7. copytruncate, or send the reopen signal. Debug Anything names the pid and fd; it will not truncate it for you.'},
+ {ic:'🐘',t:'Postgres: too many connections',plain:'Every worker opens its own line to the database and never shares, so the database runs out of lines.',s:'Pool exhaustion in a Django app',sym:'Under load, requests queue. Postgres shows 100/100 connections. p99 at 8 s.',cmd:'debuganything sockets --session $S\ndea trace   --session $S --duration 10 --categories network',out:['WARN  64 connections to 10.0.5.9 — pool exhaustion or missing reuse [inferred; e3]','WARN  18× connect failed with ECONNREFUSED — downstream not accepting connections [observed; e3]','INFO  recvfrom dominates: 7 412 ms over 211 calls (91% of kernel time) [observed; e1,e2]'],fix:'Each worker opens its own connections (CONN_MAX_AGE=0). pgbouncer in front, or CONN_MAX_AGE, and cap workers × pool below max_connections.'},
+ {ic:'🧊',t:'Celery worker just stops',plain:'Two workers each wait for the other to finish first. Neither ever does. Classic deadlock.',s:'Deadlock after a refactor (real lab output)',sym:'Throughput drops to zero every few hours. CPU idle. Restart fixes it.',cmd:'debuganything why 5570 --symptom hang',out:['HIGH  likely deadlock: 42 thread(s) blocked acquiring locks and no thread is running — worker-ab-20 at worker_ab (app.py:38) [with lock_b:]; worker-ba-20 at worker_ba (app.py:45) [with lock_a:] [inferred; e14,e1]','e1   stack_summary  64 thread(s): 0 active, 64 idle'],fix:'Two paths take lock_a / lock_b in opposite order. The source lines in brackets are read from the process\'s own files.'},
+ {ic:'🐢',t:'p99 of 1.4 s on one core',plain:'The app reads a file from disk on every request instead of once. Most requests are fast; some wait behind the slow ones.',s:'Blocked Node event loop (real lab output)',sym:'p50 is 20 ms, p99 is 1.4 s, one core pegged in bursts.',cmd:'debuganything profile --session $S --duration 10\ndea trace   --session $S --duration 8 --categories file',out:['WARN  18000 path lookups (open/stat) in 8s — filesystem churn [inferred; e1]','WARN  9274 read() calls in 8s (avg 0.104 ms) — sync I/O in a loop? [inferred; e1]','WARN  __arch_copy_to_user accounts for 58.3% of CPU work; CPU-busy ≈22% of the time [observed; e1,e2,e3]'],fix:'readFileSync on the request path. Move it to a worker thread or stream it; cache the file.'},
+ {ic:'💥',t:'Pod OOMKilled every few hours',plain:'A list that only ever grows. The container hits its memory limit and gets killed. Restart, repeat.',s:'A quiet leak (real numbers from the leaky-node demo)',sym:'Kubernetes shows <em>OOMKilled</em>, restart count climbing. Nothing in the app logs.',cmd:'debuganything container --session $S\ndea memory --session $S   # twice, then diff',out:['HIGH  container was OOM-killed (State.OOMKilled=true) [observed; e1,e2]','WARN  Array (object) retains 50.1 MB = 87% of the heap, held by system / Context.retained [observed; e5,e3]','HIGH  heap_retainer: name=Array grew 2.0 KB → 50.1 MB [observed; e4,e1]'],fix:'A module-level cache that is only appended to. Bound it (LRU, TTL). Open the .heapsnapshot in DevTools for the full tree.'},
+ {ic:'🌐',t:'Latency spikes every 30 s',plain:'The app looks up the partner\'s address on every single call instead of remembering it.',s:'DNS on every request',sym:'Calls to a partner API are fast, then 300–900 ms.',cmd:'debuganything capture --session $S --duration 10 --consent\ndea sockets --session $S',out:['WARN  api.partner.com resolved 212× in 10s — no DNS caching [inferred; e4]','WARN  127 sockets in TIME_WAIT — connection churn (no keep-alive?) [inferred; e2]'],fix:'New connection and lookup per request. Keep-alive agent and a resolver cache.'},
+ {ic:'🚪',t:'EADDRINUSE after a crash',plain:'A previous copy of your dev server is still running and sitting on the port. Debug Anything tells you which one.',s:'Orphaned dev server (real output)',sym:'<em>npm run dev</em> fails with EADDRINUSE :3000. Nothing obvious is running.',cmd:'debuganything port 3000',out:['HIGH  port 3000 is held by pid 61326 (node, user shreyas) in LISTEN [observed; e1,e2]','      command: node server.js. Debug Anything will not kill it; decide yourself.'],fix:'An orphaned child from the previous run. Debug Anything names it; you kill it.'}
 ];
 const clist=document.getElementById('clist'),cpane=document.getElementById('cpane');let cur=0,timer,prog;
 incidents.forEach((inc,i)=>{const d=document.createElement('div');d.className='item';d.innerHTML=`<span class="ic">${inc.ic}</span><div>${inc.t}<small>${inc.s}</small></div>`;d.onclick=()=>{show(i);restart();};clist.appendChild(d);});
@@ -433,7 +433,7 @@ document.querySelectorAll('#chain .box').forEach(b=>{b.addEventListener('mouseen
 // ---- proactive animation ----
 const pro=document.getElementById('pro-term'),toast=document.getElementById('toast');
 const proLines=["$ npm run dev","> vite","Error: listen EADDRINUSE: address already in use :::3000","    at Server.setupListenHandle [as _listen2] (node:net:1908:16)"];
-const proAfter=["$ dea port 3000","✔ inspect_sockets  81 ms","  HIGH  port 3000 is held by pid 61326 (node) in LISTEN [observed; e1,e2]","        command: node server.js. DEA will not kill it; decide yourself.","# the agent found the owner in one call — you never asked."];
+const proAfter=["$ debuganything port 3000","✔ inspect_sockets  81 ms","  HIGH  port 3000 is held by pid 61326 (node) in LISTEN [observed; e1,e2]","        command: node server.js. Debug Anything will not kill it; decide yourself.","# the agent found the owner in one call — you never asked."];
 function proLoop(){toast.classList.remove('show');typeLines(pro,proLines,{speed:18,after:250},()=>{setTimeout(()=>toast.classList.add('show'),400);setTimeout(()=>{toast.classList.remove('show');const d=document.createElement('span');pro.appendChild(d);typeLines(d,proAfter,{speed:18,after:250},()=>setTimeout(proLoop,6000));},2600);});}
 
 // ---- live community numbers (public APIs, client-side, graceful) ----
@@ -441,16 +441,16 @@ function proLoop(){toast.classList.remove('show');typeLines(pro,proLines,{speed:
   const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'k':String(n);
   const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   const get=async u=>{try{const r=await fetch(u);return r.ok?await r.json():null;}catch{return null;}};
-  const repo=await get('https://api.github.com/repos/shreyassaw5394/dea');
+  const repo=await get('https://api.github.com/repos/shreyassaw5394/debuganything');
   if(repo){set('st-stars',fmt(repo.stargazers_count));set('st-forks',fmt(repo.forks_count));}
-  const npm=await get('https://api.npmjs.org/downloads/point/last-month/dea-agents');
+  const npm=await get('https://api.npmjs.org/downloads/point/last-month/debuganything');
   set('st-npm',npm&&typeof npm.downloads==='number'?fmt(npm.downloads):'new');
-  const py=await get('https://pypistats.org/api/packages/dea-agents/recent');
+  const py=await get('https://pypistats.org/api/packages/debuganything/recent');
   set('st-pypi',py&&py.data&&typeof py.data.last_month==='number'?fmt(py.data.last_month):'new');
-  const contrib=await get('https://api.github.com/repos/shreyassaw5394/dea/contributors?per_page=24');
+  const contrib=await get('https://api.github.com/repos/shreyassaw5394/debuganything/contributors?per_page=24');
   const wall=document.getElementById('wall');
   if(contrib&&Array.isArray(contrib)&&contrib.length){set('st-contrib',fmt(contrib.length));wall.innerHTML=contrib.map(c=>`<a href="${c.html_url}" title="${c.contributions} commits"><img src="${c.avatar_url}&s=64" alt="">${c.login}<small>${c.contributions}</small></a>`).join('');}
-  else wall.innerHTML='<a href="https://github.com/shreyassaw5394/dea/graphs/contributors">see contributors on GitHub</a>';
+  else wall.innerHTML='<a href="https://github.com/shreyassaw5394/debuganything/graphs/contributors">see contributors on GitHub</a>';
 })();
 
 // ---- reveals & observers ----

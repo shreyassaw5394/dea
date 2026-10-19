@@ -1,5 +1,5 @@
 /**
- * `dea setup` — register the MCP server + skill with Claude Code, Codex,
+ * `debuganything setup` — register the MCP server + skill with Claude Code, Codex,
  * Cursor and Gemini CLI. Shows the exact change, backs up the file, writes.
  */
 import { readFile, writeFile, mkdir, copyFile, access } from "node:fs/promises";
@@ -11,7 +11,7 @@ import { createInterface } from "node:readline/promises";
 import pc from "picocolors";
 import { HOOK_SCRIPT } from "./hook.js";
 
-export const MCP_ENTRY = { command: "npx", args: ["-y", "dea-agents@latest", "serve"] } as const;
+export const MCP_ENTRY = { command: "npx", args: ["-y", "debuganything@latest", "serve"] } as const;
 
 export interface AgentTarget {
   id: "claude" | "codex" | "cursor" | "gemini";
@@ -41,7 +41,7 @@ export const AGENTS: AgentTarget[] = [
     configPath: (h) => join(h, ".codex", "config.toml"),
     detect: (h) => existsSync(join(h, ".codex")),
     format: "toml",
-    key: "mcp_servers.dea",
+    key: "mcp_servers.debuganything",
     skillsDir: (h) => join(h, ".codex", "skills", "debug-anything"),
   },
   {
@@ -74,10 +74,10 @@ export function patchJsonConfig(existing: string | null, key = "mcpServers"): { 
     }
   }
   const servers = ((obj[key] as Record<string, unknown> | undefined) ?? {}) as Record<string, unknown>;
-  const current = JSON.stringify(servers.dea ?? null);
+  const current = JSON.stringify(servers.debuganything ?? null);
   const desired = JSON.stringify(MCP_ENTRY);
   if (current === desired) return { next: existing ?? JSON.stringify(obj, null, 2) + "\n", changed: false };
-  servers.dea = { command: MCP_ENTRY.command, args: [...MCP_ENTRY.args] };
+  servers.debuganything = { command: MCP_ENTRY.command, args: [...MCP_ENTRY.args] };
   obj[key] = servers;
   return { next: JSON.stringify(obj, null, 2) + "\n", changed: true };
 }
@@ -97,7 +97,7 @@ export function patchClaudeHooks(existing: string | null, scriptPath: string): {
   let changed = false;
   const ensure = (event: string, matcher: string | undefined) => {
     const list: any[] = (hooks[event] ??= []);
-    const has = list.some((g) => Array.isArray(g?.hooks) && g.hooks.some((h: any) => typeof h?.command === "string" && h.command.includes("dea-hook.mjs")));
+    const has = list.some((g) => Array.isArray(g?.hooks) && g.hooks.some((h: any) => typeof h?.command === "string" && h.command.includes("debuganything-hook.mjs")));
     if (has) return;
     list.push({ ...(matcher ? { matcher } : {}), hooks: [{ type: "command", command: cmd, timeout: 10 }] });
     changed = true;
@@ -107,12 +107,12 @@ export function patchClaudeHooks(existing: string | null, scriptPath: string): {
   return { next: JSON.stringify(obj, null, 2) + "\n", changed };
 }
 
-export const TOML_BLOCK = `[mcp_servers.dea]\ncommand = "npx"\nargs = ["-y", "dea-agents@latest", "serve"]\n`;
+export const TOML_BLOCK = `[mcp_servers.debuganything]\ncommand = "npx"\nargs = ["-y", "debuganything@latest", "serve"]\n`;
 
-/** Patch a TOML config: replace an existing [mcp_servers.dea] table or append one. Pure, no TOML dependency. */
+/** Patch a TOML config: replace an existing [mcp_servers.debuganything] table or append one. Pure, no TOML dependency. */
 export function patchTomlConfig(existing: string | null): { next: string; changed: boolean } {
   const text = existing ?? "";
-  const re = /^\[mcp_servers\.dea\]\n(?:(?!\[)[^\n]*\n?)*/m;
+  const re = /^\[mcp_servers\.debuganything\]\n(?:(?!\[)[^\n]*\n?)*/m;
   if (re.test(text)) {
     const current = re.exec(text)![0];
     if (current.trim() === TOML_BLOCK.trim()) return { next: text, changed: false };
@@ -150,10 +150,10 @@ export async function setup(opts: SetupOptions = {}): Promise<{ written: string[
   const skipped: string[] = [];
   if (wanted.length === 0) {
     log(pc.yellow("No supported agent detected (looked for ~/.claude.json, ~/.codex/, ~/.cursor/, ~/.gemini/)."));
-    log(`Add this to your agent's MCP config manually:\n${JSON.stringify({ mcpServers: { dea: MCP_ENTRY } }, null, 2)}`);
+    log(`Add this to your agent's MCP config manually:\n${JSON.stringify({ mcpServers: { debuganything: MCP_ENTRY } }, null, 2)}`);
     return { written, skipped };
   }
-  log(pc.bold("DEA setup will:"));
+  log(pc.bold("Debug Anything setup will:"));
   const plans: Array<{ agent: AgentTarget; path: string; next: string; changed: boolean; existing: string | null }> = [];
   for (const agent of wanted) {
     const path = agent.configPath(home);
@@ -162,11 +162,11 @@ export async function setup(opts: SetupOptions = {}): Promise<{ written: string[
     plans.push({ agent, path, next, changed, existing });
     log(`\n${pc.cyan("•")} ${pc.bold(agent.label)} → ${path} ${changed ? "" : pc.dim("(already registered)")}`);
     if (changed) {
-      log(pc.dim(agent.format === "json" ? JSON.stringify({ [agent.key]: { dea: MCP_ENTRY } }, null, 2) : TOML_BLOCK.trim()));
+      log(pc.dim(agent.format === "json" ? JSON.stringify({ [agent.key]: { debuganything: MCP_ENTRY } }, null, 2) : TOML_BLOCK.trim()));
     }
     if (agent.skillsDir) log(pc.dim(`  + copy skills/debug-anything/SKILL.md → ${agent.skillsDir(home)}/SKILL.md`));
     if (agent.id === "claude" && opts.hooks !== false) {
-      log(pc.dim(`  + write ${join(home, ".dea", "hooks", "dea-hook.mjs")} and register it in ${join(home, ".claude", "settings.json")} (hooks.PostToolUse[Bash], hooks.UserPromptSubmit) so the agent reaches for DEA on EADDRINUSE / OOM / timeouts / "it hangs" without being asked. Disable with --no-hooks.`));
+      log(pc.dim(`  + write ${join(home, ".debuganything", "hooks", "debuganything-hook.mjs")} and register it in ${join(home, ".claude", "settings.json")} (hooks.PostToolUse[Bash], hooks.UserPromptSubmit) so the agent reaches for Debug Anything on EADDRINUSE / OOM / timeouts / "it hangs" without being asked. Disable with --no-hooks.`));
     }
   }
   if (opts.dryRun) {
@@ -175,7 +175,7 @@ export async function setup(opts: SetupOptions = {}): Promise<{ written: string[
   }
   if (!opts.yes) {
     const rl = createInterface({ input: process.stdin, output: process.stdout });
-    const ans = (await rl.question("\nApply these changes? Existing files are backed up to *.bak-dea [y/N] ")).trim().toLowerCase();
+    const ans = (await rl.question("\nApply these changes? Existing files are backed up to *.bak-debuganything [y/N] ")).trim().toLowerCase();
     rl.close();
     if (ans !== "y" && ans !== "yes") {
       log("aborted; nothing written");
@@ -186,7 +186,7 @@ export async function setup(opts: SetupOptions = {}): Promise<{ written: string[
   for (const p of plans) {
     if (p.changed) {
       await mkdir(dirname(p.path), { recursive: true });
-      if (p.existing !== null) await copyFile(p.path, `${p.path}.bak-dea`);
+      if (p.existing !== null) await copyFile(p.path, `${p.path}.bak-debuganything`);
       await writeFile(p.path, p.next);
       written.push(p.path);
     } else skipped.push(p.path);
@@ -197,9 +197,9 @@ export async function setup(opts: SetupOptions = {}): Promise<{ written: string[
       written.push(join(dir, "SKILL.md"));
     }
     if (p.agent.id === "claude" && opts.hooks !== false) {
-      const hookDir = join(home, ".dea", "hooks");
+      const hookDir = join(home, ".debuganything", "hooks");
       await mkdir(hookDir, { recursive: true });
-      const script = join(hookDir, "dea-hook.mjs");
+      const script = join(hookDir, "debuganything-hook.mjs");
       await writeFile(script, HOOK_SCRIPT, { mode: 0o755 });
       written.push(script);
       const settingsPath = join(home, ".claude", "settings.json");
@@ -207,7 +207,7 @@ export async function setup(opts: SetupOptions = {}): Promise<{ written: string[
       const { next, changed } = patchClaudeHooks(existing, script);
       if (changed) {
         await mkdir(dirname(settingsPath), { recursive: true });
-        if (existing !== null) await copyFile(settingsPath, `${settingsPath}.bak-dea`);
+        if (existing !== null) await copyFile(settingsPath, `${settingsPath}.bak-debuganything`);
         await writeFile(settingsPath, next);
         written.push(settingsPath);
       }
@@ -228,10 +228,10 @@ export async function fileExists(p: string): Promise<boolean> {
 
 
 // ---------------------------------------------------------------------------
-// `dea init` — project-level setup so every teammate's agent gets DEA
+// `debuganything init` — project-level setup so every teammate's agent gets Debug Anything
 // ---------------------------------------------------------------------------
 
-export const AGENTS_MD_BLOCK = `## Runtime debugging with DEA
+export const AGENTS_MD_BLOCK = `## Runtime debugging with Debug Anything
 
 DEA (Debug Anything) is registered as an MCP server for this repo (\`.mcp.json\`, \`.cursor/mcp.json\`).
 When something *running* misbehaves — a command hangs, a test times out, you see EADDRINUSE / ECONNREFUSED /
@@ -240,7 +240,7 @@ leak or crash — attach and measure before theorizing: \`readiness\` → \`atta
 \`profile_cpu\` / \`inspect_sockets\` / \`snapshot_memory\` / \`container_info\` → \`detach\`. Cite evidence ids
 (e.g. \`profile_cpu#2/e3\`). Read-only tools need no permission; \`capture_traffic\` needs the user's consent.
 After a performance fix, re-measure and \`diff_runs\` to prove it; put the evidence ids in the PR.
-Docs: https://github.com/shreyassaw5394/dea
+Docs: https://github.com/shreyassaw5394/debuganything
 `;
 
 export interface InitOptions {
@@ -249,10 +249,10 @@ export interface InitOptions {
   log?: (s: string) => void;
 }
 
-/** Append the DEA block to an AGENTS.md/CLAUDE.md-style file if not present. Pure. */
+/** Append the Debug Anything block to an AGENTS.md/CLAUDE.md-style file if not present. Pure. */
 export function patchAgentsMd(existing: string | null): { next: string; changed: boolean } {
   const text = existing ?? "";
-  if (text.includes("## Runtime debugging with DEA")) return { next: text, changed: false };
+  if (text.includes("## Runtime debugging with Debug Anything")) return { next: text, changed: false };
   const sep = text.length === 0 ? "" : text.endsWith("\n\n") ? "" : text.endsWith("\n") ? "\n" : "\n\n";
   return { next: text + sep + AGENTS_MD_BLOCK, changed: true };
 }
@@ -276,7 +276,7 @@ export async function init(opts: InitOptions = {}): Promise<{ written: string[];
   const md = patchAgentsMd(existingMd);
   plans.push({ path: target, next: md.next, changed: md.changed, existing: existingMd, what: "runtime-debugging rule for agents" });
 
-  log(pc.bold(`DEA init in ${dir} will:`));
+  log(pc.bold(`Debug Anything init in ${dir} will:`));
   for (const p of plans) log(`${pc.cyan("•")} ${p.path} ${p.changed ? pc.dim(`(+ ${p.what})`) : pc.dim("(already set up)")}`);
   if (opts.dryRun) {
     log(pc.dim("--dry-run: nothing written."));
@@ -288,10 +288,10 @@ export async function init(opts: InitOptions = {}): Promise<{ written: string[];
       continue;
     }
     await mkdir(dirname(p.path), { recursive: true });
-    if (p.existing !== null) await copyFile(p.path, `${p.path}.bak-dea`);
+    if (p.existing !== null) await copyFile(p.path, `${p.path}.bak-debuganything`);
     await writeFile(p.path, p.next);
     written.push(p.path);
   }
-  log(`${pc.green("Done.")} Commit these files so every teammate's agent gets DEA. Each person still runs ${pc.bold("npx dea-agents setup")} once for the skill and hook.`);
+  log(`${pc.green("Done.")} Commit these files so every teammate's agent gets Debug Anything. Each person still runs ${pc.bold("npx debuganything setup")} once for the skill and hook.`);
   return { written, skipped };
 }

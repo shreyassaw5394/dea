@@ -13,8 +13,8 @@ beforeAll(async () => {
   session = await createSession({ kind: "pid", id: "1", pid: 1, comm: "x", host: "local" });
 });
 
-describe("dea import", () => {
-  it("maps every import tool to a DEA tool", () => {
+describe("debuganything import", () => {
+  it("maps every import tool to a Debug Anything tool", () => {
     expect(Object.values(IMPORT_TOOL_MAP).every((t) => typeof t === "string")).toBe(true);
   });
   it("imports a real strace log into trace_syscalls findings", async () => {

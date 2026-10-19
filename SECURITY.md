@@ -3,23 +3,23 @@
 ## Reporting a vulnerability
 
 Use GitHub's private vulnerability reporting:
-<https://github.com/shreyassaw5394/dea/security/advisories/new>. Do not open a
+<https://github.com/shreyassaw5394/debuganything/security/advisories/new>. Do not open a
 public issue. We acknowledge reports within 72 hours and credit reporters in
 the advisory unless they prefer otherwise.
 
 ## Supported versions
 
-The latest minor release on npm (`dea-agents`) and PyPI (`dea-agents`) receives
+The latest minor release on npm (`debuganything`) and PyPI (`debuganything`) receives
 fixes. Older versions: upgrade.
 
 ## Threat model
 
-DEA runs **locally, as you**, driven by an AI agent or the CLI. It never runs
+Debug Anything runs **locally, as you**, driven by an AI agent or the CLI. It never runs
 `sudo`, never phones home, and only observes. The agent that drives it already
-has shell access on the same machine, so DEA does not try to be a sandbox for
+has shell access on the same machine, so Debug Anything does not try to be a sandbox for
 the agent; it tries to make *observation* safe and auditable.
 
-What DEA guarantees:
+What Debug Anything guarantees:
 
 - **No shell.** Every subprocess is spawned with an argv array through execa;
   pids, container names, pod names, session ids and BPF fragments are validated
@@ -33,10 +33,10 @@ What DEA guarantees:
   unbounded. `capture_traffic` requires explicit consent on every call.
 - **Redacted payloads.** Bearer/API/AWS/JWT/Stripe/GitHub/Slack tokens,
   `password=`, private keys and `user:pass@` URLs are scrubbed from everything
-  returned to the agent. **Raw artifacts under `~/.dea/sessions/` are not
+  returned to the agent. **Raw artifacts under `~/.debuganything/sessions/` are not
   redacted**; treat that directory as sensitive and prune it.
-- **No network.** DEA makes no outbound connections. The only exception is the
-  explicit `dea update` command (npm).
+- **No network.** Debug Anything makes no outbound connections. The only exception is the
+  explicit `debuganything update` command (npm).
 
 Known side effects, by design and documented in results:
 
@@ -47,18 +47,18 @@ Known side effects, by design and documented in results:
   port if that matters to you.
 - `attach --kind command` spawns the command you name, as you. Treat it like
   running it yourself.
-- `dea setup` edits agent config files (`~/.claude.json`,
+- `debuganything setup` edits agent config files (`~/.claude.json`,
   `~/.claude/settings.json`, `~/.codex/config.toml`, `~/.cursor/mcp.json`,
-  `~/.gemini/settings.json`) after showing the diff and keeping a `.bak-dea`
+  `~/.gemini/settings.json`) after showing the diff and keeping a `.bak-debuganything`
   copy. The Claude Code hook it installs reads hook events from stdin, matches
   fixed regexes and prints text; it executes nothing.
-- `dea import` reads the file you point it at and copies it into the session
+- `debuganything import` reads the file you point it at and copies it into the session
   directory.
 
 Out of scope:
 
 - The behavior of the underlying tools (`strace`, `perf`, `tcpdump`, …).
-- Prompt injection against the agent itself. DEA's evidence contract makes an
+- Prompt injection against the agent itself. Debug Anything's evidence contract makes an
   agent's claims auditable; it does not control what the agent decides to do.
 
 ## Supply chain

@@ -5,13 +5,13 @@ import { join } from "node:path";
 import { patchJsonConfig, patchTomlConfig, setup, TOML_BLOCK } from "../src/setup.js";
 
 describe("setup config patching", () => {
-  it("adds dea to an existing JSON config without touching other servers", () => {
+  it("adds debuganything to an existing JSON config without touching other servers", () => {
     const { next, changed } = patchJsonConfig(JSON.stringify({ mcpServers: { other: { command: "x" } }, theme: "dark" }));
     expect(changed).toBe(true);
     const obj = JSON.parse(next);
     expect(obj.theme).toBe("dark");
     expect(obj.mcpServers.other.command).toBe("x");
-    expect(obj.mcpServers.dea).toEqual({ command: "npx", args: ["-y", "dea-agents@latest", "serve"] });
+    expect(obj.mcpServers.debuganything).toEqual({ command: "npx", args: ["-y", "debuganything@latest", "serve"] });
   });
   it("is idempotent", () => {
     const first = patchJsonConfig(null).next;
@@ -25,10 +25,10 @@ describe("setup config patching", () => {
     expect(a.changed).toBe(true);
     expect(a.next).toBe('model = "o3"\n\n' + TOML_BLOCK);
     expect(patchTomlConfig(a.next).changed).toBe(false);
-    const stale = 'model = "o3"\n\n[mcp_servers.dea]\ncommand = "old"\n\n[other]\nx = 1\n';
+    const stale = 'model = "o3"\n\n[mcp_servers.debuganything]\ncommand = "old"\n\n[other]\nx = 1\n';
     const b = patchTomlConfig(stale);
     expect(b.changed).toBe(true);
-    expect(b.next).toContain('args = ["-y", "dea-agents@latest", "serve"]');
+    expect(b.next).toContain('args = ["-y", "debuganything@latest", "serve"]');
     expect(b.next).toContain("[other]");
     expect(b.next).not.toContain('command = "old"');
   });
@@ -44,9 +44,9 @@ describe("setup against a fake home", () => {
     const logs: string[] = [];
     const { written } = await setup({ yes: true, home, log: (s) => logs.push(s) });
     expect(written).toContain(join(home, ".claude.json"));
-    expect(existsSync(join(home, ".claude.json.bak-dea"))).toBe(true);
-    expect(JSON.parse(readFileSync(join(home, ".claude.json"), "utf8")).mcpServers.dea.command).toBe("npx");
-    expect(readFileSync(join(home, ".codex", "config.toml"), "utf8")).toContain("[mcp_servers.dea]");
+    expect(existsSync(join(home, ".claude.json.bak-debuganything"))).toBe(true);
+    expect(JSON.parse(readFileSync(join(home, ".claude.json"), "utf8")).mcpServers.debuganything.command).toBe("npx");
+    expect(readFileSync(join(home, ".codex", "config.toml"), "utf8")).toContain("[mcp_servers.debuganything]");
     expect(existsSync(join(home, ".cursor", "mcp.json"))).toBe(true);
     expect(existsSync(join(home, ".claude", "skills", "debug-anything", "SKILL.md"))).toBe(true);
     expect(existsSync(join(home, ".gemini", "settings.json"))).toBe(false); // not detected
@@ -61,20 +61,20 @@ describe("setup against a fake home", () => {
   });
 });
 
-describe("dea init (project-level)", () => {
+describe("debuganything init (project-level)", () => {
   it("writes .mcp.json, .cursor/mcp.json and an AGENTS.md rule, idempotently", async () => {
     const { init, patchAgentsMd } = await import("../src/setup.js");
     const dir = mkdtempSync(join(tmpdir(), "dea-proj-"));
     writeFileSync(join(dir, "CLAUDE.md"), "# My project\n\nRules.\n");
     const r = await init({ dir, log: () => {} });
     expect(r.written).toContain(join(dir, ".mcp.json"));
-    expect(JSON.parse(readFileSync(join(dir, ".cursor", "mcp.json"), "utf8")).mcpServers.dea.command).toBe("npx");
+    expect(JSON.parse(readFileSync(join(dir, ".cursor", "mcp.json"), "utf8")).mcpServers.debuganything.command).toBe("npx");
     const md = readFileSync(join(dir, "CLAUDE.md"), "utf8");
     expect(md.startsWith("# My project")).toBe(true);
-    expect(md).toContain("## Runtime debugging with DEA");
+    expect(md).toContain("## Runtime debugging with Debug Anything");
     expect(existsSync(join(dir, "AGENTS.md"))).toBe(false);
     const again = await init({ dir, log: () => {} });
     expect(again.written).toEqual([]);
-    expect(patchAgentsMd(null).next).toContain("DEA");
+    expect(patchAgentsMd(null).next).toContain("Debug Anything");
   });
 });

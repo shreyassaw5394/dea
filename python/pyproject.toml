@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "dea-agents"
+name = "debuganything"
 version = "0.1.1"
-description = "Debug Anything from Python agents: observe running processes (strace, py-spy, perf, lsof, tcpdump, gdb/lldb, heap snapshots) and get evidence-backed findings. Wraps the DEA CLI/MCP server; tool adapters for LangChain, LlamaIndex and CrewAI."
+description = "Debug Anything from Python agents: observe running processes (strace, py-spy, perf, lsof, tcpdump, gdb/lldb, heap snapshots) and get evidence-backed findings. Wraps the Debug Anything CLI/MCP server; tool adapters for LangChain, LlamaIndex and CrewAI."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.9"
@@ -26,9 +26,9 @@ crewai = ["crewai>=0.30", "pydantic>=2"]
 dev = ["pytest"]
 
 [project.urls]
-Homepage = "https://github.com/shreyassaw5394/dea"
-Documentation = "https://github.com/shreyassaw5394/dea/tree/main/docs"
-Issues = "https://github.com/shreyassaw5394/dea/issues"
+Homepage = "https://github.com/shreyassaw5394/debuganything"
+Documentation = "https://github.com/shreyassaw5394/debuganything/tree/main/docs"
+Issues = "https://github.com/shreyassaw5394/debuganything/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["dea_agents"]
+packages = ["debuganything"]

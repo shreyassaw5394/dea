@@ -1,5 +1,5 @@
 /**
- * DEA contracts — the single most important file.
+ * Debug Anything contracts — the single most important file.
  *
  * Every tool, whether invoked over MCP or from the CLI, returns a `ToolResult`.
  * Findings MUST cite evidence ids; the schema rejects findings that do not.
@@ -207,7 +207,7 @@ export const Session = z.object({
   target: Target,
   created_at: z.string(),
   detached_at: z.string().optional(),
-  /** Absolute path of the session directory under ~/.dea/sessions/. */
+  /** Absolute path of the session directory under ~/.debuganything/sessions/. */
   dir: z.string(),
   /** Platform the session was created on. */
   platform: z.enum(["linux", "darwin", "win32"]),

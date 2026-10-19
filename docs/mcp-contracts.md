@@ -62,7 +62,7 @@ tools, what to look for, and to never state a cause without an evidence id.
 ## Session layout
 
 ```
-~/.dea/sessions/<id>/
+~/.debuganything/sessions/<id>/
   session.json        # Session (target, runs index, state)
   runs/001-attach.json, 002-inspect_sockets.json, ...   # full ToolResults
   artifacts/          # raw tool output, flamegraph.svg, .heapsnapshot, .pcap

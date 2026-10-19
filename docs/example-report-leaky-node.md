@@ -1,4 +1,4 @@
-# DEA session 20261017-223448-a66b75
+# Debug Anything session 20261017-223448-a66b75
 
 - **Target:** pid `26` (pid 26, node) — runtime node
 - **Host:** local (linux)

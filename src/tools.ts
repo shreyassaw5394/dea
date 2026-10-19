@@ -28,7 +28,7 @@ export async function cachedReadiness(maxAgeMs = 30_000): Promise<Readiness> {
 export const TOOL_DESCRIPTIONS: Record<keyof typeof ToolArgs, string> = {
   readiness: "Report OS, arch, which providers (strace, py-spy, perf, lsof, tcpdump, gdb/lldb, docker...) are usable, what is missing and how to install it, and permission status (ptrace_scope, sudo, SIP). Always call this first.",
   attach: "Resolve a target (pid, container, k8s pod, or a command to spawn under capture) and open a session. Returns session_id used by every other tool. Read-only: nothing is modified.",
-  detach: "Stop any running captures for the session, finalize the report, keep artifacts under ~/.dea/sessions/<id>/.",
+  detach: "Stop any running captures for the session, finalize the report, keep artifacts under ~/.debuganything/sessions/<id>/.",
   list_processes: "ps-style list (pid, comm, cpu, mem, user, container) for picking a target. Optional substring filter.",
   trace_syscalls: "Linux strace of the target for N seconds: top syscalls by total time and count, slowest individual calls, error counts (ENOENT/EAGAIN/ECONNREFUSED...), blocked waits. Raw log saved as artifact.",
   profile_cpu: "CPU profile for N seconds: py-spy (Python), perf (native/Node on Linux), sample (macOS). Returns top frames (self/total), hottest stacks, flamegraph.svg artifact.",
@@ -40,7 +40,7 @@ export const TOOL_DESCRIPTIONS: Record<keyof typeof ToolArgs, string> = {
   diff_runs: "Diff two prior runs of the same tool in this session (e.g. snapshot_memory#1 vs snapshot_memory#2, profile_cpu#1 vs #2): what grew, appeared, disappeared.",
   container_info: "docker inspect/stats/top/logs tail for the target container, host pid mapping, cgroup limits: throttled? OOM-killed before? restarts?",
   report: "Markdown report of the whole session: findings, evidence excerpts, artifact paths. Optionally written to a file.",
-  import_artifact: "Analyze raw tool output you captured yourself (e.g. `sudo strace …`, `sudo fs_usage …`, `perf script`, `py-spy dump`, `lsof -F`, `tcpdump -nn -tt -r`) and turn it into the same evidence and findings DEA would produce. Use when DEA could not run the tool (no root, macOS).",
+  import_artifact: "Analyze raw tool output you captured yourself (e.g. `sudo strace …`, `sudo fs_usage …`, `perf script`, `py-spy dump`, `lsof -F`, `tcpdump -nn -tt -r`) and turn it into the same evidence and findings Debug Anything would produce. Use when Debug Anything could not run the tool (no root, macOS).",
 };
 
 export async function runTool(name: string, rawArgs: Record<string, unknown>): Promise<ToolResult> {
@@ -106,7 +106,7 @@ async function toolReadiness(): Promise<ToolResult> {
   b.finding("info", `${r.tools_available.length} of 14 tools available on ${r.os}`, [tools, prov]);
   for (const u of r.tools_unavailable) b.limitation(`${u.tool}: ${u.reason}`);
   if (r.os === "linux" && r.permissions.ptrace_scope !== null && r.permissions.ptrace_scope >= 1 && !r.is_root) {
-    b.finding("warn", `ptrace_scope=${r.permissions.ptrace_scope}: strace/gdb/py-spy can only attach to your own child processes without root`, [sys], "observed", "Fix for this boot: sudo sysctl kernel.yama.ptrace_scope=0  (DEA will not run this for you)");
+    b.finding("warn", `ptrace_scope=${r.permissions.ptrace_scope}: strace/gdb/py-spy can only attach to your own child processes without root`, [sys], "observed", "Fix for this boot: sudo sysctl kernel.yama.ptrace_scope=0  (Debug Anything will not run this for you)");
   }
   if (r.os === "linux" && r.permissions.perf_event_paranoid !== null && r.permissions.perf_event_paranoid > 1 && !r.is_root) {
     b.finding("warn", `perf_event_paranoid=${r.permissions.perf_event_paranoid}: perf cannot profile other users' processes without root`, [sys], "observed", "Fix for this boot: sudo sysctl kernel.perf_event_paranoid=1");

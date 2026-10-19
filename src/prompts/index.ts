@@ -89,7 +89,7 @@ Order:
 1. readiness
 2. attach { target: "${a.target}" } (for a container that is down, attach still works for container_info)
 3. container_info { session_id } — OOMKilled, exit code (137 = SIGKILL/OOM, 139 = SIGSEGV, 143 = SIGTERM), restart count, cgroup memory limit vs usage, error lines in the log tail.
-4. If not a container: ask the user for the exit code / signal and check dmesg or journalctl for "Out of memory: Killed process <pid>" and segfault lines (DEA does not read dmesg itself yet; say so).
+4. If not a container: ask the user for the exit code / signal and check dmesg or journalctl for "Out of memory: Killed process <pid>" and segfault lines (Debug Anything does not read dmesg itself yet; say so).
 5. If a core file or crash log exists, suggest a step debugger / lldb on the core (handoff).
 6. If it restarted and is running now: snapshot_memory and profile_cpu to catch the lead-up.
 7. report { session_id }, then detach.
@@ -104,7 +104,7 @@ ${RULES}`,
 
 Order:
 1. readiness
-2. list_processes { filter: "" } is not enough on its own — ports are per socket. Use the dedicated path: run \`dea port ${a.port}\` via the CLI if available, or:
+2. list_processes { filter: "" } is not enough on its own — ports are per socket. Use the dedicated path: run \`debuganything port ${a.port}\` via the CLI if available, or:
 3. attach to the most likely owner (list_processes, then attach by pid) and call inspect_sockets { session_id } — the listening sockets evidence names the port and pid.
 4. If unsure which process, iterate: attach to candidates from list_processes and inspect_sockets each; a listening socket on :${a.port} is the answer.
 5. Report the pid, command line, user and whether it is a stale instance of the user's own app. Do NOT kill it; tell the user the exact pid so they can decide.

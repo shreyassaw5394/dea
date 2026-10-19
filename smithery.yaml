@@ -1,4 +1,4 @@
-# Smithery deployment: DEA runs locally over stdio because it observes
+# Smithery deployment: Debug Anything runs locally over stdio because it observes
 # processes on the user's own machine. Nothing is sent anywhere.
 startCommand:
   type: stdio
@@ -7,4 +7,4 @@ startCommand:
     properties: {}
     additionalProperties: false
   commandFunction: |
-    () => ({ command: "npx", args: ["-y", "dea-agents@latest", "serve"] })
+    () => ({ command: "npx", args: ["-y", "debuganything@latest", "serve"] })
