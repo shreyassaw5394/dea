@@ -1,0 +1,43 @@
+name: Publish to MCP Registry
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+# OIDC lets the registry verify we own io.github.shreyassaw5394/* — no secrets.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Keep server.json in step with package.json
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          SRV=$(node -p "require('./server.json').version")
+          echo "package.json=$PKG server.json=$SRV"
+          test "$PKG" = "$SRV" || { echo "::error::server.json ($SRV) does not match package.json ($PKG)"; exit 1; }
+
+      - name: Wait for npm to index this version
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          for i in $(seq 1 30); do
+            if [ "$(npm view dea-agents version 2>/dev/null)" = "$PKG" ]; then echo "npm has $PKG"; exit 0; fi
+            echo "waiting for npm to show $PKG ($i/30)"; sleep 20
+          done
+          echo "::warning::npm did not show $PKG in time; publishing to the registry anyway"
+
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_amd64.tar.gz" \
+            | tar xz mcp-publisher
+          chmod +x mcp-publisher
+
+      - name: Login via GitHub OIDC and publish
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
