@@ -1,5 +1,5 @@
 /**
- * lsof adapter: inspect_sockets, inspect_files, and the `dea port` lookup.
+ * lsof adapter: inspect_sockets, inspect_files, and the `debuganything port` lookup.
  * Works on Linux and macOS without root for your own processes.
  *
  * We use lsof's machine-readable field output (-F) so parsing does not depend
@@ -311,7 +311,7 @@ async function inspectFiles(ctx: AdapterContext, args: { window_s?: number }): P
   return b.build();
 }
 
-/** `dea port <n>`: who listens on a port. No session. */
+/** `debuganything port <n>`: who listens on a port. No session. */
 export async function whoHoldsPort(port: number): Promise<ToolResult> {
   const target: Target = { kind: "pid", id: `port:${port}`, host: "local" };
   const b = new ResultBuilder("inspect_sockets", null, target);
@@ -335,7 +335,7 @@ export async function whoHoldsPort(port: number): Promise<ToolResult> {
     const { processInfo } = await import("../target.js");
     const info = await processInfo(listener.pid);
     const pev = b.evidenceOf("process", `pid ${listener.pid}: ${info?.args ?? listener.command} (user ${info?.user ?? listener.user ?? "?"})`, info ?? listener);
-    b.finding("high", `port ${port} is held by pid ${listener.pid} (${listener.command}${info?.user ? `, user ${info.user}` : ""}) in LISTEN`, [ev, pev], "observed", `command: ${info?.args ?? "?"}. DEA will not kill it; decide yourself.`);
+    b.finding("high", `port ${port} is held by pid ${listener.pid} (${listener.command}${info?.user ? `, user ${info.user}` : ""}) in LISTEN`, [ev, pev], "observed", `command: ${info?.args ?? "?"}. Debug Anything will not kill it; decide yourself.`);
   } else if (list.length) {
     b.finding("warn", `port ${port} has ${list.length} process(es) with non-listening sockets (${[...new Set(list.flatMap((h) => h.states))].join(",") || "UDP"}) — a TIME_WAIT/CLOSE_WAIT leftover can also block bind without SO_REUSEADDR`, [ev], "inferred");
   } else {

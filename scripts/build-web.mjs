@@ -1,4 +1,4 @@
-/** Bundle the pure analyzer for the site: site/assets/dea-web.js (ESM). */
+/** Bundle the pure analyzer for the site: site/assets/debuganything-web.js (ESM). */
 import { build } from "esbuild";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -11,7 +11,7 @@ const r = await build({
   platform: "browser",
   target: "es2022",
   minify: true,
-  outfile: join(root, "site/assets/dea-web.js"),
+  outfile: join(root, "site/assets/debuganything-web.js"),
   alias: {
     execa: stub("execa.js"),
     "node:fs": stub("fs.js"),

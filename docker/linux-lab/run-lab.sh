@@ -2,15 +2,15 @@
 # Runs inside the dea-lab container (privileged). Exercises every Linux adapter
 # against the example apps and copies real tool output into tests/fixtures/.
 set -u
-cd /dea
-export DEA_HOME=/dea/.lab-dea
+cd /debuganything
+export DEA_HOME=/dea/.lab-debuganything
 rm -rf "$DEA_HOME"; mkdir -p "$DEA_HOME"
-DEA="node dist/cli.js"
+Debug Anything="node dist/cli.js"
 FX=tests/fixtures
 log() { printf '\n\033[1;36m### %s\033[0m\n' "$*"; }
 
 log readiness
-$DEA readiness
+$Debug Anything readiness
 
 log "start example apps"
 (cd examples/leaky-node && PORT=3000 node server.js > /tmp/leaky.log 2>&1 &)
@@ -23,34 +23,34 @@ echo "node=$NODEPID python=$PYPID sleep=$SLEEPPID"; cat /tmp/leaky.log /tmp/dead
 (cd examples/leaky-node && for i in $(seq 1 25); do node load.js 60 3 >/dev/null 2>&1; sleep 0.5; done &) 
 
 log "attach node"
-S1=$($DEA attach "$NODEPID" --json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).session_id))')
+S1=$($Debug Anything attach "$NODEPID" --json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).session_id))')
 echo "S1=$S1"
-log "snapshot_memory #1"; $DEA memory --session "$S1" --window 2
-log "trace_syscalls (file,network) 8s"; $DEA trace --session "$S1" --duration 8 --categories file,network
-log "profile_cpu 8s"; $DEA profile --session "$S1" --duration 8
-log "dump_stacks (node inspector)"; $DEA stacks --session "$S1"
-log "inspect_sockets"; $DEA sockets --session "$S1"
-log "inspect_files"; $DEA files --session "$S1" --window 2
-log "capture_traffic 5s (consent)"; $DEA capture --session "$S1" --duration 5 --consent
-log "snapshot_memory #2"; $DEA memory --session "$S1" --window 2
-log "diff"; $DEA diff --session "$S1" 2 9
-log "report"; $DEA report --session "$S1" --md /tmp/report-node.md | tail -5
-$DEA detach --session "$S1" | head -3
+log "snapshot_memory #1"; $Debug Anything memory --session "$S1" --window 2
+log "trace_syscalls (file,network) 8s"; $Debug Anything trace --session "$S1" --duration 8 --categories file,network
+log "profile_cpu 8s"; $Debug Anything profile --session "$S1" --duration 8
+log "dump_stacks (node inspector)"; $Debug Anything stacks --session "$S1"
+log "inspect_sockets"; $Debug Anything sockets --session "$S1"
+log "inspect_files"; $Debug Anything files --session "$S1" --window 2
+log "capture_traffic 5s (consent)"; $Debug Anything capture --session "$S1" --duration 5 --consent
+log "snapshot_memory #2"; $Debug Anything memory --session "$S1" --window 2
+log "diff"; $Debug Anything diff --session "$S1" 2 9
+log "report"; $Debug Anything report --session "$S1" --md /tmp/report-node.md | tail -5
+$Debug Anything detach --session "$S1" | head -3
 
 log "attach python"
-S2=$($DEA attach "$PYPID" --json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).session_id))')
-log "py dump_stacks (healthy)"; $DEA stacks --session "$S2"
-log "py profile 4s with load"; (for i in $(seq 1 15); do curl -s -m 2 localhost:5055/ >/dev/null; done &) ; (for i in $(seq 1 15); do curl -s -m 2 "localhost:5055/?burn=1" >/dev/null; done &); $DEA profile --session "$S2" --duration 4
+S2=$($Debug Anything attach "$PYPID" --json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).session_id))')
+log "py dump_stacks (healthy)"; $Debug Anything stacks --session "$S2"
+log "py profile 4s with load"; (for i in $(seq 1 15); do curl -s -m 2 localhost:5055/ >/dev/null; done &) ; (for i in $(seq 1 15); do curl -s -m 2 "localhost:5055/?burn=1" >/dev/null; done &); $Debug Anything profile --session "$S2" --duration 4
 log "trigger deadlock"; for i in $(seq 1 12); do curl -s -m 1 localhost:5055/ >/dev/null 2>&1; done; sleep 1
-log "py dump_stacks (deadlocked)"; $DEA stacks --session "$S2"
-log "py snapshot_memory"; $DEA memory --session "$S2" --window 1
-log "py trace 4s"; $DEA trace --session "$S2" --duration 4
-$DEA detach --session "$S2" | head -3
+log "py dump_stacks (deadlocked)"; $Debug Anything stacks --session "$S2"
+log "py snapshot_memory"; $Debug Anything memory --session "$S2" --window 1
+log "py trace 4s"; $Debug Anything trace --session "$S2" --duration 4
+$Debug Anything detach --session "$S2" | head -3
 
 log "attach native (sleep) for gdb"
-S3=$($DEA attach "$SLEEPPID" --json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).session_id))')
-$DEA stacks --session "$S3"
-$DEA detach --session "$S3" | head -2
+S3=$($Debug Anything attach "$SLEEPPID" --json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).session_id))')
+$Debug Anything stacks --session "$S3"
+$Debug Anything detach --session "$S3" | head -2
 
 log "copy fixtures"
 A1="$DEA_HOME/sessions/$S1/artifacts"; A2="$DEA_HOME/sessions/$S2/artifacts"; A3="$DEA_HOME/sessions/$S3/artifacts"

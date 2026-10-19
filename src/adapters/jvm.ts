@@ -1,7 +1,7 @@
 /**
  * JVM thread dumps: parse `jstack <pid>` / `jcmd <pid> Thread.print` output
  * into threads + monitors, detect deadlocks and monitor contention.
- * Pure parsing/summarizing (used by dea import, the web analyzer, and the
+ * Pure parsing/summarizing (used by debuganything import, the web analyzer, and the
  * live dump_stacks path when a JDK is present).
  */
 import type { ToolResult } from "../contracts.js";

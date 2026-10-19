@@ -1,4 +1,4 @@
-// Deliberately broken HTTP server for DEA showcases. No dependencies.
+// Deliberately broken HTTP server for Debug Anything showcases. No dependencies.
 //   /work  — stores every request body in a module-level array via a closure (leak)
 //   /slow  — 1500× sync fs.readFileSync of a 256 KB file + a setTimeout(…, 800) (slow)
 //   /      — health

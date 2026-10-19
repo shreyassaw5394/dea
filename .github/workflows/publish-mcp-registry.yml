@@ -26,7 +26,7 @@ jobs:
         run: |
           PKG=$(node -p "require('./package.json').version")
           for i in $(seq 1 30); do
-            if [ "$(npm view dea-agents version 2>/dev/null)" = "$PKG" ]; then echo "npm has $PKG"; exit 0; fi
+            if [ "$(npm view debuganything version 2>/dev/null)" = "$PKG" ]; then echo "npm has $PKG"; exit 0; fi
             echo "waiting for npm to show $PKG ($i/30)"; sleep 20
           done
           echo "::warning::npm did not show $PKG in time; publishing to the registry anyway"

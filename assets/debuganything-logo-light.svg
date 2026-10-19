@@ -10,7 +10,7 @@
     <circle cx="241" cy="168" r="9" fill="#e8902e"/>
   </g>
   <path d="M226 226 L266 266" stroke="url(#ring)" stroke-width="19" stroke-linecap="round"/>
-  <text x="330" y="178" font-family="-apple-system, 'SF Pro Display', 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="150" font-weight="800" letter-spacing="-6" fill="#0b0d12">DEA</text>
+  <text x="330" y="178" font-family="-apple-system, 'SF Pro Display', 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="86" font-weight="800" letter-spacing="-6" fill="#0b0d12">Debug Anything</text>
   <text x="332" y="240" font-family="-apple-system, 'SF Pro Text', 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="46" font-weight="500" letter-spacing="1" fill="#4b5563">Debug Anything</text>
   <text x="332" y="290" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="26" fill="#1b5fae">observe any running process · evidence, not guesses</text>
 </svg>

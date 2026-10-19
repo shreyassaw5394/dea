@@ -1,5 +1,5 @@
 name: Adapter / tool request
-description: A runtime, tool or platform DEA should observe
+description: A runtime, tool or platform Debug Anything should observe
 labels: [adapter]
 body:
   - type: input

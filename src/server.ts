@@ -12,10 +12,10 @@ import { VERSION } from "./version.js";
 
 export function createServer(): McpServer {
   const server = new McpServer(
-    { name: "dea", version: VERSION },
+    { name: "debuganything", version: VERSION },
     {
       instructions:
-        "DEA (Debug Anything) observes running processes, containers and pods with battle-tested local tools and returns structured evidence. Call readiness first, attach before anything else, detach at the end. Every finding cites evidence ids — never claim a root cause without one. capture_traffic requires consent: true; ask the user first. Read-only: DEA never kills, signals or modifies the target. USE DEA PROACTIVELY: when a command you ran hangs, a test times out, output shows EADDRINUSE / ECONNREFUSED / EMFILE / exit 137 / OOM / segfault, a server you started does not respond, or the user mentions slow, hang, leak, crash or a busy port — attach and measure (dump_stacks, inspect_sockets, profile_cpu, snapshot_memory, container_info) before proposing a theory, without waiting to be asked. After you change performance-sensitive code, re-measure and diff_runs to prove it.",
+        "DEA (Debug Anything) observes running processes, containers and pods with battle-tested local tools and returns structured evidence. Call readiness first, attach before anything else, detach at the end. Every finding cites evidence ids — never claim a root cause without one. capture_traffic requires consent: true; ask the user first. Read-only: Debug Anything never kills, signals or modifies the target. USE Debug Anything PROACTIVELY: when a command you ran hangs, a test times out, output shows EADDRINUSE / ECONNREFUSED / EMFILE / exit 137 / OOM / segfault, a server you started does not respond, or the user mentions slow, hang, leak, crash or a busy port — attach and measure (dump_stacks, inspect_sockets, profile_cpu, snapshot_memory, container_info) before proposing a theory, without waiting to be asked. After you change performance-sensitive code, re-measure and diff_runs to prove it.",
     },
   );
 

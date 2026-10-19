@@ -1,6 +1,6 @@
 ---
 name: inspect-product
-description: Use when asked to review, audit, inspect or improve a whole product/app/site rather than chase one bug — "look over the product", "what should we fix", "is this ready to launch", "find problems", "suggest improvements". Walks the real running product like a user, observes the runtime with DEA, reads only the code the evidence points at, and returns ranked findings that each cite proof. Also use before a launch or after a big feature lands.
+description: Use when asked to review, audit, inspect or improve a whole product/app/site rather than chase one bug — "look over the product", "what should we fix", "is this ready to launch", "find problems", "suggest improvements". Walks the real running product like a user, observes the runtime with Debug Anything, reads only the code the evidence points at, and returns ranked findings that each cite proof. Also use before a launch or after a big feature lands.
 ---
 
 # Inspect a whole product
@@ -52,7 +52,7 @@ Walk at minimum:
 
 ## Phase 2 — Observe the runtime (this is the part reviews skip)
 
-While the product is running under that load, use **DEA** (the
+While the product is running under that load, use **Debug Anything** (the
 `debug-anything` skill) on the server process or container:
 
 - `readiness` → `attach` the app process
@@ -110,7 +110,7 @@ For each:
 [SEVERITY] One-line claim
   Repro:    the exact steps / command
   Observed: what actually happened (quote output, name the screenshot)
-  Evidence: DEA evidence id, log line, screenshot, or file:line
+  Evidence: Debug Anything evidence id, log line, screenshot, or file:line
   Why it matters: the user- or money-level consequence
   Fix:      the smallest change that removes the cause
 ```

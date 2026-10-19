@@ -1,14 +1,14 @@
 name: Bug report
-description: DEA produced a wrong result, crashed, or could not attach
+description: Debug Anything produced a wrong result, crashed, or could not attach
 labels: [bug]
 body:
   - type: input
     id: version
-    attributes: { label: DEA version, placeholder: "dea --version" }
+    attributes: { label: Debug Anything version, placeholder: "debuganything --version" }
     validations: { required: true }
   - type: textarea
     id: readiness
-    attributes: { label: "`dea readiness --json` output", render: json }
+    attributes: { label: "`debuganything readiness --json` output", render: json }
     validations: { required: true }
   - type: textarea
     id: repro

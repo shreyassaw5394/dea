@@ -1,17 +1,17 @@
 {
-  "name": "dea-agents",
-  "mcpName": "io.github.shreyassaw5394/dea",
+  "name": "debuganything",
+  "mcpName": "io.github.shreyassaw5394/debuganything",
   "version": "0.4.0",
   "description": "Debug Anything: observe and diagnose any running process, container or pod from your agent with one CLI and MCP server. Evidence, not guesses.",
   "license": "MIT",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shreyassaw5394/dea.git"
+    "url": "git+https://github.com/shreyassaw5394/debuganything.git"
   },
   "homepage": "https://debuganything.dev",
   "bugs": {
-    "url": "https://github.com/shreyassaw5394/dea/issues"
+    "url": "https://github.com/shreyassaw5394/debuganything/issues"
   },
   "keywords": [
     "debugging",
@@ -31,14 +31,14 @@
     "mcp-server",
     "model-context-protocol",
     "cli",
-    "dea"
+    "debuganything"
   ],
   "publishConfig": {
     "access": "public"
   },
   "bin": {
-    "dea": "dist/cli.js",
-    "dea-agents": "dist/cli.js"
+    "debuganything": "dist/cli.js",
+    "debugany": "dist/cli.js"
   },
   "engines": {
     "node": ">=22"
@@ -50,11 +50,11 @@
     "README.md",
     "DISCLAIMER.md",
     "LICENSE",
-    "assets/dea-mark-512.png",
-    "assets/dea-logo.png",
+    "assets/debuganything-mark-512.png",
+    "assets/debuganything-logo.png",
     ".claude-plugin/plugin.json",
     "hooks/hooks.json",
-    "hooks/dea-hook.mjs",
+    "hooks/debuganything-hook.mjs",
     "gemini-extension.json",
     "GEMINI.md"
   ],

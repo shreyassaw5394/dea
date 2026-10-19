@@ -11,8 +11,8 @@ import { VERSION } from "./version.js";
 
 const program = new Command();
 program
-  .name("dea")
-  .description("◎ DEA — Debug Anything. Observe any running process. No breakpoints, no restarts, no instrumentation.\n  https://debuganything.dev")
+  .name("debuganything")
+  .description("◎ Debug Anything. Observe any running process. No breakpoints, no restarts, no instrumentation.\n  https://debuganything.dev")
   .version(VERSION, "-v, --version")
   .option("--json", "print the raw ToolResult JSON")
   .showHelpAfterError();
@@ -85,7 +85,7 @@ program
 
 program
   .command("setup")
-  .description("register DEA's MCP server and skill with Claude Code / Codex / Cursor / Gemini CLI")
+  .description("register Debug Anything's MCP server and skill with Claude Code / Codex / Cursor / Gemini CLI")
   .option("--yes", "do not ask for confirmation")
   .option("--home <dir>", "home directory to write configs into (for testing)")
   .option("--agents <list>", "comma-separated subset: claude,codex,cursor,gemini")
@@ -99,7 +99,7 @@ program
 program
   .command("hook")
   .argument("[event]", "PostToolUse | UserPromptSubmit (read from stdin JSON when omitted)")
-  .description("agent hook: read a hook event on stdin, print a DEA nudge when the output/prompt shows a runtime-problem signal")
+  .description("agent hook: read a hook event on stdin, print a Debug Anything nudge when the output/prompt shows a runtime-problem signal")
   .action(async (_event?: string) => {
     const { detectTriggers, renderNudge } = await import("./hook.js");
     let raw = "";
@@ -118,7 +118,7 @@ program
 
 program
   .command("init")
-  .description("set up THIS repo for DEA: .mcp.json + .cursor/mcp.json entries and an agent rule in AGENTS.md/CLAUDE.md (commit them)")
+  .description("set up THIS repo for Debug Anything: .mcp.json + .cursor/mcp.json entries and an agent rule in AGENTS.md/CLAUDE.md (commit them)")
   .option("--dir <path>", "project directory (default: cwd)")
   .option("--dry-run", "show what would change without writing")
   .action(async (opts) => {
@@ -240,7 +240,7 @@ program
     const json = wantJson(this);
     const target = targetParts.join(" ");
     const symptom = ["slow", "leak", "hang", "crash", "triage"].includes(opts.symptom) ? opts.symptom : "triage";
-    if (!json) process.stdout.write(`${pc.bold("DEA")} investigating ${pc.cyan(target)} for ${pc.cyan(symptom)} …\n\n`);
+    if (!json) process.stdout.write(`${pc.bold("Debug Anything")} investigating ${pc.cyan(target)} for ${pc.cyan(symptom)} …\n\n`);
     const out = await investigate(target, {
       symptom,
       kind: opts.kind ?? (targetParts.length > 1 ? "command" : undefined),
@@ -302,7 +302,7 @@ program
     await emit(this, r);
   });
 
-const sessions = program.command("sessions").description("manage ~/.dea/sessions");
+const sessions = program.command("sessions").description("manage ~/.debuganything/sessions");
 sessions
   .command("list")
   .description("list sessions")
@@ -325,13 +325,13 @@ sessions
 
 program
   .command("update")
-  .description("update DEA to the latest published version")
+  .description("update Debug Anything to the latest published version")
   .action(async () => {
     const { execa } = await import("execa");
-    process.stdout.write(pc.dim("$ npm install --global dea-agents@latest\n"));
-    const r = await execa("npm", ["install", "--global", "dea-agents@latest"], { reject: false, stdio: "inherit" });
+    process.stdout.write(pc.dim("$ npm install --global debuganything@latest\n"));
+    const r = await execa("npm", ["install", "--global", "debuganything@latest"], { reject: false, stdio: "inherit" });
     if (r.exitCode !== 0) {
-      process.stdout.write(`${pc.yellow("global install failed.")} If you use npx, nothing to do: \`npx -y dea-agents@latest\` always fetches the latest.\n`);
+      process.stdout.write(`${pc.yellow("global install failed.")} If you use npx, nothing to do: \`npx -y debuganything@latest\` always fetches the latest.\n`);
       process.exitCode = 1;
     }
   });

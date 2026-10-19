@@ -1,10 +1,10 @@
 {
   "hooks": {
     "PostToolUse": [
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/dea-hook.mjs\"", "timeout": 10 }] }
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/debuganything-hook.mjs\"", "timeout": 10 }] }
     ],
     "UserPromptSubmit": [
-      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/dea-hook.mjs\"", "timeout": 10 }] }
+      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/debuganything-hook.mjs\"", "timeout": 10 }] }
     ]
   }
 }

@@ -1,8 +1,8 @@
 /**
  * fs_usage adapter (macOS): trace_syscalls without strace.
  *   fs_usage -w -f filesys,network -p PID
- * Works with SIP enabled but needs root. When DEA is not root it returns the
- * exact command to run yourself plus `dea import fs_usage <file>`.
+ * Works with SIP enabled but needs root. When Debug Anything is not root it returns the
+ * exact command to run yourself plus `debuganything import fs_usage <file>`.
  */
 import type { Adapter, AdapterContext } from "./types.js";
 import type { SyscallCategory, ToolResult } from "../contracts.js";
@@ -50,10 +50,10 @@ async function traceSyscalls(ctx: AdapterContext, args: { duration_s?: number; c
   const cmd = `sudo fs_usage ${fsArgs.join(" ")} > ${out}`;
   if (!isRoot()) {
     b.limitation(rootRequiredLimitation("trace_syscalls", `fs_usage ${fsArgs.join(" ")}`));
-    b.limitation(`macOS has no strace; fs_usage needs root. Run for ~${duration}s then Ctrl-C:  ${cmd}   and then:  dea import fs_usage ${out} --session ${session.id}`);
+    b.limitation(`macOS has no strace; fs_usage needs root. Run for ~${duration}s then Ctrl-C:  ${cmd}   and then:  debuganything import fs_usage ${out} --session ${session.id}`);
     b.limitation("or run the target on Linux (docker/linux-lab) where strace gives the full breakdown");
     b.next(`import_artifact (fs_usage, ${out})`, "inspect_sockets", "profile_cpu");
-    return b.fail("fs_usage needs root; DEA never escalates").build();
+    return b.fail("fs_usage needs root; Debug Anything never escalates").build();
   }
   const r = await runCapped("fs_usage", fsArgs, { timeoutMs: duration * 1000, stdoutFile: out, captureInMemory: false });
   const { readFile } = await import("node:fs/promises");
@@ -83,7 +83,7 @@ export const fsUsageAdapter: Adapter = {
   install: { darwin: "preinstalled (/usr/bin/fs_usage); needs sudo" },
   priority: 5,
   check(base, env) {
-    if (!env.isRoot) base.notes.push("needs root: DEA will print the sudo command and you can `dea import fs_usage <file>`");
+    if (!env.isRoot) base.notes.push("needs root: Debug Anything will print the sudo command and you can `debuganything import fs_usage <file>`");
     return base;
   },
   async run(tool, args, ctx) {

@@ -21,7 +21,7 @@ export async function renderReport(session: Session): Promise<string> {
 export function renderReportFromRuns(session: Session, runs: ToolResult[]): string {
   const t = session.target;
   const lines: string[] = [];
-  lines.push(`# DEA session ${session.id}`);
+  lines.push(`# Debug Anything session ${session.id}`);
   lines.push("");
   lines.push(`- **Target:** ${t.kind} \`${t.id}\`${t.pid ? ` (pid ${t.pid}` + (t.comm ? `, ${t.comm}` : "") + ")" : ""}${t.runtime ? ` — runtime ${t.runtime}` : ""}`);
   lines.push(`- **Host:** ${t.host} (${session.platform})`);

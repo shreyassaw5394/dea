@@ -1,5 +1,5 @@
 /**
- * `dea why <target>` — a one-command investigation for people without an agent.
+ * `debuganything why <target>` — a one-command investigation for people without an agent.
  * Runs the same tool sequence the MCP prompts prescribe, prints each result,
  * and ends with a ranked summary + report path. Skips tools readiness says are
  * unavailable instead of failing.

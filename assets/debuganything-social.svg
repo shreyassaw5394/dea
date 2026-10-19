@@ -12,7 +12,7 @@
     <circle cx="360" cy="325" r="12" fill="#ffd9ad"/>
   </g>
   <path d="M332 407 L388 463" stroke="url(#ring)" stroke-width="26" stroke-linecap="round"/>
-  <text x="470" y="250" font-family="-apple-system, 'SF Pro Display', 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="140" font-weight="800" letter-spacing="-6" fill="#eef2f8">DEA</text>
+  <text x="470" y="250" font-family="-apple-system, 'SF Pro Display', 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="78" font-weight="800" letter-spacing="-6" fill="#eef2f8">Debug Anything</text>
   <text x="472" y="318" font-family="-apple-system, 'SF Pro Text', 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="52" font-weight="500" fill="#9aa0ad">Debug Anything</text>
   <text x="472" y="400" font-family="-apple-system, 'SF Pro Text', 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="34" fill="#dfe3ea">Your AI agent can write the code.</text>
   <text x="472" y="446" font-family="-apple-system, 'SF Pro Text', 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="34" fill="#dfe3ea">Now it can see it run.</text>

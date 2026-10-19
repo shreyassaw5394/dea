@@ -4,7 +4,7 @@
 
 ## Evidence
 
-<!-- For adapter/parser changes: paste the real tool output you captured into tests/fixtures/ and the DEA result it now produces. Findings must cite evidence ids. -->
+<!-- For adapter/parser changes: paste the real tool output you captured into tests/fixtures/ and the Debug Anything result it now produces. Findings must cite evidence ids. -->
 
 ## Checklist
 

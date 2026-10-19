@@ -1,14 +1,14 @@
-<img src="https://raw.githubusercontent.com/shreyassaw5394/dea/main/assets/dea-mark-512.png" alt="" width="64" align="right">
+<img src="https://raw.githubusercontent.com/shreyassaw5394/debuganything/main/assets/debuganything-mark-512.png" alt="" width="64" align="right">
 
-# Contributing to DEA
+# Contributing to Debug Anything
 
 Thanks for helping agents see running software.
 
 ## Setup
 
 ```bash
-git clone https://github.com/shreyassaw5394/dea
-cd dea
+git clone https://github.com/shreyassaw5394/debuganything
+cd debuganything
 npm install
 npm run check        # typecheck + lint + tests + build
 npx tsx src/cli.ts readiness
@@ -68,7 +68,7 @@ installed: adapters are tested against captured fixture output in
 
 Conventional-ish commit messages (`feat:`, `fix:`, `docs:`). Small PRs merge
 faster than big ones. If you are unsure an idea fits, open an issue or ask in
-[Discord](https://discord.gg/htPuQ5grg) or [Discussions](https://github.com/shreyassaw5394/dea/discussions) first.
+[Discord](https://discord.gg/htPuQ5grg) or [Discussions](https://github.com/shreyassaw5394/debuganything/discussions) first.
 
 ## Good first contributions
 

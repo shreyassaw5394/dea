@@ -1,19 +1,19 @@
-# Agents use DEA on their own
+# Agents use Debug Anything on their own
 
-A tool nobody invokes is useless. Once DEA is set up, agents are expected to
+A tool nobody invokes is useless. Once Debug Anything is set up, agents are expected to
 reach for it **without being asked** when a running system misbehaves. Three
 layers make that happen.
 
 ## 1. The skill says when
 
-`skills/debug-anything/SKILL.md` (installed by `dea setup` for Claude Code,
-Codex and Gemini CLI, or via `npx skills add shreyassaw5394/dea`) has a
+`skills/debug-anything/SKILL.md` (installed by `debuganything setup` for Claude Code,
+Codex and Gemini CLI, or via `npx skills add shreyassaw5394/debuganything`) has a
 "Use it without being asked" table:
 
 | Signal | First move |
 |---|---|
 | A command the agent ran hangs, or a test times out while the process is alive | `attach`, `dump_stacks` |
-| `EADDRINUSE` | `dea port <n>` / `inspect_sockets`; report the pid, never kill it |
+| `EADDRINUSE` | `debuganything port <n>` / `inspect_sockets`; report the pid, never kill it |
 | `ECONNREFUSED`, `ETIMEDOUT`, `socket hang up` | `inspect_sockets`, `trace_syscalls` (network) |
 | `EMFILE` | `inspect_files`, `inspect_sockets` |
 | exit 137, `OOMKilled`, heap out of memory | `container_info`, `snapshot_memory` ×2, `diff_runs` |
@@ -33,14 +33,14 @@ and re-measure after a fix.
 
 ## 3. A hook notices the signal (Claude Code)
 
-`dea setup` writes `~/.dea/hooks/dea-hook.mjs` (dependency-free, ~40 ms) and
+`debuganything setup` writes `~/.debuganything/hooks/debuganything-hook.mjs` (dependency-free, ~40 ms) and
 registers it in `~/.claude/settings.json`:
 
 ```json
 {
   "hooks": {
-    "PostToolUse": [{ "matcher": "Bash", "hooks": [{ "type": "command", "command": "node \"~/.dea/hooks/dea-hook.mjs\"", "timeout": 10 }] }],
-    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "node \"~/.dea/hooks/dea-hook.mjs\"", "timeout": 10 }] }]
+    "PostToolUse": [{ "matcher": "Bash", "hooks": [{ "type": "command", "command": "node \"~/.debuganything/hooks/debuganything-hook.mjs\"", "timeout": 10 }] }],
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "node \"~/.debuganything/hooks/debuganything-hook.mjs\"", "timeout": 10 }] }]
   }
 }
 ```
@@ -51,13 +51,13 @@ After every Bash command and every user prompt it scans for the signals above
 note to the model:
 
 ```
-[DEA] The last command's output shows a runtime problem signal. DEA (Debug Anything) is installed: observe before you theorize.
-- port_busy (“EADDRINUSE: address already in use :::3000”): run `dea port <port>` … never kill it blindly
+[Debug Anything] The last command's output shows a runtime problem signal. DEA (Debug Anything) is installed: observe before you theorize.
+- port_busy (“EADDRINUSE: address already in use :::3000”): run `debuganything port <port>` … never kill it blindly
 Protocol: readiness (once per session) → attach <pid|container|command> → the tool above → detach. Cite evidence ids …
 ```
 
-It never runs DEA itself, never blocks the tool, and stays silent on normal
-output. Disable with `dea setup --no-hooks` or by deleting the two entries.
+It never runs Debug Anything itself, never blocks the tool, and stays silent on normal
+output. Disable with `debuganything setup --no-hooks` or by deleting the two entries.
 Codex, Cursor and Gemini CLI have no equivalent hook API today; they rely on
 layers 1 and 2.
 

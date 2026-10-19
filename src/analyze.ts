@@ -1,6 +1,6 @@
 /**
  * Pure analysis of captured tool output: the same parsers and finding logic
- * the live adapters and `dea import` use, with no filesystem dependency.
+ * the live adapters and `debuganything import` use, with no filesystem dependency.
  * This is the module the in-browser analyzer on debuganything.dev builds from.
  */
 import type { ImportTool, ToolResult } from "./contracts.js";
@@ -17,7 +17,7 @@ import { parseTcpdump, summarizeCaptureEvidence } from "./adapters/tcpdump.js";
 import { parseJstack, summarizeJavaStacks } from "./adapters/jvm.js";
 import { parseGoroutines, summarizeGoroutines } from "./adapters/goruntime.js";
 
-/** Which DEA tool an imported file corresponds to (so diff_runs/report treat it like a live run). */
+/** Which Debug Anything tool an imported file corresponds to (so diff_runs/report treat it like a live run). */
 export const IMPORT_TOOL_MAP: Record<ImportTool, string> = {
   strace: "trace_syscalls",
   fs_usage: "trace_syscalls",
@@ -134,7 +134,7 @@ export async function analyzeText(tool: ImportTool, raw: string, opts: { duratio
   const b = new ResultBuilder(IMPORT_TOOL_MAP[tool], { id: "paste", dir: ":memory:" }, { kind: "command", id: "(pasted output)", host: "browser" });
   if (!raw.trim()) return b.fail("pasted text is empty").build();
   const art = await b.writeArtifact(`${tool}.txt`, raw, "raw_text", `pasted ${tool} output`);
-  b.limitation("analyzed from pasted output: DEA did not run the tool, so flags, timing and target scope are whatever you used");
+  b.limitation("analyzed from pasted output: Debug Anything did not run the tool, so flags, timing and target scope are whatever you used");
   return analyzeRaw(b, { tool, raw, duration_s: opts.duration_s, art });
 }
 

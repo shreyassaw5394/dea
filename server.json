@@ -1,10 +1,10 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
-  "name": "io.github.shreyassaw5394/dea",
+  "name": "io.github.shreyassaw5394/debuganything",
   "description": "Observe any running process from your agent. strace, py-spy, perf, lsof, tcpdump as evidence.",
   "status": "active",
   "repository": {
-    "url": "https://github.com/shreyassaw5394/dea",
+    "url": "https://github.com/shreyassaw5394/debuganything",
     "source": "github"
   },
   "version": "0.4.0",
@@ -12,7 +12,7 @@
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
-      "identifier": "dea-agents",
+      "identifier": "debuganything",
       "version": "0.4.0",
       "runtimeHint": "npx",
       "transport": {

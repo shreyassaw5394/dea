@@ -6,8 +6,8 @@ _Measured 2026-10-19, two days after first publish._
 
 | Channel | Reality |
 |---|---|
-| npm `dea-agents` | **zero recorded downloads** (the downloads API has no record at all) |
-| PyPI `dea-agents` | 195/week — almost entirely mirrors and scrapers |
+| npm `debuganything` | **zero recorded downloads** (the downloads API has no record at all) |
+| PyPI `debuganything` | 195/week — almost entirely mirrors and scrapers |
 | GitHub | 10 stars, 69 unique viewers, 159 unique cloners (clones ≫ views = bots) |
 | Referrers | LinkedIn 25 views, debuganything.dev 5, github.com 3, t.co 2 — **that is everything** |
 | MCP Registry | was stale at 0.3.0; now auto-publishes on every tag |
@@ -21,7 +21,7 @@ product is two days old. Nobody has heard of it. That is the whole story.
 But three structural problems will cap it even once people do hear:
 
 ### 1. The name is a search dead end
-"DEA" returns the Drug Enforcement Administration. "Debug Anything" is a
+"Debug Anything" returns the Drug Enforcement Administration. "Debug Anything" is a
 phrase, not a brand people will recall. We will never win search on the
 product name — so **stop trying to**. Win on the *problem* instead (see
 below). Keep the name; change what we rank for.
@@ -30,7 +30,7 @@ below). Keep the name; change what we rank for.
 "Your agent can't see runtime" is true but abstract. Nobody searches for it.
 People search for the symptom: *why is my node process using 4GB*, *how to
 read strace output*, *test hangs in CI*. Every one of those is a door into
-DEA, and we currently point none of them at us.
+Debug Anything, and we currently point none of them at us.
 
 ### 3. We're not in the two places agents get installed from
 MCP Registry is fixed. **Smithery is the gap** — it is where a large share of

@@ -56,7 +56,7 @@ describe("report", () => {
     const session: Session = { id: "s1", state: "detached", target: { kind: "pid", id: "1", pid: 1, comm: "node", host: "local" }, created_at: "2026-01-01T00:00:00Z", dir: "/tmp/x", platform: "linux", runs: [] };
     const run: ToolResult = { ok: true, tool: "inspect_sockets", run_id: "inspect_sockets#1", session_id: "s1", target: session.target, duration_ms: 5, findings: [{ id: "f1", severity: "high", summary: "token=abcdef123456 leaked", evidence_ids: ["e1"], confidence: "observed" }], evidence: [{ id: "e1", kind: "socket", summary: "x | y", data: {}, artifact: "/tmp/x/a.txt", lines: [3, 9] }], limitations: ["l1"], suggested_next: ["report"], artifacts: [{ path: "/tmp/x/a.txt", kind: "raw_text", bytes: 10 }] };
     const md = renderReportFromRuns(session, [run]);
-    expect(md).toContain("# DEA session s1");
+    expect(md).toContain("# Debug Anything session s1");
     expect(md).toContain("🔴 **HIGH**");
     expect(md).toContain("`inspect_sockets#1/e1`");
     expect(md).toContain("L3–9");

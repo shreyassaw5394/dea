@@ -1,6 +1,6 @@
 # Safety
 
-DEA observes. It does not change the target. These guards are implemented in
+Debug Anything observes. It does not change the target. These guards are implemented in
 `src/safety.ts` and used by every adapter.
 
 ## Read-only by default
@@ -37,7 +37,7 @@ container names and filters are validated against strict patterns.
 
 ## Privilege
 
-DEA never runs `sudo`. If a tool needs root, the result is `ok: false` with a
+Debug Anything never runs `sudo`. If a tool needs root, the result is `ok: false` with a
 `limitations` entry containing the exact command you could run yourself.
 `readiness` reports `ptrace_scope`, `perf_event_paranoid`, capabilities, SIP
 and `sudo -n` status up front.
@@ -52,7 +52,7 @@ unbounded capture.
 ## Cleanup
 
 `detach` and process exit kill all tracked children and stop captures.
-Artifacts persist under `~/.dea/sessions/<id>/`; `dea sessions prune` removes
+Artifacts persist under `~/.debuganything/sessions/<id>/`; `debuganything sessions prune` removes
 detached sessions older than 7 days (`--all` for everything).
 
 ## Secrets
@@ -65,9 +65,9 @@ and strace logs can contain secrets. Treat the sessions directory as sensitive.
 
 ## Proactive hook
 
-`dea setup` registers a Claude Code hook that reads command output and prompts *locally*, matches a fixed list of regexes, and prints a context note. It runs no DEA tool, sends nothing anywhere, and can be removed with `--no-hooks`. See [proactive.md](proactive.md).
+`debuganything setup` registers a Claude Code hook that reads command output and prompts *locally*, matches a fixed list of regexes, and prints a context note. It runs no Debug Anything tool, sends nothing anywhere, and can be removed with `--no-hooks`. See [proactive.md](proactive.md).
 
 ## No cloud, no telemetry
 
-DEA makes no network calls of its own. The only outbound action is the explicit
-`dea update` command (npm). Nothing leaves your machine unless you send it.
+Debug Anything makes no network calls of its own. The only outbound action is the explicit
+`debuganything update` command (npm). Nothing leaves your machine unless you send it.

@@ -130,7 +130,7 @@ export function describeArgs(r: SyscallRecord): string {
   return parts.join(" ");
 }
 
-/** Shared by strace, fs_usage and `dea import`: records → evidence + findings. */
+/** Shared by strace, fs_usage and `debuganything import`: records → evidence + findings. */
 export function summarizeSyscallRecords(b: ResultBuilder, records: SyscallRecord[], duration: number, artifactPath: string): void {
   const agg = aggregateSyscalls(records);
   const topEv = b.evidenceOf(
@@ -186,7 +186,7 @@ async function traceSyscalls(ctx: AdapterContext, args: { duration_s?: number; c
     const cmd = `strace ${straceArgs.join(" ")}`;
     if (looksLikePermissionError(r.stderr)) {
       b.limitation(rootRequiredLimitation("trace_syscalls", cmd));
-      b.limitation("Linux: kernel.yama.ptrace_scope ≥ 1 blocks attaching to non-child processes; sudo sysctl kernel.yama.ptrace_scope=0 for this boot, or run DEA as root / with CAP_SYS_PTRACE");
+      b.limitation("Linux: kernel.yama.ptrace_scope ≥ 1 blocks attaching to non-child processes; sudo sysctl kernel.yama.ptrace_scope=0 for this boot, or run Debug Anything as root / with CAP_SYS_PTRACE");
       b.next("import_artifact (strace, after running the sudo command above)", "inspect_sockets", "inspect_files", "snapshot_memory");
       return b.fail("strace could not attach (permission denied)").build();
     }

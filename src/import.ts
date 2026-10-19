@@ -1,5 +1,5 @@
 /**
- * `dea import` / import_artifact: analyze raw tool output the user captured
+ * `debuganything import` / import_artifact: analyze raw tool output the user captured
  * themselves (typically with sudo, or on another machine). File handling lives
  * here; the parsing and finding logic is in analyze.ts (shared with the
  * in-browser analyzer).
@@ -27,6 +27,6 @@ export async function importArtifact(session: Session, args: { tool: ImportTool;
   }
   if (!raw.trim()) return b.fail(`${args.path} is empty`).build();
   const art = await b.writeArtifact(`imported-${basename(args.path)}`, raw, "raw_text", `imported ${args.tool} output from ${args.path}`);
-  b.limitation(`imported from ${args.path}: DEA did not run the tool, so flags, timing and target scope are whatever you used`);
+  b.limitation(`imported from ${args.path}: Debug Anything did not run the tool, so flags, timing and target scope are whatever you used`);
   return analyzeRaw(b, { tool: args.tool, raw, duration_s: args.duration_s, art });
 }

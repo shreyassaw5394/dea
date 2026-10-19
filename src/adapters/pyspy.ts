@@ -205,7 +205,7 @@ function needsSudoNote(b: ResultBuilder, stderr: string, cmd: string): boolean {
   return false;
 }
 
-/** Shared by dump_stacks, snapshot_memory and `dea import`: parsed dump → evidence + findings. */
+/** Shared by dump_stacks, snapshot_memory and `debuganything import`: parsed dump → evidence + findings. */
 export async function summarizePySpyDump(b: ResultBuilder, dump: PyDump, art: string, pid?: number): Promise<void> {
   const active = dump.threads.filter((t) => t.state === "active");
   const summaryEv = b.evidenceOf(

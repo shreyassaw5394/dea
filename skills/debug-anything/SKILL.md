@@ -3,23 +3,23 @@ name: debug-anything
 description: Use when the user reports a bug that involves a running system (slow, hanging, leaking, crashing, port in use, weird network behavior) AND proactively, without being asked, whenever a command you ran hangs or times out, output shows EADDRINUSE / ECONNREFUSED / EMFILE / exit 137 / OOM / segfault, a server you started does not respond, or you just changed performance-sensitive code. Observe before you theorize.
 ---
 
-# Debug Anything (DEA)
+# Debug Anything
 
-DEA gives you eyes on running software: syscalls, CPU profiles, thread stacks,
+Debug Anything gives you eyes on running software: syscalls, CPU profiles, thread stacks,
 sockets, file descriptors, packets, heap retainers, container state. Every
 tool returns the same `ToolResult` with `findings` that cite `evidence` ids.
 You only get to claim what the evidence supports.
 
 ## Use it without being asked
 
-You are equipped with DEA. Reach for it on your own when you see any of these;
+You are equipped with Debug Anything. Reach for it on your own when you see any of these;
 do not wait for the user to say "debug this" and do not ask permission for
 read-only observation (only `capture_traffic` needs consent):
 
 | Signal | First move |
 |---|---|
 | A command you ran hangs, or a test times out and the process is still alive | `attach` it, `dump_stacks` |
-| `EADDRINUSE` / "port already in use" | `dea port <n>` or `inspect_sockets`; report the pid, do not kill it |
+| `EADDRINUSE` / "port already in use" | `debuganything port <n>` or `inspect_sockets`; report the pid, do not kill it |
 | `ECONNREFUSED`, `ETIMEDOUT`, `socket hang up` | `inspect_sockets`, `trace_syscalls` (network) on the client |
 | `EMFILE` / too many open files | `inspect_files` (growth, deleted-but-open), `inspect_sockets` (CLOSE_WAIT) |
 | exit 137, `OOMKilled`, "JavaScript heap out of memory" | `container_info`, then `snapshot_memory` ×2 + `diff_runs` |
@@ -66,7 +66,7 @@ remote.
 cgroup limits, log tail) → `report`. Exit 137 = SIGKILL (often OOM),
 139 = SIGSEGV, 143 = SIGTERM.
 
-**Port busy** (`dea_port_busy`): CLI `dea port <port>` or `attach` candidates
+**Port busy** (`dea_port_busy`): CLI `debuganything port <port>` or `attach` candidates
 and `inspect_sockets`; report pid + command line. Never kill it yourself.
 
 ## Evidence rules
@@ -84,10 +84,10 @@ and `inspect_sockets`; report pid + command line. Never kill it yourself.
 
 - `capture_traffic` requires `consent: true`. **Ask the user before passing
   it.** Packet captures can contain secrets.
-- DEA is read-only and never escalates privileges. If a tool returns
+- Debug Anything is read-only and never escalates privileges. If a tool returns
   `ok: false` with a sudo command in `limitations`, show the user that command;
   do not try to run it yourself.
-- Payloads are redacted; raw artifacts under `~/.dea/sessions/` are not.
+- Payloads are redacted; raw artifacts under `~/.debuganything/sessions/` are not.
 
 ## After a fix
 
@@ -96,7 +96,7 @@ ids to prove the fix. Put the diff's evidence ids in your summary.
 
 ## Handoffs
 
-- **Step debugger.** When DEA localizes a problem to a function or thread,
+- **Step debugger.** When Debug Anything localizes a problem to a function or thread,
   suggest attaching a step debugger (e.g. mcp-debugger) at `<file:function>`.
-  DEA tells you where to look; a step debugger lets you look inside.
-- **Static analysis.** When DEA names a native symbol, shared library or binary you cannot read (a hot frame in `libfoo.so`, a thread parked in `pthread_mutex_lock` under `worker_b`), hand that symbol to a decompiler / static-analysis tool to see what it does; cite DEA's evidence for the runtime facts and the static tool's for the code facts.
+  Debug Anything tells you where to look; a step debugger lets you look inside.
+- **Static analysis.** When Debug Anything names a native symbol, shared library or binary you cannot read (a hot frame in `libfoo.so`, a thread parked in `pthread_mutex_lock` under `worker_b`), hand that symbol to a decompiler / static-analysis tool to see what it does; cite Debug Anything's evidence for the runtime facts and the static tool's for the code facts.

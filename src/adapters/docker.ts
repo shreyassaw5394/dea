@@ -219,7 +219,7 @@ async function containerInfoFor(b: ResultBuilder, name: string, _ctx: AdapterCon
       }
     }
   } else if (platform() === "darwin") {
-    b.limitation("on macOS the Docker VM hides host pids and cgroups; ptrace-based tools cannot attach to container processes from the host — run DEA inside the container or on a Linux host");
+    b.limitation("on macOS the Docker VM hides host pids and cgroups; ptrace-based tools cannot attach to container processes from the host — run Debug Anything inside the container or on a Linux host");
   }
 
   // Findings

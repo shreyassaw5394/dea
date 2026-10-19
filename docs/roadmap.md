@@ -1,6 +1,6 @@
 # Roadmap
 
-DEA's master plan has four steps; v0 is step 1.
+Debug Anything's master plan has four steps; v0 is step 1.
 
 1. **Local** — one MCP, one laptop, one process. Evidence over guesses. *(this release)*
 2. **Anywhere** — containers, pods, remote hosts over SSH, fleets. Same tools, same contracts.
@@ -10,8 +10,8 @@ DEA's master plan has four steps; v0 is step 1.
 ## Next up
 
 - **bpftrace** canned scripts: syscall latency histograms, fd opens by path, TCP retransmits (`src/adapters/bpftrace.ts` has the scripts; needs the tool wiring).
-- **Kubernetes pods** beyond local kubelets: `kubectl debug` ephemeral containers running DEA, results streamed back as the same `ToolResult`.
-- **Remote agent mode over SSH**: `dea attach user@host:pid`; adapters run remotely, artifacts sync back.
+- **Kubernetes pods** beyond local kubelets: `kubectl debug` ephemeral containers running Debug Anything, results streamed back as the same `ToolResult`.
+- **Remote agent mode over SSH**: `debuganything attach user@host:pid`; adapters run remotely, artifacts sync back.
 - **Windows**: ETW-based CPU sampling, `procdump` stacks, `handle.exe` for fds.
 - **Java**: async-profiler for CPU/alloc, `jcmd Thread.print` for stacks with monitor ownership.
 - **Go**: `pprof` endpoints when exposed; `delve` batch stacks with goroutine wait reasons.
