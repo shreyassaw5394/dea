@@ -1,7 +1,7 @@
 {
   "name": "debuganything",
   "mcpName": "io.github.shreyassaw5394/debuganything",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Debug Anything: observe and diagnose any running process, container or pod from your agent with one CLI and MCP server. Evidence, not guesses.",
   "license": "MIT",
   "type": "module",

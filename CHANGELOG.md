@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 — 2026-10-19
+
+- Fixes the Python integrations, which referenced a class that no longer
+  existed after the 1.0.0 rename (`langchain`, `crewai`, `llamaindex`
+  helpers now construct `DebugAnything()` correctly).
+- Artwork, manifest and lab paths carry the current name.
+
 ## 1.0.0 — 2026-10-19
 
 - **The product is now called Debug Anything everywhere.** The abbreviation is
