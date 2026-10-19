@@ -18,8 +18,10 @@ One MCP server and CLI that gives any coding agent — Claude Code, Codex, Curso
 [Quick start](#quick-start) · [How DEA works](#how-dea-works) · [What you can observe](#what-you-can-observe) · [Showcases](#showcases) · [Workflows](docs/workflows.md) · [Python / LangChain / CrewAI](#python-langchain-llamaindex-crewai) · [Safety](#safety) · [FAQ](#faq) · [Roadmap](#roadmap) · [Community](#community)
 
 ```bash
-npx dea-agents setup
+npx dea-agents why 1234        # or: why api-container --symptom leak
 ```
+
+One command against any pid, container or pod: attach → the right tools for the symptom (`slow` / `leak` / `hang` / `crash` / `triage`) → **ranked findings, every one citing evidence ids** → detach. Hooking it to your agent instead: `npx dea-agents setup`. No install at all? [Paste tool output in the browser](https://debuganything.dev/analyze).
 
 ![DEA finding a Node.js leak: two memory snapshots, a diff, and the retainer named with evidence ids](docs/demo.gif)
 
@@ -49,6 +51,14 @@ DEA is a sensory layer for software agents. The plan:
 Every interface is designed so step-1 code survives to step 4: targets are abstract (`pid` today, `container` and `pod` now, `host` next), adapters are pluggable, and every result has the same evidence schema. Nothing assumes localhost.
 
 ## Quick start
+
+### 0. The one-liner
+
+```bash
+npx dea-agents why <pid|container|pod>     # symptom flags: --symptom slow|leak|hang|crash
+```
+
+`why` is the whole product in one command: it runs readiness, attaches, picks the right observation battery for the symptom, and prints ranked findings with the evidence ids to back them. Everything below is that same engine, wired into your agent.
 
 ### 1. Set up your agent
 
