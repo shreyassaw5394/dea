@@ -1,7 +1,7 @@
 """LlamaIndex FunctionTools for DebugAnything.
 
-    from debuganything.llamaindex import dea_tools
-    agent = ReActAgent.from_tools(dea_tools(), llm=llm)
+    from debuganything.llamaindex import debuganything_tools
+    agent = ReActAgent.from_tools(debuganything_tools(), llm=llm)
 
 Requires ``pip install debuganything[llamaindex]``.
 """
@@ -18,7 +18,7 @@ except ImportError as e:  # pragma: no cover
     raise ImportError("pip install 'debuganything[llamaindex]'") from e
 
 
-def dea_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["FunctionTool"]:
+def debuganything_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["FunctionTool"]:
     debuganything = client or DebugAnything()
     out: List[FunctionTool] = []
     for name, desc in TOOLS.items():

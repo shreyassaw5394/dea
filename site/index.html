@@ -159,7 +159,7 @@ a.tile{display:block;color:inherit}a.tile:hover{text-decoration:none}
 <body>
 <nav><div class="wrap">
   <a class="brand" href="#"><img src="logo.svg" alt="">Debug Anything</a>
-  <div class="links"><a href="analyze" style="color:var(--acc)">Analyzer</a><a href="#how">How it works</a><a href="#real">Real-world</a><a href="#workflow">Workflow</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/debuganything">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
+  <div class="links"><a href="analyze" style="color:var(--acc)">Analyzer</a><a href="#how">How it works</a><a href="#real">Real-world</a><a href="#workflow">Workflow</a><a href="#skills">Skills</a><a href="docs/README.md">Docs</a><a href="https://github.com/shreyassaw5394/debuganything">GitHub</a><a href="https://discord.gg/htPuQ5grg">Discord</a></div>
 </div></nav>
 
 <section class="hero"><div class="wrap">
@@ -302,6 +302,29 @@ open it. same bytes the agent saw.</pre></div>
   </div>
 </div></section>
 
+<section id="skills"><div class="wrap">
+  <div class="eyebrow">Two skills, one install</div>
+  <h2>Your agent knows <em>when</em> to look, not just how.</h2>
+  <p class="sub">Skills are standing instructions your agent reads on its own. Debug Anything ships two, and <code>npx debuganything setup</code> installs both.</p>
+  <div class="inst reveal" style="margin-top:22px">
+    <div class="box">
+      <h3>debug-anything</h3>
+      <p class="sub" style="margin:8px 0 10px">Fix the bug in front of you. Fires on its own when a command hangs, a port is taken, a process is killed for memory, or you say <em>slow</em>, <em>stuck</em> or <em>leaking</em> — attach, measure, answer with evidence ids.</p>
+      <pre><b>npx</b> debuganything setup</pre>
+    </div>
+    <div class="box">
+      <h3>inspect-product <span style="color:#7cc4ff;font-size:13px">new</span></h3>
+      <p class="sub" style="margin:8px 0 10px">Audit a whole product, not one bug. The agent walks your running app as a brand-new user, observes the runtime underneath it, and returns ranked findings that each carry a reproduction and proof.</p>
+      <pre>"review the product and tell me
+ what to fix before launch"</pre>
+    </div>
+  </div>
+  <div class="box" style="margin-top:18px">
+    <h3>What inspect-product refuses to do</h3>
+    <p class="sub" style="margin:8px 0 0">Generic advice counts as failure. Every finding names the steps, what was observed and where it lives — if it can't be reproduced it is filed as a question, not a finding. It checks the things reviews skip: what one user costs you at ten times the usage, whether a free account can be farmed, and whether you can even measure if people come back.</p>
+  </div>
+</div></section>
+
 <section id="install"><div class="wrap">
   <div class="eyebrow">Everywhere your agent is</div>
   <h2>One line, any agent.</h2>
@@ -311,9 +334,9 @@ open it. same bytes the agent saw.</pre></div>
     <div class="box"><h3>No agent? One command</h3><pre><b>debuganything</b> why 12345 --symptom slow</pre></div>
     <div class="box"><h3>Agent skill</h3><pre><b>npx</b> skills add shreyassaw5394/debuganything</pre></div>
     <div class="box"><h3>Python · LangChain · LlamaIndex · CrewAI</h3><pre><b>pip</b> install 'debuganything[langchain]'
-from debuganything.langchain import dea_tools</pre></div>
-    <div class="box"><h3>One click</h3><pre><a href="https://cursor.com/en/install-mcp?name=debuganything&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRlYS1hZ2VudHNAbGF0ZXN0Iiwic2VydmUiXX0=">Install in Cursor →</a>
-<a href="https://vscode.dev/redirect/mcp/install?name=debuganything&config=%7B%22name%22%3A%22dea%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22debuganything%40latest%22%2C%22serve%22%5D%7D">Install in VS Code →</a></pre></div>
+from debuganything.langchain import debuganything_tools</pre></div>
+    <div class="box"><h3>One click</h3><pre><a href="https://cursor.com/en/install-mcp?name=debuganything&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRlYnVnYW55dGhpbmdAbGF0ZXN0Iiwic2VydmUiXX0=">Install in Cursor →</a>
+<a href="https://vscode.dev/redirect/mcp/install?name=debuganything&config=%7B%22name%22%3A%22debuganything%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22debuganything%40latest%22%2C%22serve%22%5D%7D">Install in VS Code →</a></pre></div>
     <div class="box"><h3>Claude Code plugin · Gemini extension</h3><pre>/plugin marketplace add shreyassaw5394/debuganything
 /plugin install debuganything@debuganything
 gemini extensions install https://github.com/shreyassaw5394/debuganything</pre></div>

@@ -80,6 +80,7 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "oxlint": "^1.88.0",
+    "puppeteer-core": "^25.14.0",
     "tsup": "^9.0.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",

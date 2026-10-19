@@ -68,7 +68,7 @@ npx debuganything setup
 
 Detects Claude Code, Codex, Cursor and Gemini CLI, shows the exact config entry it will add, backs up the file, writes it, and installs the `debug-anything` skill where the agent supports skills. Then restart your agent.
 
-**One-click installs:** [![Install MCP Server in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=debuganything&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRlYS1hZ2VudHNAbGF0ZXN0Iiwic2VydmUiXX0=) [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_DEA-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=debuganything&config=%7B%22name%22%3A%22dea%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22debuganything%40latest%22%2C%22serve%22%5D%7D) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_DEA-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=debuganything&config=%7B%22name%22%3A%22dea%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22debuganything%40latest%22%2C%22serve%22%5D%7D)
+**One-click installs:** [![Install MCP Server in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=debuganything&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRlYnVnYW55dGhpbmdAbGF0ZXN0Iiwic2VydmUiXX0=) [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_DEA-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=debuganything&config=%7B%22name%22%3A%22debuganything%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22debuganything%40latest%22%2C%22serve%22%5D%7D) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_DEA-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=debuganything&config=%7B%22name%22%3A%22debuganything%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22debuganything%40latest%22%2C%22serve%22%5D%7D)
 
 Claude Code plugin: `/plugin marketplace add shreyassaw5394/debuganything` then `/plugin install debuganything@debuganything` · Gemini CLI: `gemini extensions install https://github.com/shreyassaw5394/debuganything` · Skill: `npx skills add shreyassaw5394/debuganything`
 
@@ -123,6 +123,8 @@ Every teammate's Claude Code and Cursor now gets Debug Anything from the repo, w
 The `debug-anything` skill (investigation orders, evidence rules, consent
 etiquette) is installed by `setup` for Claude Code, Codex and Gemini CLI, and
 is also available through [skills.sh](https://skills.sh):
+
+A second skill, `inspect-product`, is for auditing a whole product rather than chasing one bug: the agent walks your running app as a brand-new user, observes the runtime underneath it with these tools, and returns ranked findings that each carry a reproduction and proof. Ask it to "review the product and tell me what to fix before launch". Both skills install with `npx debuganything setup`.
 
 ```bash
 npx skills add shreyassaw5394/debuganything
@@ -204,9 +206,9 @@ Once installed, agents are told to reach for Debug Anything on their own: when a
 
 ```bash
 pip install debuganything                 # plain client (no deps; uses npx under the hood)
-pip install 'debuganything[langchain]'    # debuganything.langchain.dea_tools()
-pip install 'debuganything[llamaindex]'   # debuganything.llamaindex.dea_tools()
-pip install 'debuganything[crewai]'       # debuganything.crewai.dea_tools()
+pip install 'debuganything[langchain]'    # debuganything.langchain.debuganything_tools()
+pip install 'debuganything[llamaindex]'   # debuganything.llamaindex.debuganything_tools()
+pip install 'debuganything[crewai]'       # debuganything.crewai.debuganything_tools()
 ```
 
 ```python

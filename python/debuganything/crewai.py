@@ -1,7 +1,7 @@
 """CrewAI tools for DebugAnything.
 
-    from debuganything.crewai import dea_tools
-    agent = Agent(role="SRE", goal="diagnose the slow API with evidence", tools=dea_tools(), ...)
+    from debuganything.crewai import debuganything_tools
+    agent = Agent(role="SRE", goal="diagnose the slow API with evidence", tools=debuganything_tools(), ...)
 
 Requires ``pip install debuganything[crewai]``.
 """
@@ -31,7 +31,7 @@ def _model(tool: str) -> Type[BaseModel]:
     return create_model(f"Dea{tool.title().replace('_', '')}Args", **fields)  # type: ignore[call-overload]
 
 
-def dea_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["BaseTool"]:
+def debuganything_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["BaseTool"]:
     debuganything = client or DebugAnything()
     out: List[BaseTool] = []
     for tool_name, desc in TOOLS.items():

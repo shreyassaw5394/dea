@@ -41,29 +41,29 @@ Every call returns the Debug Anything `ToolResult` dict (`ok`, `findings`, `evid
 ## LangChain
 
 ```python
-from debuganything.langchain import dea_tools
+from debuganything.langchain import debuganything_tools
 from langgraph.prebuilt import create_react_agent
 
-agent = create_react_agent(llm, dea_tools())
+agent = create_react_agent(llm, debuganything_tools())
 agent.invoke({"messages": [("user", "pid 12345 is slow — attach and tell me why, with evidence")]})
 ```
 
 ## LlamaIndex
 
 ```python
-from debuganything.llamaindex import dea_tools
+from debuganything.llamaindex import debuganything_tools
 from llama_index.core.agent import ReActAgent
 
-agent = ReActAgent.from_tools(dea_tools(), llm=llm, verbose=True)
+agent = ReActAgent.from_tools(debuganything_tools(), llm=llm, verbose=True)
 ```
 
 ## CrewAI
 
 ```python
-from debuganything.crewai import dea_tools
+from debuganything.crewai import debuganything_tools
 from crewai import Agent
 
-sre = Agent(role="SRE", goal="Diagnose the hung worker with evidence, never guess", tools=dea_tools(), llm=llm)
+sre = Agent(role="SRE", goal="Diagnose the hung worker with evidence, never guess", tools=debuganything_tools(), llm=llm)
 ```
 
 ## Or just use MCP

@@ -1,7 +1,7 @@
 """LangChain tools for DebugAnything.
 
-    from debuganything.langchain import dea_tools
-    tools = dea_tools()                 # 14 StructuredTools, one per Debug Anything tool
+    from debuganything.langchain import debuganything_tools
+    tools = debuganything_tools()                 # 14 StructuredTools, one per Debug Anything tool
     agent = create_react_agent(llm, tools)
 
 Each tool returns the ToolResult as a JSON string. Requires ``pip install debuganything[langchain]``.
@@ -33,7 +33,7 @@ def _model(tool: str) -> Type[BaseModel]:
     return create_model(f"Dea{tool.title().replace('_', '')}Args", **fields)  # type: ignore[call-overload]
 
 
-def dea_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["StructuredTool"]:
+def debuganything_tools(client: Optional[DebugAnything] = None, include: Optional[List[str]] = None) -> List["StructuredTool"]:
     """Build one LangChain StructuredTool per Debug Anything tool."""
     debuganything = client or DebugAnything()
     out: List[StructuredTool] = []
