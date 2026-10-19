@@ -332,8 +332,8 @@ export const ToolArgs = {
   }),
   diff_runs: z.object({
     session_id: z.string().min(1),
-    a: z.string().min(1).describe("run id of the earlier result"),
-    b: z.string().min(1).describe("run id of the later result"),
+    a: z.string().min(1).describe("run id of the earlier result; '<session_id>:<run>' reads a baseline run from another session (e.g. a recorded healthy run)"),
+    b: z.string().min(1).describe("run id of the later result; '<session_id>:<run>' works here too"),
   }),
   container_info: z.object({ session_id: z.string().min(1) }),
   report: z.object({
