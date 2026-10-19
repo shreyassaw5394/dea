@@ -19,6 +19,8 @@ const CASES: Array<[dir: string, tool: ImportTool]> = [
   ["lsof", "lsof"],
   ["tcpdump", "tcpdump"],
   ["sample", "sample"],
+  ["jvm", "jstack"],
+  ["go", "goroutines"],
 ];
 
 describe("analyzeText (in-memory, browser-safe path)", () => {

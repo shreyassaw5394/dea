@@ -285,7 +285,7 @@ export type Readiness = z.infer<typeof Readiness>;
 // Tool argument schemas (shared by MCP server and CLI)
 // ---------------------------------------------------------------------------
 
-export const ImportTool = z.enum(["strace", "fs_usage", "perf_script", "folded", "pyspy_dump", "sample", "gdb", "lldb", "lsof", "tcpdump"]);
+export const ImportTool = z.enum(["strace", "fs_usage", "perf_script", "folded", "pyspy_dump", "sample", "gdb", "lldb", "lsof", "tcpdump", "jstack", "goroutines"]);
 export type ImportTool = z.infer<typeof ImportTool>;
 
 export const SyscallCategory = z.enum(["network", "file", "process", "signal", "memory", "all"]);

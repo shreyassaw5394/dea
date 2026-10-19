@@ -19,8 +19,10 @@ import { sampleMacosAdapter } from "./sample_macos.js";
 import { bpftraceAdapter } from "./bpftrace.js";
 import { psmemAdapter } from "./psmem.js";
 import { fsUsageAdapter } from "./fs_usage.js";
+import { jvmAdapter } from "./jvm.js";
 
 export const adapters: Adapter[] = [
+  jvmAdapter,
   lsofAdapter,
   pyspyAdapter,
   straceAdapter,

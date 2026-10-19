@@ -1,0 +1,48 @@
+2026-10-18 21:14:02
+Full thread dump OpenJDK 64-Bit Server VM (21.0.4+7 mixed mode, sharing):
+
+"main" #1 prio=5 os_prio=31 cpu=120.33ms elapsed=64.22s tid=0x00007f8a1c008800 nid=0x1003 waiting on condition  [0x000070000c1f0000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21/Native Method)
+	at java.util.concurrent.locks.LockSupport.park(java.base@21/LockSupport.java:371)
+	at java.util.concurrent.CountDownLatch.await(java.base@21/CountDownLatch.java:230)
+	at com.example.Main.main(Main.java:42)
+
+"transfer-1" #23 prio=5 os_prio=31 cpu=4.11ms elapsed=61.02s tid=0x00007f8a1d1a3000 nid=0x7803 waiting for monitor entry  [0x000070000d3f5000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at com.example.Bank.transfer(Bank.java:31)
+	- waiting to lock <0x000000061f901234> (a com.example.Account)
+	- locked <0x000000061f905678> (a com.example.Account)
+	at com.example.Worker.run(Worker.java:17)
+
+"transfer-2" #24 prio=5 os_prio=31 cpu=3.87ms elapsed=61.01s tid=0x00007f8a1d1a4800 nid=0x7a03 waiting for monitor entry  [0x000070000d4f8000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at com.example.Bank.transfer(Bank.java:31)
+	- waiting to lock <0x000000061f905678> (a com.example.Account)
+	- locked <0x000000061f901234> (a com.example.Account)
+	at com.example.Worker.run(Worker.java:17)
+
+"GC Thread#0" #9 daemon prio=9 os_prio=31 cpu=10.21ms elapsed=64.20s tid=0x00007f8a1c0b9000 nid=0x4d03 runnable
+
+"http-worker-1" #30 daemon prio=5 os_prio=31 cpu=0.44ms elapsed=60.11s tid=0x00007f8a1e0c2000 nid=0x8b03 runnable  [0x000070000e5fb000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.KQueue.poll(java.base@21/Native Method)
+	at sun.nio.ch.KQueuePort$EventHandlerTask.run(java.base@21/KQueuePort.java:312)
+
+Found one Java-level deadlock:
+=============================
+"transfer-1":
+  waiting to lock monitor 0x00007f8a1c0dd200 (object 0x000000061f901234, a com.example.Account),
+  which is held by "transfer-2"
+"transfer-2":
+  waiting to lock monitor 0x00007f8a1c0de100 (object 0x000000061f905678, a com.example.Account),
+  which is held by "transfer-1"
+
+Java stack information for the threads listed above:
+===================================================
+"transfer-1":
+	at com.example.Bank.transfer(Bank.java:31)
+"transfer-2":
+	at com.example.Bank.transfer(Bank.java:31)
+
+Found 1 deadlock.

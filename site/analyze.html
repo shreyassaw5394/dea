@@ -62,13 +62,15 @@ footer{border-top:1px solid var(--line);margin-top:60px;padding:30px 0 50px;colo
 
 <div class="wrap">
   <h1>Paste debugger output. Get findings.</h1>
-  <p class="sub">The same evidence-first analysis <a href="/">DEA</a> runs for AI agents, compiled to your browser. Paste <b>strace</b>, <b>py-spy dump</b>, <b>lsof&nbsp;-F</b>, <b>gdb</b>/<b>lldb</b> backtraces, <b>perf script</b>, folded stacks, macOS <b>sample</b>, or <b>tcpdump</b> text.</p>
+  <p class="sub">The same evidence-first analysis <a href="/">DEA</a> runs for AI agents, compiled to your browser. Paste <b>strace</b>, <b>py-spy dump</b>, <b>jstack</b> Java thread dumps, <b>Go goroutine</b> dumps, <b>lsof&nbsp;-F</b>, <b>gdb</b>/<b>lldb</b> backtraces, <b>perf script</b>, folded stacks, macOS <b>sample</b>, or <b>tcpdump</b> text.</p>
   <p><span class="badge">● Nothing is uploaded — analysis runs entirely in this tab</span></p>
 
   <div class="panel">
     <textarea id="in" spellcheck="false" placeholder="$ sudo strace -f -T -tt -p 1234 -o out.txt   (then paste out.txt here)
 $ py-spy dump --pid 1234
 $ lsof -nP -F pcufatsinTP -p 1234
+$ jstack 1234                                   (Java)
+$ curl localhost:6060/debug/pprof/goroutine?debug=2   (Go)
 $ gdb -p 1234 -batch -ex 'thread apply all bt'
 $ sudo tcpdump -nn -tt port 5432"></textarea>
     <div class="row">
@@ -78,6 +80,8 @@ $ sudo tcpdump -nn -tt port 5432"></textarea>
         <option value="strace">strace</option>
         <option value="fs_usage">fs_usage (macOS)</option>
         <option value="pyspy_dump">py-spy dump</option>
+        <option value="jstack">Java thread dump (jstack)</option>
+        <option value="goroutines">Go goroutine dump</option>
         <option value="gdb">gdb backtrace</option>
         <option value="lldb">lldb backtrace</option>
         <option value="lsof">lsof -F</option>
