@@ -20,11 +20,10 @@ product is two days old. Nobody has heard of it. That is the whole story.
 
 But three structural problems will cap it even once people do hear:
 
-### 1. The name is a search dead end
-"Debug Anything" returns the Drug Enforcement Administration. "Debug Anything" is a
-phrase, not a brand people will recall. We will never win search on the
-product name — so **stop trying to**. Win on the *problem* instead (see
-below). Keep the name; change what we rank for.
+### 1. We will never win search on the product name
+A product name is a bad search target: nobody types it until they already
+know it. So **stop trying to rank for it**. Win on the *problem* instead
+(see below). The name is for recall, not discovery.
 
 ### 2. We are selling a problem people don't know they have
 "Your agent can't see runtime" is true but abstract. Nobody searches for it.
