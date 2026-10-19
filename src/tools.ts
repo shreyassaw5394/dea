@@ -64,7 +64,7 @@ export async function runTool(name: string, rawArgs: Record<string, unknown>): P
       case "diff_runs":
         return await toolDiffRuns(args as { session_id: string; a: string; b: string });
       case "report":
-        return await toolReport(args as { session_id: string; out?: string });
+        return await toolReport(args as { session_id: string; out?: string; html?: boolean });
       case "import_artifact": {
         const session = await loadSession(String(args.session_id));
         const { importArtifact } = await import("./import.js");
@@ -187,13 +187,19 @@ async function toolDiffRuns(args: { session_id: string; a: string; b: string }):
   return recordRun(session, result);
 }
 
-async function toolReport(args: { session_id: string; out?: string }): Promise<ToolResult> {
+async function toolReport(args: { session_id: string; out?: string; html?: boolean }): Promise<ToolResult> {
   const session = await loadSession(args.session_id);
   const md = await renderReport(session);
   const b = new ResultBuilder("report", session, session.target);
   const path = join(session.dir, "report.md");
   await writeFile(path, md);
   await b.addArtifact(path, "markdown", { description: "session report" });
+  if (args.html) {
+    const { renderHtmlReport } = await import("./report_html.js");
+    const htmlPath = args.out ? args.out.replace(/\.(md|html)$/, "") + ".html" : join(session.dir, "report.html");
+    await writeFile(htmlPath, await renderHtmlReport(session));
+    await b.addArtifact(htmlPath, "log", { description: "self-contained HTML report (shareable)" });
+  }
   if (args.out) {
     await writeFile(args.out, md);
     await b.addArtifact(args.out, "markdown", { description: "copy of session report" });
