@@ -8,8 +8,8 @@ examples/**/__pycache__/
 *.pcap
 *.heapsnapshot
 .vhs-out/
-.lab-dea/
-.lab-dea/
+.lab-debuganything/
+.lab-debuganything/
 python/dist/
 python/**/__pycache__/
 python/*.egg-info/

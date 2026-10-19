@@ -3,7 +3,7 @@
 - **Target:** pid `26` (pid 26, node) — runtime node
 - **Host:** local (linux)
 - **Created:** 2026-10-17T22:34:48.230Z
-- **Runs:** 10 · **Artifacts dir:** `/dea/.lab-dea/sessions/20261017-223448-a66b75`
+- **Runs:** 10 · **Artifacts dir:** `/debuganything/.lab-debuganything/sessions/20261017-223448-a66b75`
 
 ## Findings
 
