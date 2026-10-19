@@ -339,6 +339,7 @@ export const ToolArgs = {
   report: z.object({
     session_id: z.string().min(1),
     out: z.string().optional().describe("Optional path to also write the markdown to"),
+    html: z.boolean().optional().describe("Also render a self-contained report.html (shareable: ranked findings, expandable evidence, embedded flamegraphs)"),
   }),
   import_artifact: z.object({
     session_id: z.string().min(1),

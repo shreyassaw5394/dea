@@ -216,9 +216,10 @@ program
   .command("report")
   .requiredOption("--session <id>", "session id")
   .option("--md <file>", "also write markdown to this file")
+  .option("--html", "also render a self-contained, shareable report.html (embedded flamegraphs)")
   .description("markdown report of the session")
   .action(async function (this: Command, opts) {
-    const r = await runTool("report", { session_id: opts.session, out: opts.md });
+    const r = await runTool("report", { session_id: opts.session, out: opts.md, html: Boolean(opts.html) });
     if (wantJson(this)) return emit(this, r);
     const md = (r.evidence[0]?.data as { markdown_preview?: string } | undefined)?.markdown_preview;
     if (md) process.stdout.write(md + (md.length >= 3000 ? "\n…(full report in artifact)\n" : "\n"));
