@@ -14,6 +14,8 @@ import { parseGdbBacktrace, summarizeNativeStacks } from "./adapters/gdb.js";
 import { parseLldbBacktrace } from "./adapters/lldb.js";
 import { parseLsofFields, summarizeSockets, summarizeFiles } from "./adapters/lsof.js";
 import { parseTcpdump, summarizeCaptureEvidence } from "./adapters/tcpdump.js";
+import { parseJstack, summarizeJavaStacks } from "./adapters/jvm.js";
+import { parseGoroutines, summarizeGoroutines } from "./adapters/goruntime.js";
 
 /** Which DEA tool an imported file corresponds to (so diff_runs/report treat it like a live run). */
 export const IMPORT_TOOL_MAP: Record<ImportTool, string> = {
@@ -27,6 +29,8 @@ export const IMPORT_TOOL_MAP: Record<ImportTool, string> = {
   lldb: "dump_stacks",
   lsof: "inspect_sockets",
   tcpdump: "capture_traffic",
+  jstack: "dump_stacks",
+  goroutines: "dump_stacks",
 };
 
 /** Seconds between first and last timestamp of records with HH:MM:SS.ffffff times. Pure. */
@@ -74,6 +78,14 @@ export async function analyzeRaw(b: ResultBuilder, args: { tool: ImportTool; raw
       await summarizePySpyDump(b, dump, art, undefined);
       b.limitation("relative source paths could not be resolved (no live process); run with --locals or from the app directory for lock classification");
       return b.build();
+    }
+    case "jstack": {
+      const dump = parseJstack(raw);
+      return summarizeJavaStacks(b, dump, art);
+    }
+    case "goroutines": {
+      const gs = parseGoroutines(raw);
+      return summarizeGoroutines(b, gs, art);
     }
     case "gdb":
     case "lldb": {
@@ -129,6 +141,8 @@ export async function analyzeText(tool: ImportTool, raw: string, opts: { duratio
 /** Guess which tool produced this output. Returns undefined when unsure. */
 export function detectTool(raw: string): ImportTool | undefined {
   const head = raw.slice(0, 20000);
+  if (/^goroutine \d+ \[/m.test(head)) return "goroutines";
+  if (/java\.lang\.Thread\.State:/.test(head) || /^Full thread dump /m.test(head)) return "jstack";
   if (/^Process\s+\d+:|^Thread (0x[0-9a-f]+|\d+) \((idle|active)\)/m.test(head)) return "pyspy_dump";
   if (/^\* thread #\d+/m.test(head)) return "lldb";
   if (/^Thread \d+ \(.*\):\s*$/m.test(head) && /^#\d+\s/m.test(head)) return "gdb";
